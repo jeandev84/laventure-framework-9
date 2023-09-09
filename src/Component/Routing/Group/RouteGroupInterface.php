@@ -32,6 +32,19 @@ interface RouteGroupInterface
 
 
 
+
+    /**
+     * Rewind attributes
+     *
+     * @return void
+    */
+    public function rewind(): void;
+
+
+
+
+
+
     /**
      * Returns namespace
      *
