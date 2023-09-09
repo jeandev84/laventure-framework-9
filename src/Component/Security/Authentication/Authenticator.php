@@ -2,7 +2,9 @@
 namespace Laventure\Component\Security\Authentication;
 
 
+use Laventure\Component\Security\User\Provider\UserProviderInterface;
 use Laventure\Component\Security\User\Token\UserTokenInterface;
+use Laventure\Component\Security\User\Token\UserTokenStorageInterface;
 use Laventure\Component\Security\User\UserInterface;
 
 
@@ -11,6 +13,11 @@ use Laventure\Component\Security\User\UserInterface;
 */
 abstract class Authenticator implements AuthenticatorInterface
 {
+
+
+
+
+
 
     /**
      * Create user token
