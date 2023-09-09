@@ -67,6 +67,9 @@ class Renderer implements RendererInterface
 
 
 
+
+
+
       /**
        * @param array $data
        *
@@ -89,6 +92,24 @@ class Renderer implements RendererInterface
       */
       public function render(string $path, array $data = []): string
       {
-           return $this->engine->compile(new Template($path, array_merge($this->data, $data)));
+           return $this->engine->compile($this->createTemplate($path, $data));
+      }
+
+
+
+
+
+
+
+      /**
+       * @param string $path
+       *
+       * @param array $data
+       *
+       * @return Template
+      */
+      public function createTemplate(string $path, array $data = []): Template
+      {
+            return $this->engine->createTemplate($path, array_merge($this->data, $data));
       }
 }
