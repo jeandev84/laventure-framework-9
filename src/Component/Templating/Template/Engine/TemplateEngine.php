@@ -74,23 +74,6 @@ class TemplateEngine implements TemplateEngineInterface
 
 
 
-    /**
-     * @param bool $compressed
-     *
-     * @return $this
-    */
-    public function compress(bool $compressed): static
-    {
-        $this->compressed = $compressed;
-
-        return $this;
-    }
-
-
-
-
-
-
 
     /**
      * @param string $resourcePath
@@ -110,15 +93,29 @@ class TemplateEngine implements TemplateEngineInterface
 
 
     /**
-     * @return string
+     * @param bool $compressed
+     *
+     * @return $this
+    */
+    public function compress(bool $compressed): static
+    {
+        $this->compressed = $compressed;
+
+        return $this;
+    }
+
+
+
+
+
+
+    /**
+     * @inheritdoc
     */
     public function getResourcePath(): string
     {
         return $this->resourcePath;
     }
-
-
-
 
 
     /**
@@ -169,7 +166,7 @@ class TemplateEngine implements TemplateEngineInterface
     private function includePaths(TemplateInterface $template): string
     {
         $pattern = '/{% ?(extends|include) ?\'?(.*?)\'? ?%}/i';
-        $content = $this->content($this->locateTemplate($template->getPath()));
+        $content = $this->content($this->path($template->getPath()));
 
         preg_match_all($pattern, $content, $matches, PREG_SET_ORDER);
 
@@ -238,8 +235,12 @@ class TemplateEngine implements TemplateEngineInterface
     */
     private function compileEscapedEchos(string $content): string
     {
-        return preg_replace('~\{{{\s*(.+?)\s*\}}}~is', '<?php echo htmlentities($1, ENT_QUOTES, \'UTF-8\') ?>', $content);
+        $escaped = '<?php echo htmlentities($1, ENT_QUOTES, \'UTF-8\') ?>';
+
+        return preg_replace('~\{{{\s*(.+?)\s*\}}}~is', $escaped, $content);
     }
+
+
 
 
 
@@ -328,7 +329,7 @@ class TemplateEngine implements TemplateEngineInterface
      *
      * @return string
     */
-    public function locateTemplate(string $path): string
+    public function path(string $path): string
     {
         $path = str_replace('/', DIRECTORY_SEPARATOR, trim($path, '/'));
 

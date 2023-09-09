@@ -2,9 +2,7 @@
 namespace Laventure\Component\Templating\Renderer;
 
 
-use Laventure\Component\Templating\Template\Compressor\TemplateCompressor;
 use Laventure\Component\Templating\Template\Engine\TemplateEngine;
-use Laventure\Component\Templating\Template\Engine\TemplateEngineInterface;
 use Laventure\Component\Templating\Template\Template;
 
 
@@ -23,9 +21,9 @@ class Renderer implements RendererInterface
 
 
       /**
-       * @var TemplateEngineInterface
+       * @var TemplateEngine
       */
-      protected TemplateEngineInterface $engine;
+      protected TemplateEngine $engine;
 
 
 
@@ -44,7 +42,7 @@ class Renderer implements RendererInterface
       /**
        * @param TemplateEngine $engine
       */
-      public function __construct(TemplateEngineInterface $engine)
+      public function __construct(TemplateEngine $engine)
       {
            $this->engine = $engine;
       }
@@ -52,6 +50,19 @@ class Renderer implements RendererInterface
 
 
 
+
+
+      /**
+       * @param string $path
+       *
+       * @return $this
+      */
+      public function resourcePath(string $path): static
+      {
+          $this->engine->resourcePath($path);
+
+          return $this;
+      }
 
 
 

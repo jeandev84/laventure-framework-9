@@ -15,32 +15,6 @@ use Laventure\Component\Templating\Template\TemplateInterface;
 interface TemplateEngineInterface
 {
 
-
-      /**
-       * @param string $resourcePath
-       *
-       * @return static
-      */
-      public function resourcePath(string $resourcePath): static;
-
-
-
-
-
-      /**
-       * Returns full path of template
-       *
-       * @param string $path
-       *
-       * @return string
-      */
-      public function locateTemplate(string $path): string;
-
-
-
-
-
-
       /**
        * Compile template
        *
@@ -49,4 +23,17 @@ interface TemplateEngineInterface
        * @return string
       */
       public function compile(TemplateInterface $template): string;
+
+
+
+
+
+
+
+      /**
+       * Returns resource path
+       *
+       * @return string
+      */
+      public function getResourcePath(): string;
 }
