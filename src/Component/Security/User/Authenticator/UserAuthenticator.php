@@ -113,7 +113,11 @@ class UserAuthenticator extends Authenticator
     */
     public function logout(): bool
     {
+        if (! $this->tokenStorage->hasToken()) {
+             return false;
+        }
 
+        return $this->tokenStorage->removeToken($this->getUser());
     }
 
 
