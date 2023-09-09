@@ -196,11 +196,7 @@ class File extends FileInfo
      {
          if (! $this->exists()) { $this->make(); }
 
-         if (! $append) {
-             return $this->writer->write($this->path(), $content);
-         }
-
-         return $this->writer->append($this->path(), $content);
+         return $this->writer->writeTo($this->path(), $content, $append);
      }
 
 
@@ -244,7 +240,7 @@ class File extends FileInfo
       *
       * @return string
      */
-     public function replace(array $patterns): string
+     public function stub(array $patterns): string
      {
          $searched = array_keys($patterns);
          $replaced = array_values($patterns);

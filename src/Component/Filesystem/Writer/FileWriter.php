@@ -14,8 +14,9 @@ class FileWriter implements FileWriterInterface
     */
     public function write(string $path, string $content): false|int
     {
-        return $this->writeTo($path, $content);
+        return $this->put($path, $content);
     }
+
 
 
 
@@ -29,8 +30,33 @@ class FileWriter implements FileWriterInterface
     */
     public function append(string $path, string $content): false|int
     {
-        return $this->writeTo($path, $content.PHP_EOL, FILE_APPEND | LOCK_EX);
+        return $this->put($path, $content.PHP_EOL, FILE_APPEND | LOCK_EX);
     }
+
+
+
+
+
+
+    /**
+     * @param string $path
+     *
+     * @param string $content
+     *
+     * @param bool $append
+     *
+     * @return false|int
+    */
+    public function writeTo(string $path, string $content, bool $append = false): bool|int
+    {
+         if (! $append) {
+            return $this->write($path, $content);
+         }
+
+         return $this->append($path, $content);
+    }
+
+
 
 
 
@@ -48,7 +74,7 @@ class FileWriter implements FileWriterInterface
      *
      * @return false|int
     */
-    private function writeTo(string $path, string $content, int $flags = 0, $context = null): bool|int
+    private function put(string $path, string $content, int $flags = 0, $context = null): bool|int
     {
         return file_put_contents($path, $content, $flags, $context);
     }
