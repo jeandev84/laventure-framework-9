@@ -1,5 +1,5 @@
 <?php
-namespace Laventure\Component\Filesystem\File\Iterator;
+namespace Laventure\Component\Filesystem\Iterator;
 
 use CallbackFilterIterator;
 use Closure;
@@ -11,7 +11,7 @@ use Closure;
  *
  * @license https://github.com/jeandev84/laventure-framework/blob/master/LICENSE
  *
- * @package Laventure\Component\Filesystem\File\Iterator
+ * @package Laventure\Component\Filesystem\Iterator
 */
 class GlobalIterator extends \GlobIterator
 {

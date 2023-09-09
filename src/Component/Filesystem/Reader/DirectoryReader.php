@@ -1,5 +1,5 @@
 <?php
-namespace Laventure\Component\Filesystem\File\Reader;
+namespace Laventure\Component\Filesystem\Reader;
 
 use DirectoryIterator;
 
@@ -10,7 +10,7 @@ use DirectoryIterator;
  *
  * @license https://github.com/jeandev84/laventure-framework/blob/master/LICENSE
  *
- * @package Laventure\Component\Filesystem\File\Reader
+ * @package Laventure\Component\Filesystem\Reader
 */
 class DirectoryReader extends DirectoryIterator
 {

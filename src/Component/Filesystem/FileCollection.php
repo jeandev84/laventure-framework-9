@@ -1,10 +1,6 @@
 <?php
-namespace Laventure\Component\Filesystem\File\Collection;
+namespace Laventure\Component\Filesystem;
 
-
-use CallbackFilterIterator;
-use Closure;
-use Laventure\Component\Filesystem\File\File;
 
 /**
  * @FileCollection
@@ -13,7 +9,7 @@ use Laventure\Component\Filesystem\File\File;
  *
  * @license https://github.com/jeandev84/laventure-framework/blob/master/LICENSE
  *
- * @package Laventure\Component\Filesystem\File\Collection
+ * @package Laventure\Component\Filesystem
 */
 class FileCollection
 {

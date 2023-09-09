@@ -1,5 +1,5 @@
 <?php
-namespace Laventure\Component\Filesystem\File;
+namespace Laventure\Component\Filesystem;
 
 /**
  * @Stream
@@ -8,7 +8,7 @@ namespace Laventure\Component\Filesystem\File;
  *
  * @license https://github.com/jeandev84/laventure-framework/blob/master/LICENSE
  *
- * @package Laventure\Component\Filesystem\File
+ * @package Laventure\Component\Filesystem
 */
 class Stream extends \SplFileObject
 {

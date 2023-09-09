@@ -1,5 +1,5 @@
 <?php
-namespace Laventure\Component\Filesystem\File\Uploader\Contract;
+namespace Laventure\Component\Filesystem\Uploader\Contract;
 
 /**
  * @FileUploaderInterface
@@ -8,7 +8,7 @@ namespace Laventure\Component\Filesystem\File\Uploader\Contract;
  *
  * @license https://github.com/jeandev84/laventure-framework/blob/master/LICENSE
  *
- * @package Laventure\Component\Filesystem\File\Uploader\Contract
+ * @package Laventure\Component\Filesystem\Uploader\Contract
 */
 interface FileUploaderInterface
 {

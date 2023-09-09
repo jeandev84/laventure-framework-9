@@ -1,8 +1,7 @@
 <?php
-namespace Laventure\Component\Filesystem\File\Writer;
+namespace Laventure\Component\Filesystem\Writer;
 
-use Laventure\Component\Filesystem\File\Locator\FileLocator;
-use Laventure\Component\Filesystem\File\Writer\Contract\FileWriterInterface;
+use Laventure\Component\Filesystem\Writer\Contract\FileWriterInterface;
 
 /**
  * @inheritdoc

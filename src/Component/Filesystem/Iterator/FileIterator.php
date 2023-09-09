@@ -1,5 +1,5 @@
 <?php
-namespace Laventure\Component\Filesystem\File\Iterator;
+namespace Laventure\Component\Filesystem\Iterator;
 
 use FilterIterator;
 use RecursiveDirectoryIterator;
@@ -13,7 +13,7 @@ use RecursiveIteratorIterator;
  *
  * @license https://github.com/jeandev84/laventure-framework/blob/master/LICENSE
  *
- * @package Laventure\Component\Filesystem\File\Iterator
+ * @package Laventure\Component\Filesystem\Iterator
 */
 class FileIterator extends FilterIterator
 {

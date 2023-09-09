@@ -1,5 +1,5 @@
 <?php
-namespace Laventure\Component\Filesystem\File\Writer\Contract;
+namespace Laventure\Component\Filesystem\Writer\Contract;
 
 
 /**
@@ -9,7 +9,7 @@ namespace Laventure\Component\Filesystem\File\Writer\Contract;
  *
  * @license https://github.com/jeandev84/laventure-framework/blob/master/LICENSE
  *
- * @package Laventure\Component\Filesystem\File\Writer\Contract
+ * @package Laventure\Component\Filesystem\Writer\Contract
 */
 interface FileWriterInterface
 {

@@ -1,12 +1,12 @@
 <?php
-namespace Laventure\Component\Filesystem\File;
+namespace Laventure\Component\Filesystem;
 
 
 
-use Laventure\Component\Filesystem\File\Loader\FileLoader;
-use Laventure\Component\Filesystem\File\Reader\FileReader;
-use Laventure\Component\Filesystem\File\Uploader\FileUploader;
-use Laventure\Component\Filesystem\File\Writer\FileWriter;
+use Laventure\Component\Filesystem\Loader\FileLoader;
+use Laventure\Component\Filesystem\Reader\FileReader;
+use Laventure\Component\Filesystem\Uploader\FileUploader;
+use Laventure\Component\Filesystem\Writer\FileWriter;
 
 
 /**
@@ -16,7 +16,7 @@ use Laventure\Component\Filesystem\File\Writer\FileWriter;
  *
  * @license https://github.com/jeandev84/laventure-framework/blob/master/LICENSE
  *
- * @package Laventure\Component\Filesystem\File
+ * @package Laventure\Component\Filesystem
 */
 class File extends FileInfo
 {
