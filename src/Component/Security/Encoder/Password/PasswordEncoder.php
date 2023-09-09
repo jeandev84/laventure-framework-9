@@ -1,5 +1,5 @@
 <?php
-namespace Laventure\Component\Security\Encoder;
+namespace Laventure\Component\Security\Encoder\Password;
 
 
 /**

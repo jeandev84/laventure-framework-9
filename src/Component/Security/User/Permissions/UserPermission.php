@@ -1,14 +1,13 @@
 <?php
-namespace Laventure\Component\Security\Authorization;
+namespace Laventure\Component\Security\User\Permissions;
 
 
 use Laventure\Component\Security\User\UserInterface;
 
-
 /**
  * @inheritdoc
 */
-class Authorization implements AuthorizationInterface
+class UserPermission implements UserPermissionInterface
 {
 
     /**

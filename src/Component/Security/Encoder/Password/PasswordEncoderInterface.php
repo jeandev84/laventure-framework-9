@@ -1,5 +1,5 @@
 <?php
-namespace Laventure\Component\Security\Encoder;
+namespace Laventure\Component\Security\Encoder\Password;
 
 
 /**
@@ -9,7 +9,7 @@ namespace Laventure\Component\Security\Encoder;
  *
  * @license https://github.com/jeandev84/laventure-framework/blob/master/LICENSE
  *
- * @package Laventure\Component\Security\Encoder
+ * @package Laventure\Component\Security\Encoder\Password
 */
 interface PasswordEncoderInterface
 {

@@ -1,5 +1,5 @@
 <?php
-namespace Laventure\Component\Security\Authentication\Utils;
+namespace Laventure\Component\Security\Authentication\Service;
 
 
 /**

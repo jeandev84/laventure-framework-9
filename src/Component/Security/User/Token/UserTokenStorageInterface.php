@@ -17,11 +17,23 @@ interface UserTokenStorageInterface
 {
 
        /**
-        * @param UserTokenInterface $user
+        * @param UserTokenInterface $token
         *
         * @return mixed
        */
-       public function saveToken(UserTokenInterface $user): mixed;
+       public function saveToken(UserTokenInterface $token): mixed;
+
+
+
+
+
+
+       /**
+        * Determine if token key exist
+        *
+        * @return bool
+       */
+       public function hasToken(): bool;
 
 
 

@@ -3,18 +3,13 @@ namespace Laventure\Component\Security;
 
 
 use Laventure\Component\Security\Authentication\AuthenticatorInterface;
-use Laventure\Component\Security\Authorization\Authorization;
-use Laventure\Component\Security\Authorization\AuthorizationInterface;
+use Laventure\Component\Security\User\Permissions\UserPermission;
 use Laventure\Component\Security\User\UserCredentials;
 use Laventure\Component\Security\User\UserInterface;
 
 
 /**
- * Authentication manager
- *
- *
  * @Auth
- *
  *
  * @author Jean-Claude <jeanyao@ymail.com>
  *
@@ -34,25 +29,20 @@ class Auth
 
 
     /**
-     * @var AuthorizationInterface
+     * @var UserPermission
     */
-    protected AuthorizationInterface $authorization;
+    protected UserPermission $permission;
 
 
 
 
     /**
      * @param AuthenticatorInterface $authenticator
-     *
-     * @param AuthorizationInterface|null $authorization
     */
-    public function __construct(
-        AuthenticatorInterface $authenticator,
-        AuthorizationInterface $authorization = null
-    )
+    public function __construct(AuthenticatorInterface $authenticator)
     {
          $this->authenticator = $authenticator;
-         $this->authorization = $authorization ?: new Authorization();
+         $this->permission    = new UserPermission();
     }
 
 
@@ -106,7 +96,7 @@ class Auth
     */
     public function isGranted(array $roles): bool
     {
-          return $this->authorization->hasPermissions($this->getUser(), $roles);
+          return $this->permission->hasPermissions($this->getUser(), $roles);
     }
 
 

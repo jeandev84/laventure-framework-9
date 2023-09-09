@@ -15,11 +15,6 @@ use Laventure\Component\Security\User\UserInterface;
 */
 interface UserTokenInterface extends \Serializable
 {
-
-     const TOKEN_KEY = 'security.user';
-
-
-
      /**
       * @return UserInterface
      */

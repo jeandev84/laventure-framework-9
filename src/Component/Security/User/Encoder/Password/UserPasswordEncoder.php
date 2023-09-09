@@ -2,7 +2,7 @@
 namespace Laventure\Component\Security\User\Encoder\Password;
 
 
-use Laventure\Component\Security\Encoder\PasswordEncoderInterface;
+use Laventure\Component\Security\Encoder\Password\PasswordEncoderInterface;
 use Laventure\Component\Security\User\UserInterface;
 
 
@@ -28,11 +28,22 @@ class UserPasswordEncoder implements UserPasswordEncoderInterface
 
 
     /**
-     * @param PasswordEncoderInterface $encoder
+     * @var UserPasswordRefreshInterface
     */
-    public function __construct(PasswordEncoderInterface $encoder)
+    protected UserPasswordRefreshInterface $passwordRefresh;
+
+
+
+
+    /**
+     * @param PasswordEncoderInterface $encoder
+     *
+     * @param UserPasswordRefreshInterface $passwordRefresh
+    */
+    public function __construct(PasswordEncoderInterface $encoder, UserPasswordRefreshInterface $passwordRefresh)
     {
          $this->encoder = $encoder;
+         $this->passwordRefresh = $passwordRefresh;
     }
 
 
@@ -78,6 +89,6 @@ class UserPasswordEncoder implements UserPasswordEncoderInterface
     */
     public function updatePasswordHash(UserInterface $user, string $rehashPassword): mixed
     {
-
+        return $this->passwordRefresh->updatePasswordHash($user, $rehashPassword);
     }
 }

@@ -1,19 +1,19 @@
 <?php
-namespace Laventure\Component\Security\Authorization;
+namespace Laventure\Component\Security\User\Permissions;
 
 
 use Laventure\Component\Security\User\UserInterface;
 
 /**
- * @AuthorizationInterface
+ * @UserPermissionInterface
  *
  * @author Jean-Claude <jeanyao@ymail.com>
  *
  * @license https://github.com/jeandev84/laventure-framework/blob/master/LICENSE
  *
- * @package Laventure\Component\Security\Authorization
+ * @package Laventure\Component\Security\User\Permissions
 */
-interface AuthorizationInterface
+interface UserPermissionInterface
 {
       /**
        * Determine if user has permissions

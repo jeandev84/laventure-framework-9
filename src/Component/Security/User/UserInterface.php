@@ -14,6 +14,9 @@ namespace Laventure\Component\Security\User;
 interface UserInterface
 {
 
+    const ROLE_USER = 'ROLE_USER';
+
+
     /**
      * The public representation of the user (e.g. a username, an email address, etc.)
      *
@@ -48,16 +51,6 @@ interface UserInterface
      * Returns user roles
     */
     public function getRoles(): array;
-
-
-
-
-
-
-    /**
-     * @return bool
-    */
-    public function enabled(): bool;
 
 
 

@@ -3,8 +3,6 @@ namespace Laventure\Component\Security\User\Authenticator;
 
 
 use Laventure\Component\Security\Authentication\Authenticator;
-use Laventure\Component\Security\Encoder\PasswordEncoder;
-use Laventure\Component\Security\Encoder\PasswordEncoderInterface;
 use Laventure\Component\Security\User\Encoder\Password\UserPasswordEncoder;
 use Laventure\Component\Security\User\Encoder\Password\UserPasswordEncoderInterface;
 use Laventure\Component\Security\User\Provider\UserProviderInterface;
@@ -45,9 +43,9 @@ class UserAuthenticator extends Authenticator
 
 
     /**
-     * @var UserPasswordEncoderInterface
+     * @var UserPasswordEncoder
     */
-    protected UserPasswordEncoderInterface $encoder;
+    protected UserPasswordEncoder $encoder;
 
 
 
@@ -56,13 +54,9 @@ class UserAuthenticator extends Authenticator
      *
      * @param UserTokenStorageInterface $tokenStorage
      *
-     * @param UserPasswordEncoderInterface $encoder
+     * @param UserPasswordEncoder $encoder
     */
-    public function __construct(
-        UserProviderInterface $provider,
-        UserTokenStorageInterface $tokenStorage,
-        UserPasswordEncoderInterface $encoder
-    )
+    public function __construct(UserProviderInterface $provider, UserTokenStorageInterface $tokenStorage, UserPasswordEncoder $encoder)
     {
         $this->provider     = $provider;
         $this->tokenStorage = $tokenStorage;
@@ -80,19 +74,19 @@ class UserAuthenticator extends Authenticator
     */
     public function authenticate(UserCredentials $payload): bool
     {
-        if (! $user = $this->attempt($payload)) {
-             return false;
-        }
+         if (! $user = $this->attempt($payload)) {
+              return false;
+         }
 
-        // save user session
-        $this->saveUser($user);
+         // save user session
+         $this->saveUser($user);
 
-        // remember user
-        if ($payload->isRememberMe()) {
+         // remember user
+         if ($payload->isRememberMe()) {
             $this->rememberUser($user);
-        }
+         }
 
-        return true;
+         return true;
     }
 
 
