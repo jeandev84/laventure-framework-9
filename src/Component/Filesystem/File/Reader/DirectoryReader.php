@@ -24,7 +24,6 @@ class DirectoryReader extends DirectoryIterator
      }
 
 
-
      /**
       * @return string
      */
@@ -50,17 +49,6 @@ class DirectoryReader extends DirectoryIterator
      }
 
 
-<<<<<<< HEAD
-
-
-     /**
-      * @return array|false
-     */
-     public function scan(): array|false
-     {
-          return scandir($this->getPath());
-     }
-=======
     /**
      * @return array|false
     */
@@ -68,5 +56,4 @@ class DirectoryReader extends DirectoryIterator
     {
         return scandir($this->getPath());
     }
->>>>>>> filesystem
 }
