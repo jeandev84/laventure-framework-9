@@ -197,7 +197,7 @@ class Autoloader
     */
     private function path(string $path): string
     {
-        return $this->root . DIRECTORY_SEPARATOR . $this->normalizePath($path);
+        return  join(DIRECTORY_SEPARATOR, [$this->root, $this->normalizePath($path)]);
     }
 
 
@@ -214,9 +214,9 @@ class Autoloader
     */
     private function buildPath(string $prefix, array $fragments): string
     {
-        $classPath = join(DIRECTORY_SEPARATOR, $fragments) . '.php';
+        $path = join(DIRECTORY_SEPARATOR, $fragments) . '.php';
 
-        return join(DIRECTORY_SEPARATOR, [$this->prefixes[$prefix], $classPath]);
+        return join(DIRECTORY_SEPARATOR, [$this->prefixes[$prefix], $path]);
     }
 
 
