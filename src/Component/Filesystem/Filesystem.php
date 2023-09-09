@@ -301,7 +301,7 @@ class Filesystem
       *
       * @return DirectoryReader
      */
-     public function readDir(string $directory): DirectoryReader
+     public function dir(string $directory): DirectoryReader
      {
           return new DirectoryReader($this->locate($directory));
      }
@@ -313,18 +313,18 @@ class Filesystem
 
 
     /**
-       * @param string $path
-       *
-       * @return array|false
-      */
-      public function scan(string $path): bool|array
-      {
-           if (! $this->info($path)->isDir()) {
-                return false;
-           }
+     * @param string $path
+     *
+     * @return array
+    */
+    public function scan(string $path): array
+    {
+        if (! $this->info($path)->isDir()) {
+            return [];
+        }
 
-           return scandir($this->locate($path));
-      }
+        return $this->dir($path)->scan();
+    }
 
 
 
