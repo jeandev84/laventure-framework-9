@@ -21,4 +21,5 @@ interface UserProviderInterface
       * @return UserInterface|null
      */
      public function findByUsername(string $username): ?UserInterface;
+
 }

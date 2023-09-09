@@ -2,9 +2,7 @@
 namespace Laventure\Component\Security\Authentication;
 
 
-use Laventure\Component\Security\User\Provider\UserProviderInterface;
 use Laventure\Component\Security\User\Token\UserTokenInterface;
-use Laventure\Component\Security\User\Token\UserTokenStorageInterface;
 use Laventure\Component\Security\User\UserInterface;
 
 
@@ -24,9 +22,9 @@ abstract class Authenticator implements AuthenticatorInterface
      *
      * @param UserInterface $user
      *
-     * @return UserTokenInterface
+     * @return void
     */
-    abstract protected function createToken(UserInterface $user): UserTokenInterface;
+    abstract protected function saveUser(UserInterface $user): void;
 
 
 
@@ -39,9 +37,9 @@ abstract class Authenticator implements AuthenticatorInterface
      *
      * @param UserInterface $user
      *
-     * @return mixed
+     * @return void
     */
-    abstract protected function createRememberMeToken(UserInterface $user): mixed;
+    abstract protected function rememberUser(UserInterface $user): void;
 
 
 

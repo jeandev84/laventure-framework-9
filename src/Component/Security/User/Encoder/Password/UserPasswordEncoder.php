@@ -32,7 +32,7 @@ class UserPasswordEncoder implements UserPasswordEncoderInterface
     */
     public function __construct(PasswordEncoderInterface $encoder)
     {
-        $this->encoder = $encoder;
+         $this->encoder = $encoder;
     }
 
 
@@ -64,8 +64,20 @@ class UserPasswordEncoder implements UserPasswordEncoderInterface
     /**
      * @inheritDoc
     */
-    public function needsRehash(UserInterface $user)
+    public function needsRehash(UserInterface $user): bool
     {
         return $this->encoder->needsRehash($user->getPassword());
+    }
+
+
+
+
+
+    /**
+     * @inheritDoc
+    */
+    public function updatePasswordHash(UserInterface $user, string $rehashPassword): mixed
+    {
+
     }
 }

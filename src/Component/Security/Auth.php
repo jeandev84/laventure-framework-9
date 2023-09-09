@@ -5,6 +5,7 @@ namespace Laventure\Component\Security;
 use Laventure\Component\Security\Authentication\AuthenticatorInterface;
 use Laventure\Component\Security\Authorization\Authorization;
 use Laventure\Component\Security\Authorization\AuthorizationInterface;
+use Laventure\Component\Security\User\UserCredentials;
 use Laventure\Component\Security\User\UserInterface;
 
 
@@ -45,7 +46,10 @@ class Auth
      *
      * @param AuthorizationInterface|null $authorization
     */
-    public function __construct(AuthenticatorInterface $authenticator, AuthorizationInterface $authorization = null)
+    public function __construct(
+        AuthenticatorInterface $authenticator,
+        AuthorizationInterface $authorization = null
+    )
     {
          $this->authenticator = $authenticator;
          $this->authorization = $authorization ?: new Authorization();
@@ -69,7 +73,7 @@ class Auth
     */
     public function attempt(string $username, string $password, bool $rememberMe = false): bool
     {
-        return $this->authenticator->authenticate($username, $password, $rememberMe);
+        return $this->authenticator->authenticate(new UserCredentials($username, $password, $rememberMe));
     }
 
 
@@ -86,7 +90,6 @@ class Auth
     {
          return $this->authenticator->getUser();
     }
-
 
 
 

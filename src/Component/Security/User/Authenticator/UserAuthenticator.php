@@ -8,8 +8,10 @@ use Laventure\Component\Security\Encoder\PasswordEncoderInterface;
 use Laventure\Component\Security\User\Encoder\Password\UserPasswordEncoder;
 use Laventure\Component\Security\User\Encoder\Password\UserPasswordEncoderInterface;
 use Laventure\Component\Security\User\Provider\UserProviderInterface;
+use Laventure\Component\Security\User\Token\UserToken;
 use Laventure\Component\Security\User\Token\UserTokenInterface;
 use Laventure\Component\Security\User\Token\UserTokenStorageInterface;
+use Laventure\Component\Security\User\UserCredentials;
 use Laventure\Component\Security\User\UserInterface;
 
 
@@ -49,24 +51,24 @@ class UserAuthenticator extends Authenticator
 
 
 
-
     /**
      * @param UserProviderInterface $provider
      *
      * @param UserTokenStorageInterface $tokenStorage
      *
-     * @param PasswordEncoderInterface|null $encoder
+     * @param UserPasswordEncoderInterface $encoder
     */
     public function __construct(
         UserProviderInterface $provider,
         UserTokenStorageInterface $tokenStorage,
-        PasswordEncoderInterface $encoder = null
+        UserPasswordEncoderInterface $encoder
     )
     {
         $this->provider     = $provider;
         $this->tokenStorage = $tokenStorage;
-        $this->encoder      = new UserPasswordEncoder($encoder ?: new PasswordEncoder());
+        $this->encoder      = $encoder;
     }
+
 
 
 
@@ -76,18 +78,21 @@ class UserAuthenticator extends Authenticator
     /**
      * @inheritDoc
     */
-    public function authenticate(string $username, string $password, bool $rememberMe = false): bool
+    public function authenticate(UserCredentials $payload): bool
     {
-         // check user by identifier
-         $user = $this->provider->findByUsername($username);
+        if (! $user = $this->attempt($payload)) {
+             return false;
+        }
 
-         // determine if user credentials valid
-         if (! $user || ! $this->isPasswordValid($user, $password)) {
-              return false;
-         }
+        // save user session
+        $this->saveUser($user);
 
+        // remember user
+        if ($payload->isRememberMe()) {
+            $this->rememberUser($user);
+        }
 
-         return true;
+        return true;
     }
 
 
@@ -102,6 +107,8 @@ class UserAuthenticator extends Authenticator
     {
         return $this->tokenStorage->getToken()->getUser();
     }
+
+
 
 
 
@@ -123,10 +130,11 @@ class UserAuthenticator extends Authenticator
     /**
      * @inheritDoc
     */
-    protected function createToken(UserInterface $user): UserTokenInterface
+    protected function saveUser(UserInterface $user): void
     {
-
+         $this->tokenStorage->saveToken(new UserToken($user));
     }
+
 
 
 
@@ -134,9 +142,9 @@ class UserAuthenticator extends Authenticator
     /**
      * @inheritDoc
     */
-    protected function createRememberMeToken(UserInterface $user): mixed
+    protected function rememberUser(UserInterface $user): void
     {
-
+          $this->tokenStorage->saveRememberMeToken($user);
     }
 
 
@@ -159,7 +167,13 @@ class UserAuthenticator extends Authenticator
     */
     protected function rehashUserPassword(UserInterface $user, string $plainPassword): UserInterface
     {
+        $rehashPassword = $this->encoder->encodePassword($user, $plainPassword);
 
+        if ($this->encoder->needsRehash($user)) {
+            $this->encoder->updatePasswordHash($user, $rehashPassword);
+        }
+
+        return $user;
     }
 
 
@@ -195,5 +209,30 @@ class UserAuthenticator extends Authenticator
     public function getTokenStorage(): UserTokenStorageInterface
     {
         return $this->tokenStorage;
+    }
+
+
+
+
+    /**
+     * @param UserCredentials $payload
+     *
+     * @return UserInterface|false
+    */
+    private function attempt(UserCredentials $payload): ?UserInterface
+    {
+        $username = $payload->getUsername();
+        $password = $payload->getPassword();
+
+        // check user by identifier
+        $user = $this->provider->findByUsername($username);
+
+        // determine if user credentials valid
+        if (! $user || ! $this->isPasswordValid($user, $password)) {
+            return false;
+        }
+
+        // rehash user password
+        return $this->rehashUserPassword($user, $password);
     }
 }

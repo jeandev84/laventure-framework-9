@@ -2,6 +2,7 @@
 namespace Laventure\Component\Security\Authentication;
 
 
+use Laventure\Component\Security\User\UserCredentials;
 use Laventure\Component\Security\User\UserInterface;
 
 
@@ -19,15 +20,14 @@ interface AuthenticatorInterface
 
 
     /**
-     * @param string $username
+     * Authenticate user
      *
-     * @param string $password
-     *
-     * @param bool $rememberMe
+     * @param UserCredentials $payload
      *
      * @return bool
     */
-    public function authenticate(string $username, string $password, bool $rememberMe = false): bool;
+    public function authenticate(UserCredentials $payload): bool;
+
 
 
 
@@ -35,6 +35,8 @@ interface AuthenticatorInterface
 
 
     /**
+     * Returns authenticated user
+     *
      * @return UserInterface
     */
     public function getUser(): UserInterface;
@@ -46,8 +48,9 @@ interface AuthenticatorInterface
 
 
 
+
     /**
-     * Logout user
+     * Remove user session
      *
      * @return bool
     */

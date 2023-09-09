@@ -5,7 +5,7 @@ use Laventure\Component\Security\User\UserInterface;
 
 
 /**
- * @UserInterface
+ * @UserTokenStorageInterface
  *
  * @author Jean-Claude <jeanyao@ymail.com>
  *
@@ -16,12 +16,12 @@ use Laventure\Component\Security\User\UserInterface;
 interface UserTokenStorageInterface
 {
 
-      /**
-       * @param UserTokenInterface $token
-       *
-       * @return mixed
-      */
-      public function saveToken(UserTokenInterface $token): mixed;
+       /**
+        * @param UserTokenInterface $user
+        *
+        * @return mixed
+       */
+       public function saveToken(UserTokenInterface $user): mixed;
 
 
 

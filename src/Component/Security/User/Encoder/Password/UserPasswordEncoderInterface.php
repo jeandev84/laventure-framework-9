@@ -45,10 +45,25 @@ interface UserPasswordEncoderInterface
 
 
 
+
     /**
      * @param UserInterface $user
      *
+     * @return bool
+    */
+    public function needsRehash(UserInterface $user): bool;
+
+
+
+
+
+
+    /**
+     * @param UserInterface $user
+     *
+     * @param string $rehashPassword
+     *
      * @return mixed
     */
-    public function needsRehash(UserInterface $user);
+    public function updatePasswordHash(UserInterface $user, string $rehashPassword): mixed;
 }
