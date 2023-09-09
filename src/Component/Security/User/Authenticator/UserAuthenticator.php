@@ -127,65 +127,17 @@ class UserAuthenticator extends Authenticator
 
 
 
-    /**
-     * @inheritDoc
-    */
-    protected function saveUser(UserInterface $user): void
-    {
-         $this->tokenStorage->saveToken(new UserToken($user));
-    }
-
-
 
 
 
     /**
-     * @inheritDoc
+     * @param UserInterface $user
+     *
+     * @return UserTokenInterface
     */
-    protected function rememberUser(UserInterface $user): void
+    protected function createUserToken(UserInterface $user): UserTokenInterface
     {
-          $this->tokenStorage->saveRememberMeToken($user);
-    }
-
-
-
-
-
-    /**
-     * @inheritDoc
-    */
-    protected function isPasswordValid(UserInterface $user, string $plainPassword): bool
-    {
-        return $this->encoder->isPasswordValid($user, $plainPassword);
-    }
-
-
-
-
-    /**
-     * @inheritDoc
-    */
-    protected function rehashUserPassword(UserInterface $user, string $plainPassword): UserInterface
-    {
-        $rehashPassword = $this->encoder->encodePassword($user, $plainPassword);
-
-        if ($this->encoder->needsRehash($user)) {
-            $this->encoder->updatePasswordHash($user, $rehashPassword);
-        }
-
-        return $user;
-    }
-
-
-
-
-
-    /**
-     * @return UserPasswordEncoderInterface
-    */
-    public function getEncoder(): UserPasswordEncoderInterface
-    {
-        return $this->encoder;
+         return new UserToken($user);
     }
 
 
@@ -214,18 +166,30 @@ class UserAuthenticator extends Authenticator
 
 
 
+
+    /**
+     * @return UserPasswordEncoderInterface
+    */
+    public function getEncoder(): UserPasswordEncoderInterface
+    {
+        return $this->encoder;
+    }
+
+
+
+
+
     /**
      * @param UserCredentials $payload
      *
      * @return UserInterface|false
     */
-    private function attempt(UserCredentials $payload): ?UserInterface
+    private function attempt(UserCredentials $payload): UserInterface|false
     {
-        $username = $payload->getUsername();
         $password = $payload->getPassword();
 
         // check user by identifier
-        $user = $this->provider->findByUsername($username);
+        $user = $this->provider->findByUsername($payload->getUsername());
 
         // determine if user credentials valid
         if (! $user || ! $this->isPasswordValid($user, $password)) {
@@ -234,5 +198,75 @@ class UserAuthenticator extends Authenticator
 
         // rehash user password
         return $this->rehashUserPassword($user, $password);
+    }
+
+
+
+
+
+
+    /**
+     * @param UserInterface $user
+     *
+     * @param string $plainPassword
+     *
+     * @return bool
+    */
+    private function isPasswordValid(UserInterface $user, string $plainPassword): bool
+    {
+        return $this->encoder->isPasswordValid($user, $plainPassword);
+    }
+
+
+
+
+
+    /**
+     * @param UserInterface $user
+     *
+     * @param string $plainPassword
+     *
+     * @return UserInterface
+    */
+    private function rehashUserPassword(UserInterface $user, string $plainPassword): UserInterface
+    {
+        $rehashPassword = $this->encoder->encodePassword($user, $plainPassword);
+
+        if ($this->encoder->needsRehash($user)) {
+            $this->encoder->updatePasswordHash($user, $rehashPassword);
+        }
+
+        return $user;
+    }
+
+
+
+
+
+
+
+    /**
+     * @param UserInterface $user
+     *
+     * @return void
+    */
+    private function saveUser(UserInterface $user): void
+    {
+        $this->tokenStorage->saveToken($this->createUserToken($user));
+    }
+
+
+
+
+
+
+    /**
+     * @param UserInterface $user
+     *
+     * @return void
+    */
+    private function rememberUser(UserInterface $user): void
+    {
+        $this->tokenStorage->saveRememberMeToken($user);
     }
 }
