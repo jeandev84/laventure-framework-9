@@ -86,7 +86,6 @@ class Renderer implements RendererInterface
 
 
 
-
       /**
        * @inheritDoc
       */
@@ -108,7 +107,7 @@ class Renderer implements RendererInterface
        *
        * @return Template
       */
-      public function createTemplate(string $path, array $data = []): Template
+      private function createTemplate(string $path, array $data = []): Template
       {
             return $this->engine->createTemplate($path, array_merge($this->data, $data));
       }
