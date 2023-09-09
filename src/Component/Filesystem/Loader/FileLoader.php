@@ -1,7 +1,7 @@
 <?php
-namespace Laventure\Component\Filesystem\File\Loader;
+namespace Laventure\Component\Filesystem\Loader;
 
-use Laventure\Component\Filesystem\File\Loader\Contract\FileLoaderInterface;
+use Laventure\Component\Filesystem\Loader\Contract\FileLoaderInterface;
 
 
 /**

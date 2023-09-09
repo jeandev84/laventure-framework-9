@@ -1,8 +1,8 @@
 <?php
-namespace Laventure\Component\Filesystem\File\Reader;
+namespace Laventure\Component\Filesystem\Reader;
 
 
-use Laventure\Component\Filesystem\File\Reader\Contract\FileReaderInterface;
+use Laventure\Component\Filesystem\Reader\Contract\FileReaderInterface;
 
 /**
  * @inheritdoc

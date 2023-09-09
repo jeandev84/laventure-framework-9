@@ -1,5 +1,5 @@
 <?php
-namespace Laventure\Component\Filesystem\File\Reader;
+namespace Laventure\Component\Filesystem\Reader;
 
 use DirectoryIterator;
 
@@ -10,7 +10,7 @@ use DirectoryIterator;
  *
  * @license https://github.com/jeandev84/laventure-framework/blob/master/LICENSE
  *
- * @package Laventure\Component\Filesystem\File\Reader
+ * @package Laventure\Component\Filesystem\Reader
 */
 class DirectoryReader extends DirectoryIterator
 {
@@ -55,5 +55,23 @@ class DirectoryReader extends DirectoryIterator
     public function scan(): array|false
     {
         return scandir($this->getPath());
+    }
+
+
+
+
+
+
+
+    /**
+     * @return bool
+    */
+    public function make(): bool
+    {
+        if (!$this->isDir()) {
+            return mkdir($this->getPath(), 0777, true);
+        }
+
+        return true;
     }
 }

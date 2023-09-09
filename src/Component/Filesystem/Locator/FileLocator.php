@@ -1,5 +1,5 @@
 <?php
-namespace Laventure\Component\Filesystem\File\Locator;
+namespace Laventure\Component\Filesystem\Locator;
 
 
 /**

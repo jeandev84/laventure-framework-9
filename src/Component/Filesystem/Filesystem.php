@@ -3,14 +3,10 @@ namespace Laventure\Component\Filesystem;
 
 
 use FilesystemIterator;
-use Laventure\Component\Filesystem\File\Base64File;
-use Laventure\Component\Filesystem\File\File;
-use Laventure\Component\Filesystem\File\FileInfo;
-use Laventure\Component\Filesystem\File\Iterator\FileIterator;
-use Laventure\Component\Filesystem\File\Iterator\GlobalIterator;
-use Laventure\Component\Filesystem\File\Locator\FileLocator;
-use Laventure\Component\Filesystem\File\Reader\DirectoryReader;
-use Laventure\Component\Filesystem\File\Stream;
+use Laventure\Component\Filesystem\Iterator\FileIterator;
+use Laventure\Component\Filesystem\Iterator\GlobalIterator;
+use Laventure\Component\Filesystem\Locator\FileLocator;
+use Laventure\Component\Filesystem\Reader\DirectoryReader;
 
 
 
@@ -236,11 +232,7 @@ class Filesystem
       */
       public function mkdir(string $path): bool
       {
-           if(! $this->info($path)->isDir()) {
-                return mkdir($this->locate($path), 0777, true);
-           }
-
-           return true;
+          return $this->dir($this->locate($path))->make();
       }
 
 

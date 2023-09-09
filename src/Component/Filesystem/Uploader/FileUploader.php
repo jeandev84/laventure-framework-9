@@ -1,7 +1,7 @@
 <?php
-namespace Laventure\Component\Filesystem\File\Uploader;
+namespace Laventure\Component\Filesystem\Uploader;
 
-use Laventure\Component\Filesystem\File\Uploader\Contract\FileUploaderInterface;
+use Laventure\Component\Filesystem\Uploader\Contract\FileUploaderInterface;
 
 
 /**

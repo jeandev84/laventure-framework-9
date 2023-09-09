@@ -1,5 +1,5 @@
 <?php
-namespace Laventure\Component\Filesystem\File\Reader\Contract;
+namespace Laventure\Component\Filesystem\Reader\Contract;
 
 /**
  * @FileReaderInterface
@@ -8,7 +8,7 @@ namespace Laventure\Component\Filesystem\File\Reader\Contract;
  *
  * @license https://github.com/jeandev84/laventure-framework/blob/master/LICENSE
  *
- * @package Laventure\Component\Filesystem\File\Reader\Contract
+ * @package Laventure\Component\Filesystem\Reader\Contract
 */
 interface FileReaderInterface
 {
