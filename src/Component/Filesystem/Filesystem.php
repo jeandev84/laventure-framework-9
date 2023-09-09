@@ -232,11 +232,7 @@ class Filesystem
       */
       public function mkdir(string $path): bool
       {
-           if(! $this->info($path)->isDir()) {
-                return mkdir($this->locate($path), 0777, true);
-           }
-
-           return true;
+          return $this->dir($this->locate($path))->make();
       }
 
 

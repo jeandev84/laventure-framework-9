@@ -4,6 +4,7 @@ namespace Laventure\Component\Filesystem;
 
 
 use Laventure\Component\Filesystem\Loader\FileLoader;
+use Laventure\Component\Filesystem\Reader\DirectoryReader;
 use Laventure\Component\Filesystem\Reader\FileReader;
 use Laventure\Component\Filesystem\Uploader\FileUploader;
 use Laventure\Component\Filesystem\Writer\FileWriter;
@@ -20,14 +21,6 @@ use Laventure\Component\Filesystem\Writer\FileWriter;
 */
 class File extends FileInfo
 {
-
-       /**
-        * @var string
-       */
-       protected string $path;
-
-
-
 
        /**
         * @var FileWriter
@@ -62,19 +55,18 @@ class File extends FileInfo
 
 
 
-
        /**
         * @param string $path
        */
        public function __construct(string $path)
        {
             parent::__construct($path);
-            $this->path = $path;
             $this->writer   = new FileWriter();
             $this->reader   = new FileReader();
             $this->uploader = new FileUploader();
             $this->loader   = new FileLoader();
        }
+
 
 
 
@@ -92,12 +84,24 @@ class File extends FileInfo
 
 
 
+      /**
+       * @return string
+      */
+      public function path(): string
+      {
+           return $this->getPathname();
+      }
+
+
+
+
+
      /**
       * @return bool
      */
      public function exists(): bool
      {
-         return file_exists($this->path);
+         return file_exists($this->path());
      }
 
 
@@ -113,20 +117,7 @@ class File extends FileInfo
              return false;
          }
 
-         return $this->loader->load($this->path);
-     }
-
-
-
-
-     /**
-      * @return array
-     */
-     public function loadArray(): array
-     {
-          $array = $this->load();
-
-          return is_array($array) ? $array : [];
+         return $this->loader->load($this->path());
      }
 
 
@@ -139,13 +130,22 @@ class File extends FileInfo
      */
      public function make(): bool
      {
-         $dirname = $this->getDirname();
+         $this->dir()->make();
 
-         if (! is_dir($dirname)) {
-             mkdir($dirname, 0777, true);
-         }
+         return touch($this->path());
+     }
 
-         return touch($this->path);
+
+
+
+
+
+     /**
+      * @return DirectoryReader
+     */
+     public function dir(): DirectoryReader
+     {
+         return new DirectoryReader($this->getDirname());
      }
 
 
@@ -162,8 +162,10 @@ class File extends FileInfo
      */
      public function copyTo(string $destination, $context = null): bool
      {
-         return $this->uploader->copy($this->path, $destination, $context);
+         return $this->uploader->copy($this->path(), $destination, $context);
      }
+
+
 
 
 
@@ -176,7 +178,7 @@ class File extends FileInfo
      */
      public function moveTo(string $destination): bool
      {
-         return $this->uploader->upload($this->path, $destination);
+         return $this->uploader->upload($this->path(), $destination);
      }
 
 
@@ -192,15 +194,13 @@ class File extends FileInfo
      */
      public function write(string $content, bool $append = false): false|int
      {
-         if (! $this->exists()) {
-             $this->make();
-         }
+         if (! $this->exists()) { $this->make(); }
 
          if (! $append) {
-             return $this->writer->write($this->path, $content);
+             return $this->writer->write($this->path(), $content);
          }
 
-         return $this->writer->write($this->path, $content.PHP_EOL, FILE_APPEND | LOCK_EX);
+         return $this->writer->append($this->path(), $content);
      }
 
 
@@ -233,7 +233,7 @@ class File extends FileInfo
              return '';
          }
 
-         return $this->reader->read($this->path);
+         return $this->reader->read($this->path());
      }
 
 
@@ -266,7 +266,7 @@ class File extends FileInfo
              return false;
          }
 
-         return unlink($this->path);
+         return unlink($this->path());
      }
 
 

@@ -56,4 +56,22 @@ class DirectoryReader extends DirectoryIterator
     {
         return scandir($this->getPath());
     }
+
+
+
+
+
+
+
+    /**
+     * @return bool
+    */
+    public function make(): bool
+    {
+        if (!$this->isDir()) {
+            return mkdir($this->getPath(), 0777, true);
+        }
+
+        return true;
+    }
 }

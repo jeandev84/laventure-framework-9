@@ -20,11 +20,7 @@ interface FileWriterInterface
       *
       * @param string $content
       *
-      * @param int $flags
-      *
-      * @param null $context
-      *
       * @return mixed
      */
-     public function write(string $path, string $content, int $flags = 0, $context = null): mixed;
+     public function write(string $path, string $content): mixed;
 }
