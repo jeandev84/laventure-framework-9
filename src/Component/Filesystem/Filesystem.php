@@ -312,19 +312,19 @@ class Filesystem
 
 
 
-      /**
-       * @param string $path
-       *
-       * @return array
-      */
-      public function scan(string $path): array
-      {
-           if (! $this->info($path)->isDir()) {
-                return [];
-           }
+    /**
+     * @param string $path
+     *
+     * @return array
+    */
+    public function scan(string $path): array
+    {
+        if (! $this->info($path)->isDir()) {
+            return [];
+        }
 
-           return $this->dir($path)->scan();
-      }
+        return $this->dir($path)->scan();
+    }
 
 
 
