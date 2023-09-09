@@ -270,10 +270,12 @@ class File extends FileInfo
 
 
      /**
-      * @return array|false
+      * @return array
      */
-     public function asArray(): bool|array
+     public function readAsArray(): array
      {
-         return file($this->getRealPath(),  FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+         $data = file($this->getRealPath(),  FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+
+         return $data ?? [];
      }
 }
