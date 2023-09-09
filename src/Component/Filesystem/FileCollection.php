@@ -31,7 +31,7 @@ class FileCollection
 
 
       /**
-       * @param File[] $files
+       * @param string[] $files
       */
       public function __construct(array $files)
       {
@@ -71,14 +71,14 @@ class FileCollection
 
 
       /**
-       * @param File[] $files
+       * @param string[] $files
        *
        * @return $this
       */
       public function collect(array $files): static
       {
-          foreach ($files as $file) {
-              $this->add($file);
+          foreach ($files as $path) {
+              $this->add(new File($path));
           }
 
           return $this;
@@ -102,12 +102,16 @@ class FileCollection
 
 
       /**
-       * @return bool
+       * Returns count of removed files
+       *
+       * @return int
       */
-      public function remove(): bool
+      public function remove(): int
       {
            foreach ($this->files as $file) {
-               $this->removed[$file->getPathname()] = $file->remove();
+               if ($file->remove()) {
+                   $this->removed[] = $file->getPath();
+               }
            }
 
            return count($this->removed);
@@ -121,8 +125,8 @@ class FileCollection
       /**
        * @return array
       */
-      public function removedFiles(): array
+      public function getRemovedFiles(): array
       {
-           return array_keys($this->removed);
+           return $this->removed;
       }
 }

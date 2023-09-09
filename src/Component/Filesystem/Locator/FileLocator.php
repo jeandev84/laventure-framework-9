@@ -62,6 +62,25 @@ class FileLocator implements FileLocatorInterface
 
 
     /**
+     * @param string $pattern
+     *
+     * @return array
+    */
+    public function resources(string $pattern): array
+    {
+        if(! $files = glob($this->locate($pattern))) {
+             return [];
+        }
+
+        return $files;
+    }
+
+
+
+
+
+
+    /**
      * @param string $path
      *
      * @return string
