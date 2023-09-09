@@ -10,7 +10,7 @@ class RouteGroupInvoker
       /**
        * @var Closure
       */
-      protected $func;
+      protected Closure $routes;
 
 
 
@@ -25,14 +25,14 @@ class RouteGroupInvoker
 
 
       /**
-       * @param Closure $func
+       * @param Closure $routes
        *
        * @param Router $router
        *
       */
-      public function __construct(Closure $func, Router $router)
+      public function __construct(Closure $routes, Router $router)
       {
-           $this->func   = $func;
+           $this->routes = $routes;
            $this->router = $router;
       }
 
@@ -47,7 +47,7 @@ class RouteGroupInvoker
      public function invoke(): void
      {
          try {
-            $invoker = new \ReflectionFunction($this->func);
+            $invoker = new \ReflectionFunction($this->routes);
             $invoker->invoke($this->router);
          } catch (\Exception $e) {
              trigger_error($e->getMessage());
