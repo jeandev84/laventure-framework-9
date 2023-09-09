@@ -53,12 +53,4 @@ class RouteGroupInvoker
              trigger_error($e->getMessage());
          }
      }
-
-
-
-
-     public function rewind()
-     {
-
-     }
 }
