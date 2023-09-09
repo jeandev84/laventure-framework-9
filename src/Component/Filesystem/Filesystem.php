@@ -73,6 +73,18 @@ class Filesystem
 
 
 
+      /**
+       * @param string $pattern
+       *
+       * @return array
+      */
+      public function resources(string $pattern): array
+      {
+          return $this->locator->resources($pattern);
+      }
+
+
+
 
       /**
        * @param $path
@@ -83,6 +95,8 @@ class Filesystem
       {
           return $this->file($path)->load();
       }
+
+
 
 
 
@@ -102,6 +116,7 @@ class Filesystem
 
 
 
+
       /**
        * @param string $path
        *
@@ -114,6 +129,16 @@ class Filesystem
 
 
 
+
+      /**
+       * @param string $pattern
+       *
+       * @return FileCollection
+      */
+      public function collection(string $pattern): FileCollection
+      {
+           return new FileCollection($this->resources($pattern));
+      }
 
 
 
