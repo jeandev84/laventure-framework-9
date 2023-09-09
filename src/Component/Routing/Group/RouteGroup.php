@@ -180,10 +180,8 @@ class RouteGroup implements RouteGroupInterface
 
 
 
-
-
     /**
-     * @inheritdoc
+     * @return array
     */
     public function getMiddlewares(): array
     {

@@ -31,8 +31,6 @@ interface RouteGroupInterface
 
 
 
-
-
     /**
      * Rewind attributes
      *
@@ -46,36 +44,9 @@ interface RouteGroupInterface
 
 
     /**
-     * Returns namespace
-     *
-     * @return string
-    */
-    public function getNamespace(): string;
-
-
-
-
-
-
-
-
-    /**
      * Returns route prefixes
      *
      * @return array
     */
     public function getPrefixes(): array;
-
-
-
-
-
-
-
-    /**
-     * Returns group middlewares
-     *
-     * @return array
-    */
-    public function getMiddlewares(): array;
 }
