@@ -20,6 +20,8 @@ interface AuthenticatorInterface
 
 
     /**
+     * Try to authenticate user
+     *
      * @param string $username
      *
      * @param string $password

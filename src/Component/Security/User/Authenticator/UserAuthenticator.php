@@ -2,12 +2,13 @@
 namespace Laventure\Component\Security\User\Authenticator;
 
 
-use Laventure\Component\Security\Authentication\Authenticator;
+use Laventure\Component\Security\Authentication\AuthenticatorInterface;
 use Laventure\Component\Security\User\Encoder\Password\UserPasswordEncoder;
 use Laventure\Component\Security\User\Encoder\Password\UserPasswordEncoderInterface;
 use Laventure\Component\Security\User\Permissions\UserPermission;
 use Laventure\Component\Security\User\Provider\UserProviderInterface;
 use Laventure\Component\Security\User\Token\UserToken;
+use Laventure\Component\Security\User\Token\UserTokenException;
 use Laventure\Component\Security\User\Token\UserTokenInterface;
 use Laventure\Component\Security\User\Token\UserTokenStorageInterface;
 use Laventure\Component\Security\User\UserCredentials;
@@ -23,7 +24,7 @@ use Laventure\Component\Security\User\UserInterface;
  *
  * @package Laventure\Component\Security\User\Authenticator
 */
-class UserAuthenticator extends Authenticator
+class UserAuthenticator implements AuthenticatorInterface
 {
 
 
@@ -113,6 +114,10 @@ class UserAuthenticator extends Authenticator
     */
     public function getUser(): UserInterface
     {
+        if (! $this->tokenStorage->hasToken()) {
+             throw new UserTokenException("unavailable user token in storage.");
+        }
+
         return $this->tokenStorage->getToken()->getUser();
     }
 
@@ -139,17 +144,8 @@ class UserAuthenticator extends Authenticator
     */
     public function logout(): bool
     {
-        if (! $this->tokenStorage->hasToken()) {
-             return false;
-        }
-
         return $this->tokenStorage->removeToken($this->getUser());
     }
-
-
-
-
-
 
 
 
@@ -159,10 +155,11 @@ class UserAuthenticator extends Authenticator
      *
      * @return UserTokenInterface
     */
-    protected function createUserToken(UserInterface $user): UserTokenInterface
+    private function createUserToken(UserInterface $user): UserTokenInterface
     {
          return new UserToken($user);
     }
+
 
 
 
