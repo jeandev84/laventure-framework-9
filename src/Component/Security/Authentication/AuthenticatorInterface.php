@@ -2,7 +2,6 @@
 namespace Laventure\Component\Security\Authentication;
 
 
-use Laventure\Component\Security\User\UserCredentials;
 use Laventure\Component\Security\User\UserInterface;
 
 

@@ -3,8 +3,6 @@ namespace Laventure\Component\Security;
 
 
 use Laventure\Component\Security\Authentication\AuthenticatorInterface;
-use Laventure\Component\Security\User\Permissions\UserPermission;
-use Laventure\Component\Security\User\UserCredentials;
 use Laventure\Component\Security\User\UserInterface;
 
 

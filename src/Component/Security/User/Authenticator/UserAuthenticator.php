@@ -150,19 +150,6 @@ class UserAuthenticator implements AuthenticatorInterface
 
 
 
-    /**
-     * @param UserInterface $user
-     *
-     * @return UserTokenInterface
-    */
-    private function createUserToken(UserInterface $user): UserTokenInterface
-    {
-         return new UserToken($user);
-    }
-
-
-
-
 
 
     /**
@@ -213,7 +200,7 @@ class UserAuthenticator implements AuthenticatorInterface
         $user = $this->provider->findByUsername($payload->getUsername());
 
         // determine if user credentials valid
-        if (! $user || ! $this->isPasswordValid($user, $password)) {
+        if (! $user || !$this->isPasswordValid($user, $password)) {
             return false;
         }
 
@@ -273,7 +260,7 @@ class UserAuthenticator implements AuthenticatorInterface
     */
     private function saveUser(UserInterface $user): void
     {
-        $this->tokenStorage->saveToken($this->createUserToken($user));
+        $this->tokenStorage->saveToken($user);
     }
 
 

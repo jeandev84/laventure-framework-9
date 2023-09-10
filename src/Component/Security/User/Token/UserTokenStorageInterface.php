@@ -16,12 +16,16 @@ use Laventure\Component\Security\User\UserInterface;
 interface UserTokenStorageInterface
 {
 
+
+
+
        /**
-        * @param UserTokenInterface $token
+        * @param UserInterface $user
         *
-        * @return mixed
+        * @return UserTokenInterface
        */
-       public function saveToken(UserTokenInterface $token): mixed;
+       public function saveToken(UserInterface $user): UserTokenInterface;
+
 
 
 
@@ -68,6 +72,7 @@ interface UserTokenStorageInterface
 
 
 
+
       /**
        * Remove remember me token
        *
@@ -76,6 +81,9 @@ interface UserTokenStorageInterface
        * @return mixed
       */
       public function removeRememberMeToken(UserInterface $user): mixed;
+
+
+
 
 
 
