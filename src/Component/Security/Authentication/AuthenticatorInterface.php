@@ -20,13 +20,17 @@ interface AuthenticatorInterface
 
 
     /**
-     * Authenticate user
+     * @param string $username
      *
-     * @param UserCredentials $payload
+     * @param string $password
+     *
+     * @param bool $rememberMe
      *
      * @return bool
     */
-    public function authenticate(UserCredentials $payload): bool;
+    public function authenticate(string $username, string $password, bool $rememberMe = false): bool;
+
+
 
 
 
@@ -40,6 +44,23 @@ interface AuthenticatorInterface
      * @return UserInterface
     */
     public function getUser(): UserInterface;
+
+
+
+
+
+
+
+
+
+    /**
+     * Determine if current user has permissions
+     *
+     * @param array $roles
+     *
+     * @return bool
+    */
+    public function isGranted(array $roles): bool;
 
 
 

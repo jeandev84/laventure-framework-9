@@ -28,12 +28,6 @@ class Auth
 
 
 
-    /**
-     * @var UserPermission
-    */
-    protected UserPermission $permission;
-
-
 
 
     /**
@@ -42,7 +36,6 @@ class Auth
     public function __construct(AuthenticatorInterface $authenticator)
     {
          $this->authenticator = $authenticator;
-         $this->permission    = new UserPermission();
     }
 
 
@@ -63,7 +56,7 @@ class Auth
     */
     public function attempt(string $username, string $password, bool $rememberMe = false): bool
     {
-        return $this->authenticator->authenticate(new UserCredentials($username, $password, $rememberMe));
+        return $this->authenticator->authenticate($username, $password, $rememberMe);
     }
 
 
@@ -96,8 +89,11 @@ class Auth
     */
     public function isGranted(array $roles): bool
     {
-          return $this->permission->hasPermissions($this->getUser(), $roles);
+          return $this->authenticator->isGranted($roles);
     }
+
+
+
 
 
 

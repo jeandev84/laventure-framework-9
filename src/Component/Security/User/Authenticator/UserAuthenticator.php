@@ -5,6 +5,7 @@ namespace Laventure\Component\Security\User\Authenticator;
 use Laventure\Component\Security\Authentication\Authenticator;
 use Laventure\Component\Security\User\Encoder\Password\UserPasswordEncoder;
 use Laventure\Component\Security\User\Encoder\Password\UserPasswordEncoderInterface;
+use Laventure\Component\Security\User\Permissions\UserPermission;
 use Laventure\Component\Security\User\Provider\UserProviderInterface;
 use Laventure\Component\Security\User\Token\UserToken;
 use Laventure\Component\Security\User\Token\UserTokenInterface;
@@ -49,6 +50,16 @@ class UserAuthenticator extends Authenticator
 
 
 
+
+    /**
+     * @var UserPermission
+    */
+    protected UserPermission $permission;
+
+
+
+
+
     /**
      * @param UserProviderInterface $provider
      *
@@ -61,6 +72,7 @@ class UserAuthenticator extends Authenticator
         $this->provider     = $provider;
         $this->tokenStorage = $tokenStorage;
         $this->encoder      = $encoder;
+        $this->permission   = new UserPermission();
     }
 
 
@@ -72,8 +84,10 @@ class UserAuthenticator extends Authenticator
     /**
      * @inheritDoc
     */
-    public function authenticate(UserCredentials $payload): bool
+    public function authenticate(string $username, string $password, bool $rememberMe = false): bool
     {
+         $payload = new UserCredentials($username, $password, $rememberMe);
+
          if (! $user = $this->attempt($payload)) {
               return false;
          }
@@ -102,6 +116,18 @@ class UserAuthenticator extends Authenticator
         return $this->tokenStorage->getToken()->getUser();
     }
 
+
+
+
+
+
+    /**
+     * @inheritDoc
+    */
+    public function isGranted(array $roles): bool
+    {
+         return $this->permission->hasPermissions($this->getUser(), $roles);
+    }
 
 
 
