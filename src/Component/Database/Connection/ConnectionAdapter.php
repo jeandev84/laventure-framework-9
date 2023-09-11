@@ -246,7 +246,7 @@ class ConnectionAdapter
     */
     public function executeQuery(string $sql): bool
     {
-        return $this->driver->exec($sql);
+        return $this->driver->executeQuery($sql);
     }
 
 

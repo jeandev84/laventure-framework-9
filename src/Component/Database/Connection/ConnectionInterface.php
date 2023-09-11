@@ -218,7 +218,7 @@ interface ConnectionInterface
      *
      * @return bool
      */
-    public function exec(string $sql): bool;
+    public function executeQuery(string $sql): bool;
 
 
 

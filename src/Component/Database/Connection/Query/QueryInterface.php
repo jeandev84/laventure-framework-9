@@ -108,9 +108,9 @@ interface QueryInterface
      *
      * @param string $sql
      *
-     * @return mixed
+     * @return bool
     */
-    public function exec(string $sql): mixed;
+    public function exec(string $sql): bool;
 
 
 

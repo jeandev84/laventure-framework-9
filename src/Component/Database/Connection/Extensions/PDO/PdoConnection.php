@@ -163,7 +163,7 @@ class PdoConnection implements PdoConnectionInterface
     */
     public function beginTransaction(): bool
     {
-        return $this->pdo?->beginTransaction();
+        return $this->getPdo()->beginTransaction();
     }
 
 
@@ -175,7 +175,7 @@ class PdoConnection implements PdoConnectionInterface
     */
     public function hasActiveTransaction(): bool
     {
-        return $this->pdo?->inTransaction();
+        return $this->getPdo()->inTransaction();
     }
 
 
@@ -187,7 +187,7 @@ class PdoConnection implements PdoConnectionInterface
     */
     public function commit(): bool
     {
-        return $this->pdo?->commit();
+        return $this->getPdo()->commit();
     }
 
 
@@ -200,18 +200,19 @@ class PdoConnection implements PdoConnectionInterface
     */
     public function rollback(): bool
     {
-       return $this->pdo?->rollBack();
+       return $this->getPdo()->rollBack();
     }
 
 
 
 
 
+
+
     /**
-     * @param Closure $closure
-     *
+     * @param Closure $func
      * @return bool
-    */
+     */
     public function transaction(Closure $func): bool
     {
         $this->beginTransaction();
@@ -245,7 +246,7 @@ class PdoConnection implements PdoConnectionInterface
     */
     public function lastInsertId($name = null): int
     {
-        return $this->pdo?->lastInsertId($name);
+        return $this->getPdo()->lastInsertId($name);
     }
 
 
@@ -258,7 +259,7 @@ class PdoConnection implements PdoConnectionInterface
      *
      * @return bool
     */
-    public function exec(string $sql): bool
+    public function executeQuery(string $sql): bool
     {
         return $this->createQuery()->exec($sql);
     }

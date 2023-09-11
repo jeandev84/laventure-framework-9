@@ -107,11 +107,10 @@ class QueryResult implements QueryResultInterface
 
 
 
-
     /**
      * @inheritDoc
     */
-    public function numRows(): int
+    public function count(): int
     {
         return $this->statement->rowCount();
     }

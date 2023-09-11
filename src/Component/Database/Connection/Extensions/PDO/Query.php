@@ -7,6 +7,7 @@ use Laventure\Component\Database\Connection\Query\QueryInterface;
 use Laventure\Component\Database\Connection\Query\QueryLogger;
 use Laventure\Component\Database\Connection\Query\QueryResultInterface;
 use PDO;
+use PDOException;
 use PDOStatement;
 
 
@@ -168,7 +169,7 @@ class Query implements QueryInterface
         try {
 
             if ($status = $this->statement->execute($this->parameters)) {
-                $this->lastId = $this->pdo->lastInsertId();
+                $this->lastId = (int)$this->pdo->lastInsertId();
                 $this->logger->logExecutedQuery($this->getSQL());
             }
 
@@ -186,19 +187,37 @@ class Query implements QueryInterface
 
     /**
      * @inheritDoc
-     */
-    public function exec(string $sql): mixed
+    */
+    public function exec(string $sql): bool
     {
-        // TODO: Implement exec() method.
+        try {
+
+            if(! $status = $this->pdo->exec($sql)) {
+                return false;
+            }
+
+            $this->logger->logExecutedQuery($sql);
+            return (bool)$status;
+
+        } catch (PDOException $e) {
+            $this->logger->logQueryError($sql, $e);
+        }
     }
+
+
+
+
 
     /**
      * @inheritDoc
-     */
+    */
     public function fetch(): QueryResultInterface
     {
-        // TODO: Implement fetch() method.
+        $this->execute();
+
+        return new QueryResult($this->statement);
     }
+
 
 
 
@@ -208,8 +227,10 @@ class Query implements QueryInterface
     */
     public function lastId(): int
     {
-        // TODO: Implement lastId() method.
+        return $this->lastId;
     }
+
+
 
 
 
