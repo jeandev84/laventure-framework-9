@@ -188,7 +188,7 @@ class Query implements QueryInterface
     /**
      * @inheritDoc
     */
-    public function exec(string $sql): bool
+    public function exec(string $sql): false|int
     {
         try {
 
@@ -197,7 +197,7 @@ class Query implements QueryInterface
             }
 
             $this->logger->logExecutedQuery($sql);
-            return (bool)$status;
+            return $status;
 
         } catch (PDOException $e) {
             $this->logger->logQueryError($sql, $e);
