@@ -1,13 +1,13 @@
 <?php
 namespace Laventure\Component\Database\Builder\SQL;
 
-use Laventure\Component\Database\Builder\SQL\Commands\DML\Contract\DeleteBuilderInterface;
+use Laventure\Component\Database\Builder\SQL\Commands\DML\Contract\DeleteBuilderConditionInterface;
 use Laventure\Component\Database\Builder\SQL\Commands\DML\Contract\InsertBuilderInterface;
-use Laventure\Component\Database\Builder\SQL\Commands\DML\Contract\UpdateBuilderInterface;
+use Laventure\Component\Database\Builder\SQL\Commands\DML\Contract\UpdateBuilderConditionInterface;
 use Laventure\Component\Database\Builder\SQL\Commands\DML\DeleteBuilder;
 use Laventure\Component\Database\Builder\SQL\Commands\DML\InsertBuilder;
 use Laventure\Component\Database\Builder\SQL\Commands\DML\UpdateBuilder;
-use Laventure\Component\Database\Builder\SQL\Commands\DQL\Contract\SelectBuilderInterface;
+use Laventure\Component\Database\Builder\SQL\Commands\DQL\Contract\SelectBuilderConditionInterface;
 use Laventure\Component\Database\Builder\SQL\Commands\DQL\SelectBuilder;
 
 
@@ -26,9 +26,9 @@ interface SqlQueryBuilderInterface
     /**
      * @param string|null $selects
      *
-     * @return SelectBuilderInterface
+     * @return SelectBuilderConditionInterface
     */
-    public function select(string $selects = null): SelectBuilderInterface;
+    public function select(string $selects = null): SelectBuilderConditionInterface;
 
 
 
@@ -57,9 +57,9 @@ interface SqlQueryBuilderInterface
      *
      * @param array $attributes
      *
-     * @return UpdateBuilderInterface
+     * @return UpdateBuilderConditionInterface
     */
-    public function update(string $table, array $attributes): UpdateBuilderInterface;
+    public function update(string $table, array $attributes): UpdateBuilderConditionInterface;
 
 
 
@@ -72,7 +72,7 @@ interface SqlQueryBuilderInterface
     /**
      * @param string $table
      *
-     * @return DeleteBuilderInterface
+     * @return DeleteBuilderConditionInterface
     */
-    public function delete(string $table): DeleteBuilderInterface;
+    public function delete(string $table): DeleteBuilderConditionInterface;
 }

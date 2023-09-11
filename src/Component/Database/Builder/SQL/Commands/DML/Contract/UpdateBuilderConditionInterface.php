@@ -1,10 +1,10 @@
 <?php
 namespace Laventure\Component\Database\Builder\SQL\Commands\DML\Contract;
 
-use Laventure\Component\Database\Builder\SQL\Commands\HasConditionBuilderInterface;
+use Laventure\Component\Database\Builder\SQL\Commands\BuilderConditionInterface;
 
 /**
- * @UpdateBuilderInterface
+ * @UpdateBuilderConditionInterface
  *
  * @author Jean-Claude <jeanyao@ymail.com>
  *
@@ -12,7 +12,7 @@ use Laventure\Component\Database\Builder\SQL\Commands\HasConditionBuilderInterfa
  *
  * @package Laventure\Component\Database\Builder\SQL\Commands\DML\Contract
 */
-interface UpdateBuilderInterface extends HasConditionBuilderInterface
+interface UpdateBuilderConditionInterface extends BuilderConditionInterface
 {
 
       /**

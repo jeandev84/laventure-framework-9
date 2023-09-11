@@ -3,7 +3,7 @@ namespace Laventure\Component\Database\Builder\SQL\Commands;
 
 
 /**
- * @HasConditionBuilderInterface
+ * @BuilderConditionInterface
  *
  * @author Jean-Claude <jeanyao@ymail.com>
  *
@@ -11,7 +11,7 @@ namespace Laventure\Component\Database\Builder\SQL\Commands;
  *
  * @package Laventure\Component\Database\Builder\SQL\Commands
 */
-interface HasConditionBuilderInterface extends HasExpressionBuilderInterface
+interface BuilderConditionInterface extends HasExpressionBuilderInterface
 {
 
       /**

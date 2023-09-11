@@ -2,10 +2,10 @@
 namespace Laventure\Component\Database\Builder\SQL\Commands\DML\Contract;
 
 
-use Laventure\Component\Database\Builder\SQL\Commands\HasConditionBuilderInterface;
+use Laventure\Component\Database\Builder\SQL\Commands\BuilderConditionInterface;
 
 /**
- * @DeleteBuilderInterface
+ * @DeleteBuilderConditionInterface
  *
  * @author Jean-Claude <jeanyao@ymail.com>
  *
@@ -13,7 +13,7 @@ use Laventure\Component\Database\Builder\SQL\Commands\HasConditionBuilderInterfa
  *
  * @package Laventure\Component\Database\Builder\SQL\Commands\DML\Contract
 */
-interface DeleteBuilderInterface extends HasConditionBuilderInterface
+interface DeleteBuilderConditionInterface extends BuilderConditionInterface
 {
 
       /**

@@ -2,12 +2,12 @@
 namespace Laventure\Component\Database\Builder\SQL\Commands\DQL\Contract;
 
 
-use Laventure\Component\Database\Builder\SQL\Commands\HasConditionBuilderInterface;
+use Laventure\Component\Database\Builder\SQL\Commands\BuilderConditionInterface;
 use Laventure\Component\Database\Connection\Query\QueryResultInterface;
 
 
 /**
- * @SelectBuilderInterface
+ * @SelectBuilderConditionInterface
  *
  * @author Jean-Claude <jeanyao@ymail.com>
  *
@@ -15,7 +15,7 @@ use Laventure\Component\Database\Connection\Query\QueryResultInterface;
  *
  * @package Laventure\Component\Database\Builder\SQL\Commands\DQL\Contract
 */
-interface SelectBuilderInterface extends HasConditionBuilderInterface
+interface SelectBuilderConditionInterface extends BuilderConditionInterface
 {
 
     /**

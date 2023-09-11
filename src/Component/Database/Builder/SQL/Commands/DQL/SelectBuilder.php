@@ -3,7 +3,7 @@ namespace Laventure\Component\Database\Builder\SQL\Commands\DQL;
 
 
 use Laventure\Component\Database\Builder\SQL\Commands\BuilderConditions;
-use Laventure\Component\Database\Builder\SQL\Commands\DQL\Contract\SelectBuilderInterface;
+use Laventure\Component\Database\Builder\SQL\Commands\DQL\Contract\SelectBuilderConditionInterface;
 use Laventure\Component\Database\Connection\ConnectionInterface;
 use Laventure\Component\Database\Connection\Query\QueryResultInterface;
 
@@ -11,7 +11,7 @@ use Laventure\Component\Database\Connection\Query\QueryResultInterface;
 /**
  * @inheritdoc
 */
-class SelectBuilder extends BuilderConditions implements SelectBuilderInterface
+class SelectBuilder extends BuilderConditions implements SelectBuilderConditionInterface
 {
 
     /**
