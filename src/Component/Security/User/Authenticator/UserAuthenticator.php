@@ -204,7 +204,8 @@ class UserAuthenticator implements AuthenticatorInterface
             return false;
         }
 
-        // rehash user password
+
+        // refresh user password
         return $this->rehashUserPassword($user, $password);
     }
 
@@ -238,13 +239,7 @@ class UserAuthenticator implements AuthenticatorInterface
     */
     private function rehashUserPassword(UserInterface $user, string $plainPassword): UserInterface
     {
-        $rehashPassword = $this->encoder->encodePassword($user, $plainPassword);
-
-        if ($this->encoder->needsRehash($user)) {
-            $this->encoder->updatePasswordHash($user, $rehashPassword);
-        }
-
-        return $user;
+          return $this->encoder->rehashUserPassword($user, $plainPassword);
     }
 
 

@@ -58,12 +58,13 @@ interface UserPasswordEncoderInterface
 
 
 
+
     /**
      * @param UserInterface $user
      *
-     * @param string $rehashPassword
+     * @param string $plainPassword
      *
-     * @return mixed
+     * @return UserInterface
     */
-    public function updatePasswordHash(UserInterface $user, string $rehashPassword): mixed;
+    public function rehashUserPassword(UserInterface $user, string $plainPassword): UserInterface;
 }

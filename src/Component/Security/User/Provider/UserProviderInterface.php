@@ -15,11 +15,11 @@ use Laventure\Component\Security\User\UserInterface;
 */
 interface UserProviderInterface
 {
+
      /**
       * @param string $username
       *
       * @return UserInterface|null
      */
      public function findByUsername(string $username): ?UserInterface;
-
 }
