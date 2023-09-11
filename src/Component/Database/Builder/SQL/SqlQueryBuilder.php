@@ -2,9 +2,11 @@
 namespace Laventure\Component\Database\Builder\SQL;
 
 
+use Laventure\Component\Database\Builder\SQL\Commands\DML\Delete;
 use Laventure\Component\Database\Builder\SQL\Commands\DML\DeleteBuilder;
 use Laventure\Component\Database\Builder\SQL\Commands\DML\Insert;
 use Laventure\Component\Database\Builder\SQL\Commands\DML\InsertBuilder;
+use Laventure\Component\Database\Builder\SQL\Commands\DML\Update;
 use Laventure\Component\Database\Builder\SQL\Commands\DML\UpdateBuilder;
 use Laventure\Component\Database\Builder\SQL\Commands\DQL\SelectBuilder;
 use Laventure\Component\Database\Connection\ConnectionInterface;
@@ -55,19 +57,29 @@ class SqlQueryBuilder implements SqlQueryBuilderInterface
 
 
 
-    /**
-     * @inheritDoc
-     */
-    public function update(string $table, array $attributes): UpdateBuilder
-    {
-        // TODO: Implement update() method.
-    }
+
 
     /**
      * @inheritDoc
-     */
+    */
+    public function update(string $table, array $attributes): UpdateBuilder
+    {
+        $command = new UpdateBuilder($this->connection, $table);
+        $command->update($attributes);
+        return $command;
+    }
+
+
+
+
+
+
+
+    /**
+     * @inheritDoc
+    */
     public function delete(string $table): DeleteBuilder
     {
-        // TODO: Implement delete() method.
+        return new DeleteBuilder($this->connection, $table);
     }
 }
