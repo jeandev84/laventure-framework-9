@@ -28,12 +28,13 @@ interface QueryResultInterface
 
 
 
+
     /**
      * Fetch all result
      *
      * @return mixed
     */
-    public function all(): array;
+    public function all(): mixed;
 
 
 

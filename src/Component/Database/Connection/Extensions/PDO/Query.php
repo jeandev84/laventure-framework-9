@@ -1,6 +1,8 @@
 <?php
 namespace Laventure\Component\Database\Connection\Extensions\PDO;
 
+use Exception;
+use Laventure\Component\Database\Connection\Query\QueryException;
 use Laventure\Component\Database\Connection\Query\QueryInterface;
 use Laventure\Component\Database\Connection\Query\QueryLogger;
 use Laventure\Component\Database\Connection\Query\QueryResultInterface;
@@ -41,19 +43,10 @@ class Query implements QueryInterface
 
 
 
-
     /**
-     * @var string
-     */
-    protected string $sql = '';
-
-
-
-
-    /**
-     * @var array
-     */
-    protected array $bindings = [];
+     * @var int
+    */
+    protected int $lastId = 0;
 
 
 
@@ -123,7 +116,7 @@ class Query implements QueryInterface
 
         $this->statement->bindParam($name, $value, $bind);
 
-        $this->logger->logBindParams(compact('name', 'value', 'type'));
+        $this->logger->addBindParams(compact('name', 'value', 'type'));
 
         return $this;
     }
@@ -142,7 +135,7 @@ class Query implements QueryInterface
 
         $this->statement->bindValue($name, $value, $bind);
 
-        $this->logger->logBindValues(compact('name', 'value', 'type'));
+        $this->logger->addBindValues(compact('name', 'value', 'type'));
 
         return $this;
     }
@@ -157,16 +150,39 @@ class Query implements QueryInterface
     */
     public function setParameters(array $parameters): static
     {
-        // TODO: Implement setParameters() method.
+        $this->parameters = $parameters;
+
+        return $this;
     }
+
+
+
+
+
 
     /**
      * @inheritDoc
-     */
+    */
     public function execute(): int|bool
     {
-        // TODO: Implement execute() method.
+        try {
+
+            if ($status = $this->statement->execute($this->parameters)) {
+                $this->lastId = $this->pdo->lastInsertId();
+                $this->logger->logExecutedQuery($this->getSQL());
+            }
+
+        } catch (\PDOException $e) {
+            $this->logger->logQueryError($this->getSQL(), $e);
+        }
+
+        return $this->lastId ?: $status;
     }
+
+
+
+
+
 
     /**
      * @inheritDoc
@@ -184,21 +200,43 @@ class Query implements QueryInterface
         // TODO: Implement fetch() method.
     }
 
+
+
+
     /**
      * @inheritDoc
-     */
+    */
     public function lastId(): int
     {
         // TODO: Implement lastId() method.
     }
 
+
+
+
     /**
      * @inheritDoc
-     */
+    */
+    public function getSQL(): string
+    {
+        return $this->statement->queryString;
+    }
+
+
+
+
+
+
+    /**
+     * @inheritDoc
+    */
     public function getLogger(): QueryLogger
     {
-        // TODO: Implement getLogger() method.
+        return $this->logger;
     }
+
+
+
 
 
     /**
@@ -212,5 +250,22 @@ class Query implements QueryInterface
         }
 
         return $this->bindTypes[$type];
+    }
+
+
+
+
+
+
+    /**
+     * @param Exception $e
+     *
+     * @return void
+    */
+    private function abort(Exception $e): void
+    {
+        (function () use ($e) {
+            throw new QueryException($e->getMessage(), $e->getCode());
+        })();
     }
 }

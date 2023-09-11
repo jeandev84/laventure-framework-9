@@ -147,6 +147,16 @@ interface QueryInterface
 
 
 
+    /**
+     * Returns current query
+     *
+     * @return string
+    */
+    public function getSQL(): string;
+
+
+
+
 
 
     /**
