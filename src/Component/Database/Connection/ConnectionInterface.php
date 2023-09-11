@@ -15,7 +15,7 @@ use Laventure\Component\Database\Connection\Query\QueryInterface;
  * @license https://github.com/jeandev84/laventure-framework/blob/master/LICENSE
  *
  * @package Laventure\Component\Database\Connection
- */
+*/
 interface ConnectionInterface
 {
 

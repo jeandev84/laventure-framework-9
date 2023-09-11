@@ -13,9 +13,11 @@ namespace Laventure\Component\Database\Connection\Query;
 */
 interface QueryInterface
 {
-    const INT  = 0;
-    const STR  = 1;
+    const NULL = 0;
+    const INT  = 1;
+    const STR  = 2;
     const BOOL = 3;
+
 
 
 
@@ -35,7 +37,7 @@ interface QueryInterface
     /**
      * Bind query params
      *
-     * @param string $name
+     * @param $name
      *
      * @param $value
      *
@@ -43,7 +45,7 @@ interface QueryInterface
      *
      * @return $this
     */
-    public function bindParam(string $name, $value, int $type): static;
+    public function bindParam($name, $value, int $type): static;
 
 
 
@@ -53,7 +55,7 @@ interface QueryInterface
     /**
      * Bind query values
      *
-     * @param string $name
+     * @param $name
      *
      * @param $value
      *
@@ -61,7 +63,7 @@ interface QueryInterface
      *
      * @return $this
     */
-    public function bindValue(string $name, $value, int $type): static;
+    public function bindValue($name, $value, int $type): static;
 
 
 

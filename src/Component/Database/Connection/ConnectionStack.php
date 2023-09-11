@@ -1,6 +1,11 @@
 <?php
 namespace Laventure\Component\Database\Connection;
 
+use Laventure\Component\Database\Connection\Extensions\PDO\Drivers\MysqlConnection;
+use Laventure\Component\Database\Connection\Extensions\PDO\Drivers\OracleConnection;
+use Laventure\Component\Database\Connection\Extensions\PDO\Drivers\PgsqlConnection;
+use Laventure\Component\Database\Connection\Extensions\PDO\Drivers\SqliteConnection;
+
 
 /**
  * @ConnectionStack
@@ -14,15 +19,18 @@ namespace Laventure\Component\Database\Connection;
 class ConnectionStack
 {
 
-    /**
-     * Returns defaults connections
-     *
-     * @return ConnectionInterface[]
+     /**
+      * Returns defaults connections
+      *
+      * @return ConnectionInterface[]
      */
-    public static function defaults(): array
-    {
-         return [
-
-         ];
-    }
+     public static function defaults(): array
+     {
+          return [
+              new MysqlConnection(),
+              new PgsqlConnection(),
+              new SqliteConnection(),
+              new OracleConnection()
+          ];
+     }
 }
