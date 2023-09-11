@@ -34,16 +34,15 @@ class UserPasswordEncoder implements UserPasswordEncoderInterface
     protected UserPasswordRefreshInterface $passwordRefresh;
 
 
-
     /**
      * @param UserPasswordRefreshInterface $passwordRefresh
      *
-     * @param PasswordEncoderInterface|null $encoder
+     * @param PasswordEncoderInterface $encoder
     */
-    public function __construct(UserPasswordRefreshInterface $passwordRefresh, PasswordEncoderInterface $encoder = null)
+    public function __construct(UserPasswordRefreshInterface $passwordRefresh, PasswordEncoderInterface $encoder)
     {
          $this->passwordRefresh = $passwordRefresh;
-         $this->encoder = $encoder ?: new PasswordEncoder();
+         $this->encoder = $encoder;
     }
 
 
