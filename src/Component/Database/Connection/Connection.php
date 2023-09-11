@@ -7,7 +7,7 @@ use Laventure\Component\Database\Connection\Query\QueryInterface;
 
 
 /**
- * @ConnectionAdapter
+ * @Connection
  *
  * @author Jean-Claude <jeanyao@ymail.com>
  *
@@ -15,7 +15,7 @@ use Laventure\Component\Database\Connection\Query\QueryInterface;
  *
  * @package Laventure\Component\Database\Connection
 */
-class ConnectionAdapter
+class Connection
 {
 
 

@@ -10,7 +10,7 @@ use PDO;
 
 
 /**
- * @ConnectionAdapter
+ * @Connection
  *
  * @author Jean-Claude <jeanyao@ymail.com>
  *
