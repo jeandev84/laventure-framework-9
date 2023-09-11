@@ -81,6 +81,6 @@ class UpdateBuilder extends BuilderConditions implements UpdateBuilderInterface
         $bindings = sprintf('SET %s', join(', ', $this->data));
 
         return $this->addSQL(sprintf("UPDATE %s %s", $this->getTable(), $bindings))
-                    ->addSQLConditions();
+                    ->addConditions();
     }
 }

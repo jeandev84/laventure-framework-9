@@ -2,6 +2,8 @@
 namespace Laventure\Component\Database\Builder\SQL\Commands;
 
 
+use Laventure\Component\Database\Builder\SQL\Commands\Expr\Expr;
+
 /**
  * @inheritdoc
 */
@@ -79,14 +81,32 @@ abstract class BuilderConditions extends Builder implements BuilderConditionInte
     */
     public function criteria(array $criteria): static
     {
-         return $this;
+        foreach ($criteria as $column => $value) {
+            if ($this->hasPdoConnection()) {
+                $this->criteriaPdo($column, $value);
+            } else {
+                $this->where("$column = '$value'");
+            }
+        }
+
+        return $this;
     }
 
 
 
 
 
-    public function expr(){}
+
+
+    /**
+     * @return Expr
+    */
+    public function expr(): Expr
+    {
+        return new Expr();
+    }
+
+
 
 
 
@@ -150,8 +170,29 @@ abstract class BuilderConditions extends Builder implements BuilderConditionInte
     /**
      * @return $this
     */
-    protected function addSQLConditions(): static
+    protected function addConditions(): static
     {
         return $this->addSQL($this->buildConditions());
+    }
+
+
+
+
+    /**
+     * @param string $column
+     *
+     * @param $value
+     *
+     * @return void
+    */
+    private function criteriaPdo(string $column, $value)
+    {
+        if (is_array($value)) {
+            $this->where($this->expr()->in($column, "(:$column)"));
+            $this->setParameter($column, $value);
+        } else {
+            $this->where("$column = :$column");
+            $this->setParameter($column, $value);
+        }
     }
 }
