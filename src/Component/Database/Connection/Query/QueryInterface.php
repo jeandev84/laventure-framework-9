@@ -117,6 +117,15 @@ interface QueryInterface
 
 
 
+    /**
+     * @param string $classname
+     *
+     * @return $this
+    */
+    public function map(string $classname): static;
+
+
+
 
 
 

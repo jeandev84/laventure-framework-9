@@ -53,6 +53,14 @@ class Query implements QueryInterface
 
 
 
+    /**
+     * @var string
+    */
+    protected string $fetchedClass;
+
+
+
+
 
     /**
      * @var array
@@ -203,6 +211,22 @@ class Query implements QueryInterface
             $this->logger->logErrorQuery($sql, $e);
         }
     }
+
+
+
+
+    /**
+     * @inheritDoc
+    */
+    public function map(string $classname): static
+    {
+        $this->statement->setFetchMode(PDO::FETCH_CLASS, $classname);
+
+        $this->fetchedClass = $classname;
+
+        return $this;
+    }
+
 
 
 

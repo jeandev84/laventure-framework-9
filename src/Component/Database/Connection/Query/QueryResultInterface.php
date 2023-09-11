@@ -15,19 +15,6 @@ interface QueryResultInterface
 {
 
 
-    /**
-     * Save the class name to fetch
-     *
-     * @param string $classname
-     *
-     * @return $this
-    */
-    public function map(string $classname): static;
-
-
-
-
-
 
     /**
      * Fetch all result

@@ -31,22 +31,6 @@ class QueryResult implements QueryResultInterface
 
 
 
-    /**
-     * @inheritDoc
-    */
-    public function map(string $classname): static
-    {
-        $this->statement->setFetchMode(PDO::FETCH_CLASS, $classname);
-
-        $this->classname = $classname;
-
-        return $this;
-    }
-
-
-
-
-
 
     /**
      * @inheritDoc
