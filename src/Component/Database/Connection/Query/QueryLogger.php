@@ -103,7 +103,7 @@ class QueryLogger
      *
      * @return $this
     */
-    public function logExecutedQuery(string $sql): static
+    public function logExcecutedQuery(string $sql): static
     {
         $this->log[] = [
            'sql'           => $sql,
@@ -126,7 +126,7 @@ class QueryLogger
      *
      * @return void
     */
-    public function logQueryError(string $sql, \Throwable $e): void
+    public function logErrorQuery(string $sql, \Throwable $e): void
     {
          $this->log[] = [
              'sql' => $sql,

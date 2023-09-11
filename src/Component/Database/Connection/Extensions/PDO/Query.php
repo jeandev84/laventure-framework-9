@@ -170,11 +170,11 @@ class Query implements QueryInterface
 
             if ($status = $this->statement->execute($this->parameters)) {
                 $this->lastId = (int)$this->pdo->lastInsertId();
-                $this->logger->logExecutedQuery($this->getSQL());
+                $this->logger->logExcecutedQuery($this->getSQL());
             }
 
         } catch (\PDOException $e) {
-            $this->logger->logQueryError($this->getSQL(), $e);
+            $this->logger->logErrorQuery($this->getSQL(), $e);
         }
 
         return $this->lastId ?: $status;
@@ -196,11 +196,11 @@ class Query implements QueryInterface
                 return false;
             }
 
-            $this->logger->logExecutedQuery($sql);
+            $this->logger->logExcecutedQuery($sql);
             return $status;
 
         } catch (PDOException $e) {
-            $this->logger->logQueryError($sql, $e);
+            $this->logger->logErrorQuery($sql, $e);
         }
     }
 
