@@ -93,9 +93,9 @@ interface QueryInterface
      *
      * Returns last insert id or boolean
      *
-     * @return int|bool
+     * @return mixed
     */
-    public function execute(): int|bool;
+    public function execute(): mixed;
 
 
 

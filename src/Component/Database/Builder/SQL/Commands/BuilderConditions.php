@@ -12,10 +12,7 @@ abstract class BuilderConditions extends Builder implements BuilderConditionInte
       /**
        * @var array
       */
-      protected array $wheres = [
-          'AND' => [],
-          'OR'  => []
-      ];
+      protected array $wheres = [];
 
 
 
@@ -126,13 +123,13 @@ abstract class BuilderConditions extends Builder implements BuilderConditionInte
 
 
     /**
-     * @param array $wheres
-     *
      * @return string
     */
-    protected function getSQLConditions(array $wheres = []): string
+    protected function buildConditions(): string
     {
         if (! $this->wheres) { return '';}
+
+        $wheres = [];
 
         $key = key($this->wheres);
 
@@ -153,8 +150,8 @@ abstract class BuilderConditions extends Builder implements BuilderConditionInte
     /**
      * @return $this
     */
-    protected function conditions(): static
+    protected function addSQLConditions(): static
     {
-        return $this->addSQL($this->getSQLConditions());
+        return $this->addSQL($this->buildConditions());
     }
 }

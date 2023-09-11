@@ -397,7 +397,7 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderConditionI
 
         $this->addSQL(join(' ', $this->joins));
 
-        return $this->conditions();
+        return $this->addSQLConditions();
     }
 
 

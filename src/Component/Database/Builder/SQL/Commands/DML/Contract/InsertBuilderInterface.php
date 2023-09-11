@@ -33,4 +33,28 @@ interface InsertBuilderInterface
         * @return int
        */
        public function execute(): int;
+
+
+
+
+
+
+       /**
+        * Returns count of insertion
+        *
+        * @return int
+       */
+       public function count(): int;
+
+
+
+
+
+
+      /**
+       * Returns insertion attributes
+       *
+       * @return array
+      */
+      public function getAttributes(): array;
 }

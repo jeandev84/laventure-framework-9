@@ -46,16 +46,6 @@ class InsertBuilder extends Builder implements InsertBuilderInterface
 
 
 
-    /**
-     * @var array
-    */
-    protected array $bindings = [];
-
-
-
-
-
-
 
     /**
      * @inheritDoc
@@ -78,19 +68,6 @@ class InsertBuilder extends Builder implements InsertBuilderInterface
 
 
 
-
-    /**
-     * @inheritDoc
-    */
-    public function execute(): int
-    {
-
-    }
-
-
-
-
-
     /**
      * @inheritDoc
     */
@@ -107,18 +84,20 @@ class InsertBuilder extends Builder implements InsertBuilderInterface
 
 
     /**
+     * Multi insertion
+     *
      * @param array $data
      *
      * @return $this
     */
     public function attributes(array $data): static
     {
-          if (empty($data[0])) {
-               $this->insert($data);
-          } else {
+          if (! empty($data[0])) {
               foreach ($data as $attributes) {
                   $this->insert($attributes);
               }
+          } else {
+              $this->insert($data);
           }
 
           return $this;
@@ -129,8 +108,39 @@ class InsertBuilder extends Builder implements InsertBuilderInterface
 
 
 
+
     /**
-     * @return array
+     * @inheritDoc
+    */
+    public function execute(): int
+    {
+        return $this->statement()
+                   ->setParameters($this->attributes)
+                   ->execute();
+    }
+
+
+
+
+
+
+
+    /**
+     * @inheritdoc
+    */
+    public function count(): int
+    {
+        return $this->index;
+    }
+
+
+
+
+
+
+
+    /**
+     * @inheritdoc
     */
     public function getAttributes(): array
     {
@@ -142,10 +152,35 @@ class InsertBuilder extends Builder implements InsertBuilderInterface
 
 
 
+
+    /**
+     * @param array $attributes
+     *
+     * @return array
+    */
+    protected function bind(array $attributes): array
+    {
+        $bindings = [];
+
+        foreach ($attributes as $column => $value) {
+            if ($this->hasPdoConnection()) {
+                $bindings[$column] = ":{$column}_{$this->index}";
+                $this->attributes["{$column}_{$this->index}"] = $value;
+            } else {
+                $bindings[$column] = "'$value'";
+            }
+        }
+
+        return $bindings;
+    }
+
+
+
+
     /**
      * @return array
     */
-    public function columns(): array
+    protected function columns(): array
     {
         return $this->columns;
     }
@@ -156,45 +191,8 @@ class InsertBuilder extends Builder implements InsertBuilderInterface
     /**
      * @return array
     */
-    public function values(): array
+    protected function values(): array
     {
         return $this->values;
-    }
-
-
-
-
-
-
-    /**
-     * @param array $attributes
-     *
-     * @return array
-    */
-    private function bind(array $attributes): array
-    {
-        foreach ($attributes as $column => $value) {
-            if ($this->hasPdoConnection()) {
-                $this->bindings[$column] = ":{$column}_{$this->index}";
-                $this->attributes["{$column}_{$this->index}"] = $value;
-            } else {
-                $this->bindings[$column] = "'$value'";
-            }
-        }
-
-        return $this->bindings;
-    }
-
-
-
-
-
-
-    /**
-     * @return int
-    */
-    public function count(): int
-    {
-        return $this->index;
     }
 }

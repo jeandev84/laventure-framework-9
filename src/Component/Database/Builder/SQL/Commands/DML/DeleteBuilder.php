@@ -47,6 +47,6 @@ class DeleteBuilder extends BuilderConditions implements DeleteBuilderInterface
     public function getSQL(): string
     {
        return $this->addSQL(sprintf('DELETE FROM %s', $this->getTable()))
-                   ->conditions();
+                   ->addSQLConditions();
     }
 }
