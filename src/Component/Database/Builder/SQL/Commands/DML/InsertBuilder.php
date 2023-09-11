@@ -26,10 +26,13 @@ class InsertBuilder extends Builder implements InsertBuilderInterface
 
 
 
+
     /**
      * @var array
     */
     protected array $columns = [];
+
+
 
 
 
@@ -42,15 +45,15 @@ class InsertBuilder extends Builder implements InsertBuilderInterface
 
 
 
+
     /**
      * @inheritDoc
     */
     public function insert(array $attributes): static
     {
-         $attributes     = $this->resolveAttributes($attributes);
+         $attributes     = $this->bind($attributes);
          $this->columns  = array_keys($attributes);
          $this->values[] = '('. join(', ', array_values($attributes)) . ')';
-
          $this->index++;
 
          return $this;
@@ -58,18 +61,6 @@ class InsertBuilder extends Builder implements InsertBuilderInterface
 
 
 
-
-
-
-    /**
-     * @inheritDoc
-    */
-    public function set(string $name, $value): static
-    {
-         $this->attributes[$name] = $value;
-
-         return $this;
-    }
 
 
 
@@ -96,11 +87,10 @@ class InsertBuilder extends Builder implements InsertBuilderInterface
     {
         $columns = join(', ', $this->getColumns());
         $values  = join(', ', $this->getValues());
-
-        return sprintf("INSERT INTO {$this->getTable()} (%s) VALUES %s;", $columns, $values);
-
-        # return $this->addSQL('');
+        return $this->addSQL(sprintf("INSERT INTO {$this->getTable()} (%s) VALUES %s", $columns, $values));
     }
+
+
 
 
 
@@ -122,6 +112,8 @@ class InsertBuilder extends Builder implements InsertBuilderInterface
 
           return $this;
     }
+
+
 
 
 
@@ -159,12 +151,14 @@ class InsertBuilder extends Builder implements InsertBuilderInterface
 
 
 
+
+
     /**
      * @param array $attributes
      *
      * @return array
     */
-    private function resolveAttributes(array $attributes): array
+    private function bind(array $attributes): array
     {
         $resolved = [];
 
@@ -179,4 +173,5 @@ class InsertBuilder extends Builder implements InsertBuilderInterface
 
         return $resolved;
     }
+
 }

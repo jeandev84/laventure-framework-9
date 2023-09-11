@@ -53,13 +53,14 @@ abstract class Builder
 
 
 
-        /**
+
+       /**
          * @param ConnectionInterface $connection
          *
          * @param string $table
          *
          * @param string $alias
-        */
+       */
        public function __construct(ConnectionInterface $connection, string $table = '', string $alias = '')
        {
             $this->connection = $connection;
@@ -116,6 +117,8 @@ abstract class Builder
       {
            return $this->connection instanceof PdoConnectionInterface;
       }
+
+
 
 
 

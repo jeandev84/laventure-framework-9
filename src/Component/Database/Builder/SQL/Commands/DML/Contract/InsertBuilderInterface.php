@@ -26,20 +26,6 @@ interface InsertBuilderInterface
 
 
 
-       /**
-        * @param string $name
-        *
-        * @param $value
-        *
-        * @return $this
-       */
-       public function set(string $name, $value): static;
-
-
-
-
-
-
 
        /**
         * Returns last inserted ID
