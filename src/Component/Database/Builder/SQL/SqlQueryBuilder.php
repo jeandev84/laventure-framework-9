@@ -2,14 +2,14 @@
 namespace Laventure\Component\Database\Builder\SQL;
 
 
-use Laventure\Component\Database\Builder\SQL\Commands\DML\Delete;
 use Laventure\Component\Database\Builder\SQL\Commands\DML\DeleteBuilder;
-use Laventure\Component\Database\Builder\SQL\Commands\DML\Insert;
 use Laventure\Component\Database\Builder\SQL\Commands\DML\InsertBuilder;
-use Laventure\Component\Database\Builder\SQL\Commands\DML\Update;
 use Laventure\Component\Database\Builder\SQL\Commands\DML\UpdateBuilder;
 use Laventure\Component\Database\Builder\SQL\Commands\DQL\SelectBuilder;
+use Laventure\Component\Database\Builder\SQL\Commands\Expr\Expr;
 use Laventure\Component\Database\Connection\ConnectionInterface;
+
+
 
 /**
  * @inheritdoc
@@ -24,6 +24,22 @@ class SqlQueryBuilder implements SqlQueryBuilderInterface
     public function __construct(protected ConnectionInterface $connection)
     {
     }
+
+
+
+
+
+
+    /**
+     * @return Expr
+    */
+    public function expr(): Expr
+    {
+         return new Expr();
+    }
+
+
+
 
 
 
