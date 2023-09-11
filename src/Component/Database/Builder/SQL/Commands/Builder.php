@@ -122,10 +122,32 @@ abstract class Builder
 
 
 
-
-
-
       /**
+       * @param array $attributes
+       *
+       * @return array
+     */
+     protected function bind(array $attributes): array
+     {
+         $bindings = [];
+         foreach ($attributes as $column => $value) {
+            if ($this->hasPdoConnection()) {
+                $bindings[] = "$column = :$column";
+            } else {
+                $bindings[] = "$column = '$value'";
+            }
+         }
+         return $bindings;
+    }
+
+
+
+
+
+
+
+
+    /**
        * @param string $sql
        *
        * @return $this

@@ -137,7 +137,7 @@ abstract class BuilderConditions extends Builder implements BuilderConditionInte
             if ($key !== $operand) {
                 $wheres[] = $operand;;
             }
-            $wheres[] = implode(" $operand ", $conditions);
+            $wheres[] = join(" $operand ", $conditions);
         }
 
         return sprintf('WHERE %s', join(' ', $wheres));

@@ -154,14 +154,11 @@ class InsertBuilder extends Builder implements InsertBuilderInterface
 
 
     /**
-     * @param array $attributes
-     *
-     * @return array
+     * @inheritdoc
     */
     protected function bind(array $attributes): array
     {
         $bindings = [];
-
         foreach ($attributes as $column => $value) {
             if ($this->hasPdoConnection()) {
                 $bindings[$column] = ":{$column}_{$this->index}";
@@ -170,9 +167,9 @@ class InsertBuilder extends Builder implements InsertBuilderInterface
                 $bindings[$column] = "'$value'";
             }
         }
-
         return $bindings;
     }
+
 
 
 
