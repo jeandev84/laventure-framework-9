@@ -96,8 +96,8 @@ class InsertBuilder extends Builder implements InsertBuilderInterface
     */
     public function getSQL(): string
     {
-        $columns = join(', ', $this->getColumns());
-        $values  = join(', ', $this->getValues());
+        $columns = join(', ', $this->columns());
+        $values  = join(', ', $this->values());
         return $this->addSQL(sprintf("INSERT INTO {$this->getTable()} (%s) VALUES %s", $columns, $values));
     }
 
@@ -140,10 +140,12 @@ class InsertBuilder extends Builder implements InsertBuilderInterface
 
 
 
+
+
     /**
      * @return array
     */
-    public function getColumns(): array
+    public function columns(): array
     {
         return $this->columns;
     }
@@ -154,7 +156,7 @@ class InsertBuilder extends Builder implements InsertBuilderInterface
     /**
      * @return array
     */
-    public function getValues(): array
+    public function values(): array
     {
         return $this->values;
     }
