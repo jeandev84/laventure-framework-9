@@ -12,7 +12,10 @@ abstract class BuilderConditions extends Builder
       /**
        * @var array
       */
-      protected array $wheres = [];
+      protected array $wheres = [
+          'AND' => [],
+          'OR'  => []
+      ];
 
 
 
@@ -26,8 +29,6 @@ abstract class BuilderConditions extends Builder
 
 
 
-
-
       /**
        * @param string $condition
        *
@@ -35,24 +36,25 @@ abstract class BuilderConditions extends Builder
       */
       public function where(string $condition): static
       {
-           return $this;
+          return $this->andWhere($condition);
       }
 
 
 
 
 
-    /**
-     * @param string $condition
-     *
-     * @return $this
-    */
-    public function andWhere(string $condition): static
-    {
+     /**
+      * @param string $condition
+      *
+      * @return $this
+     */
+     public function andWhere(string $condition): static
+     {
          $this->wheres['AND'][] = $condition;
 
          return $this;
-    }
+     }
+
 
 
 
@@ -87,21 +89,63 @@ abstract class BuilderConditions extends Builder
 
 
 
-    public function expr()
-    {
+    public function expr(){}
 
+
+
+    /**
+     * @param string $name
+     *
+     * @param $value
+     *
+     * @return $this
+    */
+    public function setParameter(string $name, $value): static
+    {
+         return $this->setParameters([$name => $value]);
+    }
+
+
+
+
+
+
+    /**
+     * @param array $parameters
+     *
+     * @return $this
+    */
+    public function setParameters(array $parameters): static
+    {
+         $this->parameters = array_merge($this->parameters, $parameters);
+
+         return $this;
     }
 
 
 
 
     /**
+     * @param array $wheres
+     *
      * @return string
     */
-    protected function getSQLConditions(): string
+    protected function getSQLConditions(array $wheres = []): string
     {
-         return '';
+        if (! $this->wheres) { return '';}
+
+        $key = key($this->wheres);
+
+        foreach ($this->wheres as $operand => $conditions) {
+            if ($key !== $operand) {
+                $wheres[] = $operand;;
+            }
+            $wheres[] = implode(" $operand ", $conditions);
+        }
+
+        return sprintf('WHERE %s', join(' ', $wheres));
     }
+
 
 
 
@@ -109,7 +153,7 @@ abstract class BuilderConditions extends Builder
     /**
      * @return $this
     */
-    public function conditions(): static
+    protected function conditions(): static
     {
         return $this->addSQL($this->getSQLConditions());
     }

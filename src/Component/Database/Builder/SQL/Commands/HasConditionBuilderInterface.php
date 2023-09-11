@@ -59,4 +59,29 @@ interface HasConditionBuilderInterface extends HasExpressionBuilderInterface
        * @return $this
       */
       public function criteria(array $criteria): static;
+
+
+
+
+
+      /**
+       * @param string $name
+       *
+       * @param $value
+       *
+       * @return $this
+      */
+      public function setParameter(string $name, $value): static;
+
+
+
+
+
+
+
+      /**
+       * @param array $parameters
+       * @return $this
+      */
+      public function setParameters(array $parameters): static;
 }

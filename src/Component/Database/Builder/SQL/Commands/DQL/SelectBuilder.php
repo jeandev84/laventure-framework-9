@@ -361,10 +361,11 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderInterface
     {
         return $this->selects()
                     ->joins()
-                    ->conditions()
                     ->group()
+                    ->ordered()
                     ->limited();
     }
+
 
 
 
@@ -394,7 +395,9 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderInterface
              return $this;
         }
 
-        return $this->addSQL(join($this->joins));
+        $this->addSQL(join(' ', $this->joins));
+
+        return $this->conditions();
     }
 
 
@@ -420,6 +423,17 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderInterface
     }
 
 
+    /**
+     * @return $this
+    */
+    private function ordered(): static
+    {
+        if (!$this->orderBy) {
+            return $this;
+        }
+
+        return $this->addSQL(sprintf('ORDER BY %s', join(',', $this->orderBy)));
+    }
 
 
     /**
