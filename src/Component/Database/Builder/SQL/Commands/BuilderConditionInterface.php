@@ -11,7 +11,7 @@ namespace Laventure\Component\Database\Builder\SQL\Commands;
  *
  * @package Laventure\Component\Database\Builder\SQL\Commands
 */
-interface BuilderConditionInterface extends HasExpressionBuilderInterface
+interface BuilderConditionInterface extends BuilderExpressionInterface
 {
 
       /**

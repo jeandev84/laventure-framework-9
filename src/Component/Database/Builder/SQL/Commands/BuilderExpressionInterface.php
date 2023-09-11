@@ -12,7 +12,7 @@ use Laventure\Component\Database\Builder\SQL\Commands\Expr\Expr;
  *
  * @package Laventure\Component\Database\Builder\SQL\Commands
 */
-interface HasExpressionBuilderInterface
+interface BuilderExpressionInterface
 {
 
      /**

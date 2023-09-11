@@ -2,7 +2,7 @@
 namespace Laventure\Component\Database\Builder\SQL\Commands\Expr\Utility;
 
 
-use Laventure\Component\Database\Builder\SQL\Commands\Expr\HasExpression;
+use Laventure\Component\Database\Builder\SQL\Commands\Expr\isExpression;
 
 
 /**
@@ -14,7 +14,7 @@ use Laventure\Component\Database\Builder\SQL\Commands\Expr\HasExpression;
  *
  * @package Laventure\Component\Database\Builder\SQL\Commands\Expr\Utility
 */
-class andX implements HasExpression
+class andX implements isExpression
 {
 
      /**

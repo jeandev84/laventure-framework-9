@@ -11,7 +11,7 @@ namespace Laventure\Component\Database\Builder\SQL\Commands\Expr;
  *
  * @package Laventure\Component\Database\Builder\SQL\Commands\Expr
 */
-interface HasExpression
+interface isExpression
 {
 
     /**
