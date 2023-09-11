@@ -15,7 +15,7 @@ use Laventure\Component\Database\Connection\Query\QueryResultInterface;
  *
  * @package Laventure\Component\Database\Builder\SQL\Commands\DQL\Contract
 */
-interface SelectBuilderConditionInterface extends BuilderConditionInterface
+interface SelectBuilderConditionInterface
 {
 
     /**

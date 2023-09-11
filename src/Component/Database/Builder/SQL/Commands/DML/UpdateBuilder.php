@@ -2,13 +2,13 @@
 namespace Laventure\Component\Database\Builder\SQL\Commands\DML;
 
 use Laventure\Component\Database\Builder\SQL\Commands\BuilderConditions;
-use Laventure\Component\Database\Builder\SQL\Commands\DML\Contract\UpdateBuilderConditionInterface;
+use Laventure\Component\Database\Builder\SQL\Commands\DML\Contract\UpdateBuilderInterface;
 
 
 /**
  * @inheritdoc
 */
-class UpdateBuilder extends BuilderConditions implements UpdateBuilderConditionInterface
+class UpdateBuilder extends BuilderConditions implements UpdateBuilderInterface
 {
 
 

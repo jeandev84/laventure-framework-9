@@ -1,10 +1,11 @@
 <?php
 namespace Laventure\Component\Database\Builder\SQL\Commands\DML\Contract;
 
+
 use Laventure\Component\Database\Builder\SQL\Commands\BuilderConditionInterface;
 
 /**
- * @UpdateBuilderConditionInterface
+ * @DeleteBuilderInterface
  *
  * @author Jean-Claude <jeanyao@ymail.com>
  *
@@ -12,31 +13,15 @@ use Laventure\Component\Database\Builder\SQL\Commands\BuilderConditionInterface;
  *
  * @package Laventure\Component\Database\Builder\SQL\Commands\DML\Contract
 */
-interface UpdateBuilderConditionInterface extends BuilderConditionInterface
+interface DeleteBuilderInterface
 {
 
       /**
-       * @param array $attributes
+       * @param array $wheres
        *
        * @return static
       */
-      public function update(array $attributes): static;
-
-
-
-
-
-      /**
-       * @param string $name
-       *
-       * @param $value
-       *
-       * @return $this
-      */
-      public function set(string $name, $value): static;
-
-
-
+      public function delete(array $wheres = []): static;
 
 
 

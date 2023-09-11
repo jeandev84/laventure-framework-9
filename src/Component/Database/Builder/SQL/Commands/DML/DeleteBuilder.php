@@ -2,15 +2,16 @@
 namespace Laventure\Component\Database\Builder\SQL\Commands\DML;
 
 use Laventure\Component\Database\Builder\SQL\Commands\BuilderConditions;
-use Laventure\Component\Database\Builder\SQL\Commands\DML\Contract\DeleteBuilderConditionInterface;
+use Laventure\Component\Database\Builder\SQL\Commands\DML\Contract\DeleteBuilderInterface;
 
 
 
 /**
  * @inheritdoc
 */
-class DeleteBuilder extends BuilderConditions implements DeleteBuilderConditionInterface
+class DeleteBuilder extends BuilderConditions implements DeleteBuilderInterface
 {
+
 
 
     /**
@@ -18,8 +19,10 @@ class DeleteBuilder extends BuilderConditions implements DeleteBuilderConditionI
     */
     public function delete(array $wheres = []): static
     {
-
+         return $this->criteria($wheres);
     }
+
+
 
 
 
@@ -29,8 +32,12 @@ class DeleteBuilder extends BuilderConditions implements DeleteBuilderConditionI
     */
     public function execute(): bool
     {
-
+         return $this->statement()
+                     ->setParameters($this->parameters)
+                     ->execute();
     }
+
+
 
 
 
@@ -39,6 +46,7 @@ class DeleteBuilder extends BuilderConditions implements DeleteBuilderConditionI
     */
     public function getSQL(): string
     {
-
+       return $this->addSQL(sprintf('DELETE FROM %s', $this->getTable()))
+                   ->conditions();
     }
 }

@@ -153,7 +153,7 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderConditionI
      */
     public function join(string $table, string $condition): static
     {
-         return $this->joined("JOIN", $table, $condition);
+         return $this->joins("JOIN", $table, $condition);
     }
 
 
@@ -166,7 +166,7 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderConditionI
     */
     public function innerJoin(string $table, string $condition): static
     {
-        return $this->joined("INNER JOIN", $table, $condition);
+        return $this->joins("INNER JOIN", $table, $condition);
     }
 
 
@@ -178,7 +178,7 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderConditionI
     */
     public function leftJoin(string $table, string $condition): static
     {
-        return $this->joined("LEFT JOIN", $table, $condition);
+        return $this->joins("LEFT JOIN", $table, $condition);
     }
 
 
@@ -190,7 +190,7 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderConditionI
     */
     public function rightJoin(string $table, string $condition): static
     {
-        return $this->joined("RIGHT JOIN", $table, $condition);
+        return $this->joins("RIGHT JOIN", $table, $condition);
     }
 
 
@@ -203,7 +203,7 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderConditionI
     */
     public function fullJoin(string $table, string $condition): static
     {
-         return $this->joined("FULL JOIN", $table, $condition);
+         return $this->joins("FULL JOIN", $table, $condition);
     }
 
 
@@ -359,9 +359,9 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderConditionI
     */
     public function getSQL(): string
     {
-        return $this->selects()
-                    ->joins()
-                    ->group()
+        return $this->selected()
+                    ->joined()
+                    ->grouped()
                     ->ordered()
                     ->limited();
     }
@@ -374,7 +374,7 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderConditionI
     /**
      * @return $this
     */
-    private function selects(): static
+    private function selected(): static
     {
         $selects = join(', ', $this->selects);
         $command = sprintf('SELECT %s FROM %s', $selects, $this->fromTables());
@@ -389,7 +389,7 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderConditionI
     /**
      * @return $this
     */
-    private function joins(): static
+    private function joined(): static
     {
         if (! $this->joins) {
              return $this;
@@ -407,7 +407,7 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderConditionI
     /**
      * @return $this
     */
-    private function group(): static
+    private function grouped(): static
     {
         if (! $this->groupBy) {
             return $this;
@@ -423,6 +423,11 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderConditionI
     }
 
 
+
+
+
+
+
     /**
      * @return $this
     */
@@ -436,6 +441,9 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderConditionI
     }
 
 
+
+
+
     /**
      * @return $this
     */
@@ -447,6 +455,8 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderConditionI
 
         return $this->addSQL("LIMIT {$this->limit}". ($this->offset ? " OFFSET {$this->offset}" : ""));
     }
+
+
 
 
 
@@ -466,6 +476,8 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderConditionI
 
 
 
+
+
     /**
      * @param string $type
      *
@@ -475,7 +487,7 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderConditionI
      *
      * @return $this
     */
-    protected function joined(string $type, string $table, string $condition): static
+    protected function joins(string $type, string $table, string $condition): static
     {
         return $this->addJoin(["$type $table ON $condition"]);
     }
@@ -492,7 +504,7 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderConditionI
     */
     private function resolveSelects(string|array $selects): string
     {
-        return is_array($selects) ? join(', ', $selects) : $selects;
+          return is_array($selects) ? join(', ', $selects) : $selects;
     }
 
 

@@ -5,7 +5,7 @@ namespace Laventure\Component\Database\Builder\SQL\Commands;
 /**
  * @inheritdoc
 */
-abstract class BuilderConditions extends Builder
+abstract class BuilderConditions extends Builder implements BuilderConditionInterface
 {
 
 
