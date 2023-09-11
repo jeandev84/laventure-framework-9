@@ -1,6 +1,8 @@
 <?php
 namespace  Laventure\Component\Database\Builder\SQL\Commands;
 
+use Laventure\Component\Database\Builder\SQL\Commands\Expr\Expr;
+
 /**
  * @BuilderConditionInterface
  *
@@ -12,5 +14,9 @@ namespace  Laventure\Component\Database\Builder\SQL\Commands;
 */
 interface HasExpressionBuilderInterface
 {
-     public function expr();
+
+     /**
+      * @return Expr
+     */
+     public function expr(): Expr;
 }

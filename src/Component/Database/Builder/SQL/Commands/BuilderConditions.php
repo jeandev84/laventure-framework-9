@@ -99,7 +99,7 @@ abstract class BuilderConditions extends Builder implements BuilderConditionInte
 
 
     /**
-     * @return Expr
+     * @inheritdoc
     */
     public function expr(): Expr
     {
