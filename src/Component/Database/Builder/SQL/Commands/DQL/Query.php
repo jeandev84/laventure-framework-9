@@ -2,7 +2,7 @@
 namespace Laventure\Component\Database\Builder\SQL\Commands\DQL;
 
 use Laventure\Component\Database\Builder\SQL\Commands\DQL\Contract\QueryHydrateInterface;
-use Laventure\Component\Database\Builder\SQL\Commands\DQL\Persistence\PersistenceResultInterface;
+use Laventure\Component\Database\Builder\SQL\Commands\DQL\Persistence\ObjectPersistenceInterface;
 use Laventure\Component\Database\Connection\Query\QueryResultInterface;
 
 
@@ -15,7 +15,7 @@ class Query implements QueryHydrateInterface
 
     public function __construct(
         protected QueryResultInterface $query,
-        protected PersistenceResultInterface $persistence
+        protected ObjectPersistenceInterface $persistence
     )
     {
     }
@@ -42,7 +42,7 @@ class Query implements QueryHydrateInterface
     */
     public function getOneOrNullResult(): mixed
     {
-        return $this->persistence->saveOneResult($this->query->one());
+        return $this->persistence->saveOne($this->query->one());
     }
 
 

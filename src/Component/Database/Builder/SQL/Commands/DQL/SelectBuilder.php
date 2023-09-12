@@ -4,8 +4,8 @@ namespace Laventure\Component\Database\Builder\SQL\Commands\DQL;
 
 use Laventure\Component\Database\Builder\SQL\Commands\BuilderConditions;
 use Laventure\Component\Database\Builder\SQL\Commands\DQL\Contract\PaginatedQueryInterface;
-use Laventure\Component\Database\Builder\SQL\Commands\DQL\Persistence\NullPersistenceResult;
-use Laventure\Component\Database\Builder\SQL\Commands\DQL\Persistence\PersistenceResultInterface;
+use Laventure\Component\Database\Builder\SQL\Commands\DQL\Persistence\NullObjectPersistence;
+use Laventure\Component\Database\Builder\SQL\Commands\DQL\Persistence\ObjectPersistenceInterface;
 use Laventure\Component\Database\Builder\SQL\Commands\DQL\Contract\SelectBuilderInterface;
 use Laventure\Component\Database\Builder\SQL\Commands\DQL\Contract\QueryHydrateInterface;
 use Laventure\Component\Database\Connection\ConnectionInterface;
@@ -94,9 +94,9 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderInterface
 
 
     /**
-     * @var PersistenceResultInterface
+     * @var ObjectPersistenceInterface
     */
-    protected PersistenceResultInterface $persistence;
+    protected ObjectPersistenceInterface $persistence;
 
 
 
@@ -109,7 +109,7 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderInterface
     {
          parent::__construct($connection);
          $this->addSelect($selects ?: "*");
-         $this->persistence = new NullPersistenceResult();
+         $this->persistence = new NullObjectPersistence();
     }
 
 
@@ -353,7 +353,7 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderInterface
     /**
      * @inheritDoc
     */
-    public function persistence(PersistenceResultInterface $persistence): static
+    public function persistence(ObjectPersistenceInterface $persistence): static
     {
          $this->persistence = $persistence;
 
@@ -394,7 +394,7 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderInterface
     /**
      * @inheritdoc
     */
-    public function getPersistence(): PersistenceResultInterface
+    public function getPersistence(): ObjectPersistenceInterface
     {
         return $this->persistence;
     }

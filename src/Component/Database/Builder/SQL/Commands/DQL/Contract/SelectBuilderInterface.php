@@ -3,7 +3,7 @@ namespace Laventure\Component\Database\Builder\SQL\Commands\DQL\Contract;
 
 
 use Laventure\Component\Database\Connection\Query\QueryResultInterface;
-use Laventure\Component\Database\Builder\SQL\Commands\DQL\Persistence\PersistenceResultInterface;
+use Laventure\Component\Database\Builder\SQL\Commands\DQL\Persistence\ObjectPersistenceInterface;
 
 
 /**
@@ -239,11 +239,11 @@ interface SelectBuilderInterface
     /**
      * Persistence manager
      *
-     * @param PersistenceResultInterface $persistence
+     * @param ObjectPersistenceInterface $persistence
      *
      * @return $this
     */
-    public function persistence(PersistenceResultInterface $persistence): static;
+    public function persistence(ObjectPersistenceInterface $persistence): static;
 
 
 
@@ -271,7 +271,7 @@ interface SelectBuilderInterface
 
 
     /**
-     * @return PersistenceResultInterface
+     * @return ObjectPersistenceInterface
     */
-    public function getPersistence(): PersistenceResultInterface;
+    public function getPersistence(): ObjectPersistenceInterface;
 }

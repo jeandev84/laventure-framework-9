@@ -11,31 +11,31 @@ namespace Laventure\Component\Database\Builder\SQL\Commands\DQL\Persistence;
  *
  * @package Laventure\Component\Database\Builder\SQL\Commands\DQL\Persistence
  */
-interface PersistenceResultInterface
+interface ObjectPersistenceInterface
 {
 
-       /**
-        * Save objects collection result and returns them
-        *
-        * @param object[] $objects
-        *
-        * @return object[]
-       */
-       public function saveResult(array $objects): mixed;
+        /**
+         * Save objects collection result and returns them
+         *
+         * @param object[] $objects
+         *
+         * @return object[]
+        */
+        public function saveResult(array $objects): mixed;
 
 
-       
 
 
-       
-       
+
+
+
        /**
         * Save and returns saved object
         *
-        * @param object $object
-        * 
-        * 
+        * @param mixed $object
+        *
+        *
         * @return object|null
        */
-       public function saveOneResult(object $object): mixed;
+       public function saveOne(mixed $object): mixed;
 }

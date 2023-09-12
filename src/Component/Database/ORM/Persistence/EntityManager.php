@@ -3,7 +3,7 @@ namespace Laventure\Component\Database\ORM\Persistence;
 
 use Closure;
 use Exception;
-use Laventure\Component\Database\Builder\SQL\Commands\DQL\Persistence\PersistenceResultInterface;
+use Laventure\Component\Database\Builder\SQL\Commands\DQL\Persistence\ObjectPersistenceInterface;
 use Laventure\Component\Database\Connection\ConnectionInterface;
 use Laventure\Component\Database\Connection\Query\QueryInterface;
 use Laventure\Component\Database\ORM\Persistence\Manager\EntityManagerInterface;
@@ -22,7 +22,7 @@ use Laventure\Component\Database\ORM\Persistence\Repository\EntityRepositoryFact
 /**
  * @inheritdoc
 */
-class EntityManager implements EntityManagerInterface, PersistenceResultInterface
+class EntityManager implements EntityManagerInterface, ObjectPersistenceInterface
 {
 
     /**
@@ -416,7 +416,7 @@ class EntityManager implements EntityManagerInterface, PersistenceResultInterfac
     {
         foreach ($objects as $object) {
             if (! is_object($object)) { continue; }
-            $this->saveOneResult($object);
+            $this->saveOne($object);
         }
 
         return $objects;
@@ -431,7 +431,7 @@ class EntityManager implements EntityManagerInterface, PersistenceResultInterfac
     /**
      * @inheritdoc
     */
-    public function saveOneResult(object $object): object
+    public function saveOne(object $object): object
     {
         $this->persist($object);
         $this->managed[get_class($object)] = $object;
