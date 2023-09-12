@@ -219,7 +219,7 @@ abstract class BuilderConditions extends Builder implements BuilderConditionInte
     */
     protected function addConditions(): static
     {
-        return $this->addSQL($this->buildConditions());
+        return $this->addSQLPart($this->buildConditions());
     }
 
 

@@ -43,11 +43,18 @@ abstract class Builder implements BuilderInterface
 
 
 
+        /**
+         * @var array
+        */
+        protected array $parts = [];
+
+
+
 
         /**
          * @var array
         */
-        protected array $sql = [];
+        protected array $queries = [];
 
 
 
@@ -114,6 +121,23 @@ abstract class Builder implements BuilderInterface
 
 
        /**
+        * @return $this
+       */
+       public function executeQueries(): static
+       {
+           if ($this->queries) {
+               foreach ($this->queries as $query) {
+                   $this->connection->executeQuery($query);
+               }
+           }
+
+           return $this;
+       }
+
+
+
+
+       /**
         * @return QueryInterface
        */
        public function getStatement(): QueryInterface
@@ -123,6 +147,19 @@ abstract class Builder implements BuilderInterface
 
 
 
+
+
+
+       /**
+        * @param string $sql
+        * @return $this
+       */
+       public function addQuery(string $sql): static
+       {
+            $this->queries[] = $sql;
+
+            return $this;
+       }
 
 
 
@@ -144,7 +181,7 @@ abstract class Builder implements BuilderInterface
        *
        * @return array
      */
-     protected function getBindings(array $attributes): array
+     protected function bind(array $attributes): array
      {
          return [];
      }
@@ -160,27 +197,13 @@ abstract class Builder implements BuilderInterface
        *
        * @return $this
       */
-      public function addSQL(string $sql): static
+      protected function addSQLPart(string $sql): static
       {
-            $this->sql[] = $sql;
+            $this->parts[] = $sql;
 
             return $this;
       }
 
-
-
-
-
-
-     /**
-      * Returns SQL query
-      *
-      * @return string
-     */
-     public function getSQL(): string
-     {
-          return $this->__toString();
-     }
 
 
 
@@ -192,6 +215,25 @@ abstract class Builder implements BuilderInterface
      public function __toString(): string
      {
          return $this->getSQL();
-         # return join(' ', array_filter($this->sql)) . ";";
      }
+
+
+
+
+
+    /**
+     * @return string
+    */
+    protected function buildQuery(): string
+    {
+        return join(' ', array_filter($this->parts)) . ";";
+    }
+
+
+
+
+    /**
+     * @inheritdoc
+    */
+    abstract public function getSQL(): string;
 }

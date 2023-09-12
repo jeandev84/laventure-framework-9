@@ -21,7 +21,7 @@ interface BuilderInterface
        *
        * @return string
       */
-      public function getSQl(): string;
+      public function getSQL(): string;
 
 
 
@@ -68,4 +68,23 @@ interface BuilderInterface
      * @return QueryInterface
     */
     public function getStatement(): QueryInterface;
+
+
+
+
+
+    /**
+     * @param string $sql
+     *
+     * @return $this
+    */
+    public function addQuery(string $sql): static;
+
+
+
+
+    /**
+     * @return $this
+    */
+    public function executeQueries(): static;
 }

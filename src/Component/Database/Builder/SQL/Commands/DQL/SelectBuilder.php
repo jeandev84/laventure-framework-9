@@ -414,8 +414,10 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderInterface
                     ->joined()
                     ->grouped()
                     ->ordered()
-                    ->limited();
+                    ->limited()
+                    ->buildQuery();
     }
+
 
 
 
@@ -429,7 +431,7 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderInterface
     {
         $selects = join(', ', $this->selects);
         $command = sprintf('SELECT %s FROM %s', $selects, $this->fromTables());
-        return $this->addSQL($command);
+        return $this->addSQLPart($command);
     }
 
 
@@ -446,7 +448,7 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderInterface
              return $this;
         }
 
-        $this->addSQL(join(' ', $this->joins));
+        $this->addSQLPart(join(' ', $this->joins));
 
         return $this->addConditions();
     }
@@ -464,13 +466,13 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderInterface
             return $this;
         }
 
-        $group = $this->addSQL(sprintf('GROUP BY %s', join($this->groupBy)));
+        $group = $this->addSQLPart(sprintf('GROUP BY %s', join($this->groupBy)));
 
         if (! $this->having) {
             return $group;
         }
 
-        return $this->addSQL(sprintf('HAVING %s', join($this->having)));
+        return $this->addSQLPart(sprintf('HAVING %s', join($this->having)));
     }
 
 
@@ -488,7 +490,7 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderInterface
             return $this;
         }
 
-        return $this->addSQL(sprintf('ORDER BY %s', join(',', $this->orderBy)));
+        return $this->addSQLPart(sprintf('ORDER BY %s', join(',', $this->orderBy)));
     }
 
 
@@ -501,10 +503,14 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderInterface
     private function limited(): static
     {
         if (! $this->limit) {
-             return $this;
+            return $this;
         }
 
-        return $this->addSQL("LIMIT {$this->limit}". ($this->offset ? " OFFSET {$this->offset}" : ""));
+        if ($this->offset) {
+            return $this->addSQLPart("LIMIT {$this->limit} $this->offset");
+        }
+
+        return $this->addSQLPart("LIMIT {$this->limit}");
     }
 
 

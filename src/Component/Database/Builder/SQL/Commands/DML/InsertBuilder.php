@@ -52,7 +52,7 @@ class InsertBuilder extends Builder implements InsertBuilderInterface
     */
     public function insert(array $attributes): static
     {
-         $attributes     = $this->getBindings($attributes);
+         $attributes     = $this->bind($attributes);
          $this->columns  = array_keys($attributes);
          $this->values[] = '('. join(', ', array_values($attributes)) . ')';
 
@@ -90,7 +90,7 @@ class InsertBuilder extends Builder implements InsertBuilderInterface
     {
         $columns = join(', ', $this->columns());
         $values  = join(', ', $this->values());
-        return $this->addSQL(sprintf("INSERT INTO {$this->getTable()} (%s) VALUES %s", $columns, $values));
+        return $this->addSQLPart(sprintf("INSERT INTO {$this->getTable()} (%s) VALUES %s", $columns, $values));
     }
 
 
@@ -171,7 +171,7 @@ class InsertBuilder extends Builder implements InsertBuilderInterface
     /**
      * @inheritdoc
     */
-    protected function getBindings(array $attributes): array
+    protected function bind(array $attributes): array
     {
         $bindings = [];
         foreach ($attributes as $column => $value) {
