@@ -3,15 +3,19 @@ namespace Laventure\Component\Database\Builder\SQL\Commands\DQL;
 
 
 use Laventure\Component\Database\Builder\SQL\Commands\BuilderConditions;
-use Laventure\Component\Database\Builder\SQL\Commands\DQL\Contract\SelectBuilderConditionInterface;
+use Laventure\Component\Database\Builder\SQL\Commands\DQL\Contract\PaginatedQueryInterface;
+use Laventure\Component\Database\Builder\SQL\Commands\DQL\Persistence\NullPersistenceResult;
+use Laventure\Component\Database\Builder\SQL\Commands\DQL\Persistence\PersistenceResultInterface;
+use Laventure\Component\Database\Builder\SQL\Commands\DQL\Contract\SelectBuilderInterface;
+use Laventure\Component\Database\Builder\SQL\Commands\DQL\Contract\QueryHydrateInterface;
 use Laventure\Component\Database\Connection\ConnectionInterface;
-use Laventure\Component\Database\Connection\Query\QueryResultInterface;
+
 
 
 /**
  * @inheritdoc
 */
-class SelectBuilder extends BuilderConditions implements SelectBuilderConditionInterface
+class SelectBuilder extends BuilderConditions implements SelectBuilderInterface
 {
 
     /**
@@ -90,6 +94,13 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderConditionI
 
 
     /**
+     * @var PersistenceResultInterface
+    */
+    protected PersistenceResultInterface $persistence;
+
+
+
+    /**
      * @param ConnectionInterface $connection
      *
      * @param string|null $selects
@@ -98,7 +109,10 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderConditionI
     {
          parent::__construct($connection);
          $this->addSelect($selects ?: "*");
+         $this->persistence = new NullPersistenceResult();
     }
+
+
 
 
 
@@ -114,6 +128,7 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderConditionI
 
          return $this;
     }
+
 
 
 
@@ -324,7 +339,7 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderConditionI
     */
     public function map(string $classname): static
     {
-         $this->mappedClass = $classname;
+         $this->getStatement()->map($classname);
 
          return $this;
     }
@@ -338,16 +353,52 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderConditionI
     /**
      * @inheritDoc
     */
-    public function fetch(): QueryResultInterface
+    public function persistence(PersistenceResultInterface $persistence): static
     {
-         $statement = $this->statement();
+         $this->persistence = $persistence;
 
-         if ($this->mappedClass) {
-              $statement->map($this->mappedClass);
-         }
-
-         return $statement->fetch();
+         return $this;
     }
+
+
+
+
+
+
+    /**
+     * @inheritDoc
+    */
+    public function getQuery(): QueryHydrateInterface
+    {
+         return new Query($this->getStatement()->fetch(), $this->persistence);
+    }
+
+
+
+
+
+
+
+    /**
+     * @inheritDoc
+    */
+    public function getPaginatedQuery(): PaginatedQueryInterface
+    {
+         return new PaginatedQuery($this);
+    }
+
+
+
+
+
+    /**
+     * @inheritdoc
+    */
+    public function getPersistence(): PersistenceResultInterface
+    {
+        return $this->persistence;
+    }
+
 
 
 

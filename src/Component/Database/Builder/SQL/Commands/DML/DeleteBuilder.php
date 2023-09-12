@@ -32,7 +32,7 @@ class DeleteBuilder extends BuilderConditions implements DeleteBuilderInterface
     */
     public function execute(): bool
     {
-         return $this->statement()
+         return $this->getStatement()
                      ->setParameters($this->parameters)
                      ->execute();
     }

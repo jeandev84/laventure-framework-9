@@ -9,7 +9,7 @@ namespace Laventure\Component\Database\Connection\Configuration;
  *
  * @license https://github.com/jeandev84/laventure-framework/blob/master/LICENSE
  *
- * @package Laventure\Component\Database\Connection\Definition
+ * @package Laventure\Component\Database\Connection\Configuration
 */
 interface ConfigurationInterface extends \ArrayAccess
 {
@@ -42,9 +42,9 @@ interface ConfigurationInterface extends \ArrayAccess
         /**
          * Returns connection user
          *
-         * @return string|null
+         * @return string
         */
-        public function username(): ?string;
+        public function username(): string;
 
 
 
@@ -54,9 +54,9 @@ interface ConfigurationInterface extends \ArrayAccess
         /**
          * Returns connection password
          *
-         * @return string|null
+         * @return string
         */
-        public function password(): ?string;
+        public function password(): string;
 
 
 

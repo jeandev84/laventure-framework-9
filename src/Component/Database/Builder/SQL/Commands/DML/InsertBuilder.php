@@ -52,12 +52,27 @@ class InsertBuilder extends Builder implements InsertBuilderInterface
     */
     public function insert(array $attributes): static
     {
-         $attributes     = $this->bind($attributes);
+         $attributes     = $this->getBindings($attributes);
          $this->columns  = array_keys($attributes);
          $this->values[] = '('. join(', ', array_values($attributes)) . ')';
 
          $this->index++;
          return $this;
+    }
+
+
+
+
+    /**
+     * @param string $table
+     *
+     * @param string $alias
+     *
+     * @return $this
+    */
+    public function table(string $table, string $alias = ''): static
+    {
+        return parent::table($table, $alias);
     }
 
 
@@ -114,7 +129,7 @@ class InsertBuilder extends Builder implements InsertBuilderInterface
     */
     public function execute(): int
     {
-        return $this->statement()
+        return $this->getStatement()
                    ->setParameters($this->attributes)
                    ->execute();
     }
@@ -156,7 +171,7 @@ class InsertBuilder extends Builder implements InsertBuilderInterface
     /**
      * @inheritdoc
     */
-    protected function bind(array $attributes): array
+    protected function getBindings(array $attributes): array
     {
         $bindings = [];
         foreach ($attributes as $column => $value) {

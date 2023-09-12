@@ -3,7 +3,7 @@ namespace Laventure\Component\Database\Connection\Query;
 
 
 /**
- * @SelectQueryInterface
+ * @QueryHydrateInterface
  *
  * @author Jean-Claude <jeanyao@ymail.com>
  *

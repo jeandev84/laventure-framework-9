@@ -3,6 +3,7 @@ namespace Laventure\Component\Database\Builder\SQL\Commands\DML;
 
 use Laventure\Component\Database\Builder\SQL\Commands\BuilderConditions;
 use Laventure\Component\Database\Builder\SQL\Commands\DML\Contract\UpdateBuilderInterface;
+use Laventure\Component\Database\Connection\ConnectionInterface;
 
 
 /**
@@ -64,7 +65,7 @@ class UpdateBuilder extends BuilderConditions implements UpdateBuilderInterface
     */
     public function execute(): bool
     {
-        return $this->statement()
+        return $this->getStatement()
                     ->setParameters($this->parameters)
                     ->execute();
     }

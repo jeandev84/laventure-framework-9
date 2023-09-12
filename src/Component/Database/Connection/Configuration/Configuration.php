@@ -84,7 +84,7 @@ class Configuration implements ConfigurationInterface
         public function required(string $name): mixed
         {
              if ($this->empty($name)) {
-                 trigger_error("Connection config param $name is required.");
+                 $this->abortIf("Connection config param $name is required.");
              }
 
              return $this->get($name);
@@ -170,7 +170,7 @@ class Configuration implements ConfigurationInterface
         */
         public function driver(): string
         {
-            return $this->get('driver');
+            return $this->required('driver');
         }
 
 
@@ -181,9 +181,9 @@ class Configuration implements ConfigurationInterface
         /**
          * @inheritDoc
         */
-        public function username(): ?string
+        public function username(): string
         {
-            return $this->get('username');
+            return $this->required('username');
         }
 
 
@@ -195,9 +195,9 @@ class Configuration implements ConfigurationInterface
         /**
          * @inheritDoc
         */
-        public function password(): ?string
+        public function password(): string
         {
-            return $this->get('password');
+            return $this->required('password');
         }
 
 
@@ -252,7 +252,7 @@ class Configuration implements ConfigurationInterface
         */
         public function host(): string
         {
-            return $this->get('host', '');
+            return $this->required('host');
         }
 
 
@@ -265,7 +265,7 @@ class Configuration implements ConfigurationInterface
         */
         public function port(): string
         {
-            return $this->get('port', '');
+            return $this->required('port');
         }
 
 
@@ -277,7 +277,7 @@ class Configuration implements ConfigurationInterface
         */
         public function database(): string
         {
-            return $this->get('database', '');
+            return $this->required('database');
         }
 
 

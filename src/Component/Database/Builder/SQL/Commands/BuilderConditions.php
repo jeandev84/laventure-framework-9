@@ -73,6 +73,42 @@ abstract class BuilderConditions extends Builder implements BuilderConditionInte
 
 
 
+    /**
+     * @param array $conditions
+     *
+     * @return $this
+     */
+    public function andWheres(array $conditions): static
+    {
+        foreach ($conditions as $condition) {
+            $this->andWhere($condition);
+        }
+
+        return $this;
+    }
+
+
+
+
+
+
+    /**
+     * @param array $conditions
+     *
+     * @return $this
+    */
+    public function orWheres(array $conditions): static
+    {
+        foreach ($conditions as $condition) {
+            $this->orWhere($condition);
+        }
+
+        return $this;
+    }
+
+
+
+
 
     /**
      * @param array $criteria
@@ -137,6 +173,17 @@ abstract class BuilderConditions extends Builder implements BuilderConditionInte
          $this->parameters = array_merge($this->parameters, $parameters);
 
          return $this;
+    }
+
+
+
+
+    /**
+     * @return array
+    */
+    public function getParameters(): array
+    {
+        return $this->parameters;
     }
 
 

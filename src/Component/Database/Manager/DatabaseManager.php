@@ -6,7 +6,7 @@ use Laventure\Component\Database\Connection\Configuration\Configuration;
 use Laventure\Component\Database\Connection\Configuration\ConfigurationInterface;
 use Laventure\Component\Database\Connection\ConnectionInterface;
 use Laventure\Component\Database\Connection\ConnectionStack;
-
+use Laventure\Component\Database\Connection\Extensions\PDO\PdoConnectionInterface;
 
 
 /**
@@ -186,6 +186,22 @@ class DatabaseManager implements DatabaseManagerInterface
 
 
 
+
+
+
+    /**
+     * @param string|null $name
+    */
+    public function pdoConnection(string $name = null): ConnectionInterface
+    {
+        $connection = $this->connection($name);
+
+        if (! $connection instanceof PdoConnectionInterface) {
+            throw new \RuntimeException("no pdo connection detected for $name.");
+        }
+
+        return $connection;
+    }
 
 
 

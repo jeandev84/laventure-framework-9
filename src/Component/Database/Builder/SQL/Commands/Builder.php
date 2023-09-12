@@ -15,7 +15,7 @@ use Laventure\Component\Database\Connection\Query\QueryInterface;
  *
  * @package Laventure\Component\Database\Builder\SQL\Commands
 */
-abstract class Builder
+abstract class Builder implements BuilderInterface
 {
 
         /**
@@ -72,6 +72,22 @@ abstract class Builder
 
 
 
+
+
+       /**
+        * @inheritDoc
+       */
+       public function getConnection(): ConnectionInterface
+       {
+              return $this->connection;
+       }
+
+
+
+
+
+
+
        /**
         * @return string
        */
@@ -88,7 +104,7 @@ abstract class Builder
        /**
         * @return string
        */
-       public function getAlias(): string
+       public function getTableAlias(): string
        {
            return $this->alias;
        }
@@ -100,7 +116,7 @@ abstract class Builder
        /**
         * @return QueryInterface
        */
-       protected function statement(): QueryInterface
+       public function getStatement(): QueryInterface
        {
             return $this->connection->statement($this->getSQL());
        }
@@ -122,23 +138,16 @@ abstract class Builder
 
 
 
-      /**
+
+     /**
        * @param array $attributes
        *
        * @return array
      */
-     protected function bind(array $attributes): array
+     protected function getBindings(array $attributes): array
      {
-         $bindings = [];
-         foreach ($attributes as $column => $value) {
-            if ($this->hasPdoConnection()) {
-                $bindings[] = "$column = :$column";
-            } else {
-                $bindings[] = "$column = '$value'";
-            }
-         }
-         return $bindings;
-    }
+         return [];
+     }
 
 
 
@@ -146,8 +155,7 @@ abstract class Builder
 
 
 
-
-    /**
+      /**
        * @param string $sql
        *
        * @return $this
@@ -183,6 +191,7 @@ abstract class Builder
      */
      public function __toString(): string
      {
-         return join(' ', array_filter($this->sql)) . ";";
+         return $this->getSQL();
+         # return join(' ', array_filter($this->sql)) . ";";
      }
 }
