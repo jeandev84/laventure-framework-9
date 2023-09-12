@@ -189,10 +189,11 @@ abstract class BuilderConditions extends Builder implements BuilderConditionInte
 
 
 
+
     /**
-     * @return string
+     * @inheritdoc
     */
-    protected function buildConditions(): string
+    public function getSQLConditions(): string
     {
         if (! $this->wheres) { return '';}
 
@@ -219,7 +220,7 @@ abstract class BuilderConditions extends Builder implements BuilderConditionInte
     */
     protected function addConditions(): static
     {
-        return $this->addSQLPart($this->buildConditions());
+        return $this->addSQLPart($this->getSQLConditions());
     }
 
 

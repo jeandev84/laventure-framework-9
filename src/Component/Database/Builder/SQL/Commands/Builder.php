@@ -4,6 +4,7 @@ namespace Laventure\Component\Database\Builder\SQL\Commands;
 use Laventure\Component\Database\Connection\ConnectionInterface;
 use Laventure\Component\Database\Connection\Extensions\PDO\PdoConnectionInterface;
 use Laventure\Component\Database\Connection\Query\QueryInterface;
+use RuntimeException;
 
 
 /**
@@ -15,31 +16,13 @@ use Laventure\Component\Database\Connection\Query\QueryInterface;
  *
  * @package Laventure\Component\Database\Builder\SQL\Commands
 */
-abstract class Builder implements BuilderInterface
+abstract class Builder
 {
 
         /**
          * @var ConnectionInterface
         */
         protected ConnectionInterface $connection;
-
-
-
-
-        /**
-         * @var string
-        */
-        protected string $table;
-
-
-
-
-
-        /**
-         * @var string
-        */
-        protected string $alias;
-
 
 
 
@@ -63,17 +46,12 @@ abstract class Builder implements BuilderInterface
 
        /**
          * @param ConnectionInterface $connection
-         *
-         * @param string $table
-         *
-         * @param string $alias
        */
-       public function __construct(ConnectionInterface $connection, string $table = '', string $alias = '')
+       public function __construct(ConnectionInterface $connection)
        {
             $this->connection = $connection;
-            $this->table      = $table;
-            $this->alias      = $alias;
        }
+
 
 
 
@@ -98,22 +76,9 @@ abstract class Builder implements BuilderInterface
        /**
         * @return string
        */
-       public function getTable(): string
-       {
-           return $this->table;
-       }
-
-
-
-
-
-
-       /**
-        * @return string
-       */
        public function getTableAlias(): string
        {
-           return $this->alias;
+           return '';
        }
 
 
@@ -160,6 +125,10 @@ abstract class Builder implements BuilderInterface
 
             return $this;
        }
+
+
+
+
 
 
 
@@ -253,6 +222,16 @@ abstract class Builder implements BuilderInterface
     {
         return join(' ', array_filter($this->parts)) . ";";
     }
+
+
+
+
+
+    /**
+     * @return string
+    */
+    abstract public function getTable(): string;
+
 
 
 

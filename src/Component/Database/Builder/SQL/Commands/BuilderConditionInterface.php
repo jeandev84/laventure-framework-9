@@ -11,7 +11,7 @@ namespace Laventure\Component\Database\Builder\SQL\Commands;
  *
  * @package Laventure\Component\Database\Builder\SQL\Commands
 */
-interface BuilderConditionInterface extends BuilderExpressionInterface
+interface BuilderConditionInterface extends BuilderInterface
 {
 
       /**
@@ -20,7 +20,6 @@ interface BuilderConditionInterface extends BuilderExpressionInterface
        * @return $this
       */
       public function where(string $condition): static;
-
 
 
 
@@ -64,6 +63,8 @@ interface BuilderConditionInterface extends BuilderExpressionInterface
 
 
 
+
+
       /**
        * @param string $name
        *
@@ -84,4 +85,18 @@ interface BuilderConditionInterface extends BuilderExpressionInterface
        * @return $this
       */
       public function setParameters(array $parameters): static;
+
+
+
+
+
+
+
+
+      /**
+       * Returns queries part
+       *
+       * @return string
+      */
+      public function getSQLConditions(): string;
 }

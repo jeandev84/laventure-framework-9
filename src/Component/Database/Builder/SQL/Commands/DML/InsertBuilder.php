@@ -4,6 +4,7 @@ namespace Laventure\Component\Database\Builder\SQL\Commands\DML;
 
 use Laventure\Component\Database\Builder\SQL\Commands\Builder;
 use Laventure\Component\Database\Builder\SQL\Commands\DML\Contract\InsertBuilderInterface;
+use Laventure\Component\Database\Builder\SQL\Commands\HasTable;
 
 
 /**
@@ -11,6 +12,10 @@ use Laventure\Component\Database\Builder\SQL\Commands\DML\Contract\InsertBuilder
 */
 class InsertBuilder extends Builder implements InsertBuilderInterface
 {
+
+    use HasTable;
+
+
 
     /**
      * @var int
@@ -59,22 +64,6 @@ class InsertBuilder extends Builder implements InsertBuilderInterface
          $this->index++;
          return $this;
     }
-
-
-
-
-    /**
-     * @param string $table
-     *
-     * @param string $alias
-     *
-     * @return $this
-    */
-    public function table(string $table, string $alias = ''): static
-    {
-        return parent::table($table, $alias);
-    }
-
 
 
 

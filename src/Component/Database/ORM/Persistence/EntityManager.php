@@ -111,6 +111,13 @@ class EntityManager implements EntityManagerInterface
 
 
 
+    /**
+     * @var array
+    */
+    protected array $namedQueries = [];
+
+
+
 
 
     /**
@@ -242,6 +249,48 @@ class EntityManager implements EntityManagerInterface
          return $this->connection->statement($sql, $parameters);
     }
 
+
+
+
+
+    /**
+     * @param string $name
+     *
+     * @param $query
+     *
+     * @return $this
+    */
+    public function addNamedQuery(string $name, $query): static
+    {
+         $this->namedQueries[$name] = $query;
+
+         return $this;
+    }
+
+
+
+
+
+    /**
+     * @return array
+    */
+    public function getNamedQueries(): array
+    {
+        return $this->namedQueries;
+    }
+
+
+
+
+    /**
+     * @param string $name
+     *
+     * @return bool
+    */
+    public function hasNamedQuery(string $name): bool
+    {
+         return ! empty($this->namedQueries[$name]);
+    }
 
 
 

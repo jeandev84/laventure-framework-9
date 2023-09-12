@@ -3,6 +3,7 @@ namespace Laventure\Component\Database\Builder\SQL\Commands\DML;
 
 use Laventure\Component\Database\Builder\SQL\Commands\BuilderConditions;
 use Laventure\Component\Database\Builder\SQL\Commands\DML\Contract\UpdateBuilderInterface;
+use Laventure\Component\Database\Builder\SQL\Commands\HasTable;
 use Laventure\Component\Database\Connection\ConnectionInterface;
 
 
@@ -11,6 +12,9 @@ use Laventure\Component\Database\Connection\ConnectionInterface;
 */
 class UpdateBuilder extends BuilderConditions implements UpdateBuilderInterface
 {
+
+
+    use HasTable;
 
 
     /**
@@ -26,11 +30,13 @@ class UpdateBuilder extends BuilderConditions implements UpdateBuilderInterface
     /**
      * @inheritDoc
     */
-    public function update(array $attributes): static
+    public function update(array $attributes, array $wheres = []): static
     {
           foreach ($attributes as $column => $value) {
                 $this->set($column, $value);
           }
+
+          $this->criteria($wheres);
 
           return $this;
     }

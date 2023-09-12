@@ -1,8 +1,8 @@
 <?php
 namespace Laventure\Component\Database\Builder\SQL\Commands\DML\Contract;
 
-
 use Laventure\Component\Database\Builder\SQL\Commands\BuilderConditionInterface;
+
 
 /**
  * @DeleteBuilderInterface
@@ -13,7 +13,7 @@ use Laventure\Component\Database\Builder\SQL\Commands\BuilderConditionInterface;
  *
  * @package Laventure\Component\Database\Builder\SQL\Commands\DML\Contract
 */
-interface DeleteBuilderInterface
+interface DeleteBuilderInterface extends BuilderConditionInterface
 {
 
       /**
@@ -22,6 +22,21 @@ interface DeleteBuilderInterface
        * @return static
       */
       public function delete(array $wheres = []): static;
+
+
+
+
+
+
+
+      /**
+       * @param string $table
+       *
+       * @param string $alias
+       *
+       * @return $this
+      */
+      public function table(string $table, string $alias = ''): static;
 
 
 

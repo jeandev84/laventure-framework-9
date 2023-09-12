@@ -56,18 +56,18 @@ interface BuilderInterface
        * Returns connection
        *
        * @return ConnectionInterface
+      */
+      public function getConnection(): ConnectionInterface;
+
+
+
+
+
+
+     /**
+      * @return QueryInterface
      */
-     public function getConnection(): ConnectionInterface;
-
-
-
-
-
-
-    /**
-     * @return QueryInterface
-    */
-    public function getStatement(): QueryInterface;
+     public function getStatement(): QueryInterface;
 
 
 
@@ -79,6 +79,9 @@ interface BuilderInterface
      * @return $this
     */
     public function addQuery(string $sql): static;
+
+
+
 
 
 

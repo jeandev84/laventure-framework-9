@@ -63,8 +63,9 @@ class SqlQueryBuilder implements SqlQueryBuilderInterface
     */
     public function insert(string $table, array $attributes): InsertBuilder
     {
-        $builder = new InsertBuilder($this->connection, $table);
-        $builder->insert($attributes);
+        $builder = new InsertBuilder($this->connection);
+        $builder->insert($attributes)
+                ->table($table);
         return $builder;
     }
 
@@ -80,8 +81,9 @@ class SqlQueryBuilder implements SqlQueryBuilderInterface
     */
     public function update(string $table, array $attributes): UpdateBuilder
     {
-        $builder = new UpdateBuilder($this->connection, $table);
-        $builder->update($attributes);
+        $builder = new UpdateBuilder($this->connection);
+        $builder->update($attributes)
+                ->table($table);
         return $builder;
     }
 
@@ -96,6 +98,8 @@ class SqlQueryBuilder implements SqlQueryBuilderInterface
     */
     public function delete(string $table): DeleteBuilder
     {
-        return new DeleteBuilder($this->connection, $table);
+        $builder = new DeleteBuilder($this->connection);
+        $builder->table($table);
+        return $builder;
     }
 }

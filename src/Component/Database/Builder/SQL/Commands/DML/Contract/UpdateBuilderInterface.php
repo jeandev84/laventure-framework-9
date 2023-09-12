@@ -3,6 +3,8 @@ namespace Laventure\Component\Database\Builder\SQL\Commands\DML\Contract;
 
 use Laventure\Component\Database\Builder\SQL\Commands\BuilderConditionInterface;
 
+
+
 /**
  * @UpdateBuilderInterface
  *
@@ -12,15 +14,34 @@ use Laventure\Component\Database\Builder\SQL\Commands\BuilderConditionInterface;
  *
  * @package Laventure\Component\Database\Builder\SQL\Commands\DML\Contract
 */
-interface UpdateBuilderInterface
+interface UpdateBuilderInterface extends BuilderConditionInterface
 {
 
       /**
        * @param array $attributes
        *
+       * @param array $wheres
+       *
        * @return static
       */
-      public function update(array $attributes): static;
+      public function update(array $attributes, array $wheres = []): static;
+
+
+
+
+
+
+      /**
+       * @param string $table
+       *
+       * @param string $alias
+       *
+       * @return $this
+      */
+      public function table(string $table, string $alias = ''): static;
+
+
+
 
 
 
