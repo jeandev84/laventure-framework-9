@@ -339,7 +339,7 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderInterface
     */
     public function map(string $classname): static
     {
-         $this->getStatement()->map($classname);
+         $this->mappedClass = $classname;
 
          return $this;
     }
@@ -370,7 +370,13 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderInterface
     */
     public function getQuery(): QueryHydrateInterface
     {
-         return new Query($this->getStatement()->fetch(), $this->persistence);
+         $statement = $this->getStatement();
+
+         if ($this->mappedClass) {
+             $statement->map($this->mappedClass);
+         }
+
+         return new Query($statement->fetch(), $this->persistence);
     }
 
 

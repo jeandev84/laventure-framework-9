@@ -208,6 +208,31 @@ abstract class Builder implements BuilderInterface
 
 
 
+      /**
+       * @return array
+      */
+      public function getParts(): array
+      {
+          return $this->parts;
+      }
+
+
+
+
+      /**
+       * @return array
+      */
+      public function getQueries(): array
+      {
+          $this->queries[] = $this->getSQL();
+
+          return $this->queries;
+      }
+
+
+
+
+
 
      /**
       * @return string

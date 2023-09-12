@@ -13,10 +13,13 @@ class Query implements QueryHydrateInterface
 {
 
 
-    public function __construct(
-        protected QueryResultInterface $query,
-        protected ObjectPersistenceInterface $persistence
-    )
+
+    /**
+     * @param QueryResultInterface $result
+     *
+     * @param ObjectPersistenceInterface $persistence
+    */
+    public function __construct(protected QueryResultInterface $result, protected ObjectPersistenceInterface $persistence)
     {
     }
 
@@ -29,7 +32,7 @@ class Query implements QueryHydrateInterface
     */
     public function getResult(): mixed
     {
-        return $this->persistence->saveResult($this->query->all());
+        return $this->persistence->saveResult($this->result->all());
     }
 
 
@@ -42,7 +45,7 @@ class Query implements QueryHydrateInterface
     */
     public function getOneOrNullResult(): mixed
     {
-        return $this->persistence->saveOne($this->query->one());
+        return $this->persistence->saveOne($this->result->one());
     }
 
 
@@ -55,7 +58,7 @@ class Query implements QueryHydrateInterface
     */
     public function getArrayResult(): array
     {
-         return $this->query->assoc();
+         return $this->result->assoc();
     }
 
 
@@ -67,7 +70,7 @@ class Query implements QueryHydrateInterface
     */
     public function getArrayColumns(): array
     {
-        return $this->query->columns();
+        return $this->result->columns();
     }
 
 
@@ -81,7 +84,7 @@ class Query implements QueryHydrateInterface
     */
     public function getColumn(int $index = 0): mixed
     {
-        return $this->query->column($index);
+        return $this->result->column($index);
     }
 
 
@@ -92,7 +95,7 @@ class Query implements QueryHydrateInterface
     */
     public function count(): int
     {
-        return $this->query->count();
+        return $this->result->count();
     }
 
 }
