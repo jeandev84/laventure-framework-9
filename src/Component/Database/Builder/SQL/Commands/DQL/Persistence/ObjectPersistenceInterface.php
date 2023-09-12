@@ -38,4 +38,16 @@ interface ObjectPersistenceInterface
         * @return object|null
        */
        public function saveOne(mixed $object): mixed;
+
+
+
+
+
+
+
+
+       /**
+        * @return array
+       */
+       public function getSaved(): array;
 }

@@ -5,13 +5,13 @@ namespace Laventure\Component\Database\Builder\SQL\Commands\DQL\Persistence;
 /**
  * @inheritdoc
 */
-class NullObjectPersistence implements ObjectPersistenceInterface
+class ObjectPersistence implements ObjectPersistenceInterface
 {
 
     /**
      * @var array
     */
-    protected array $storage = [];
+    protected array $items = [];
 
 
 
@@ -37,9 +37,17 @@ class NullObjectPersistence implements ObjectPersistenceInterface
     public function saveOne(mixed $object): mixed
     {
          if (is_object($object)) {
-             $this->storage[] = $object;
+             $this->items[] = $object;
          }
 
          return $object;
+    }
+
+    /**
+     * @inheritDoc
+    */
+    public function getSaved(): array
+    {
+         return $this->items;
     }
 }

@@ -4,7 +4,7 @@ namespace Laventure\Component\Database\Builder\SQL\Commands\DQL;
 
 use Laventure\Component\Database\Builder\SQL\Commands\BuilderConditions;
 use Laventure\Component\Database\Builder\SQL\Commands\DQL\Contract\PaginatedQueryInterface;
-use Laventure\Component\Database\Builder\SQL\Commands\DQL\Persistence\NullObjectPersistence;
+use Laventure\Component\Database\Builder\SQL\Commands\DQL\Persistence\ObjectPersistence;
 use Laventure\Component\Database\Builder\SQL\Commands\DQL\Persistence\ObjectPersistenceInterface;
 use Laventure\Component\Database\Builder\SQL\Commands\DQL\Contract\SelectBuilderInterface;
 use Laventure\Component\Database\Builder\SQL\Commands\DQL\Contract\QueryHydrateInterface;
@@ -109,7 +109,7 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderInterface
     {
          parent::__construct($connection);
          $this->addSelect($selects ?: "*");
-         $this->persistence = new NullObjectPersistence();
+         $this->persistence = new ObjectPersistence();
     }
 
 

@@ -156,3 +156,33 @@ echo "\n";
 */
 
 
+
+/*
+$qb = new SelectBuilder($connection);
+
+$users = $qb->from('users', 'u')
+            ->map(\App\Entity\User::class)
+            ->getQuery()
+            ->getResult();
+
+dd($qb->getPersistence()->getSaved());
+
+dd($users);
+echo $qb->from('users', 'u')
+    ->addSelect('c.id, c.count as count')
+    ->join('cart c', 'u.cart_id = c.id')
+    ->leftJoin('orders o', 'c.order_id = o.id')
+    ->where('u.id = :userId')
+    ->andWhere('c.id = :cartId')
+    ->orWhere('o.id = :orderId')
+    ->groupBy('c.count')
+    ->having('count > 2')
+    ->orderBy('u.name', 'desc')
+    ->limit(5)
+    ->offset(3)
+    ->setParameter('userId', 1)
+    ->setParameters(['cartId' => 3, 'orderId' => 7])
+    ->getSQL();
+*/
+
+echo "\n";

@@ -22,7 +22,7 @@ use Laventure\Component\Database\ORM\Persistence\Repository\EntityRepositoryFact
 /**
  * @inheritdoc
 */
-class EntityManager implements EntityManagerInterface, ObjectPersistenceInterface
+class EntityManager implements EntityManagerInterface
 {
 
     /**
@@ -431,7 +431,7 @@ class EntityManager implements EntityManagerInterface, ObjectPersistenceInterfac
     /**
      * @inheritdoc
     */
-    public function saveOne(object $object): object
+    public function saveOne(mixed $object): object
     {
         $this->persist($object);
         $this->managed[get_class($object)] = $object;
