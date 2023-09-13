@@ -142,7 +142,7 @@ class QueryLogger
              'previous'      => $e->getPrevious()
          ];
 
-         throw new QueryException($e->getMessage(), $e->getCode(), $e);
+         throw new QueryException($e->getMessage(), 500, $e);
     }
 
 

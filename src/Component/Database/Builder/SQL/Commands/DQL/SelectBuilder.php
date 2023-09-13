@@ -417,7 +417,7 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderInterface
      *
      * @return $this
     */
-    public function fetchMode(int $fetch): static
+    public function hydrate(int $fetch): static
     {
          $this->fetchMode = $fetch;
 
@@ -446,9 +446,7 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderInterface
     */
     public function getQuery(): QueryHydrateInterface
     {
-         $statement = $this->getStatement();
-
-         return new Query($statement->fetch(), $this->persistence);
+         return new Query($this->fetch(), $this->persistence);
     }
 
 
@@ -461,7 +459,7 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderInterface
     public function getStatement(): QueryInterface
     {
         $statement = parent::getStatement();
-        $statement->setParameters($this->parameters);
+        $statement->setParameters($this->getParameters());
 
         if ($this->mappedClass) {
             $statement->map($this->mappedClass);

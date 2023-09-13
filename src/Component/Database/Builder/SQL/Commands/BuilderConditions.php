@@ -203,7 +203,9 @@ abstract class BuilderConditions extends Builder implements BuilderConditionInte
     */
     public function setParameter(string $name, $value): static
     {
-         return $this->setParameters([$name => $value]);
+         $this->parameters[$name] = $value;
+
+         return $this;
     }
 
 
@@ -218,7 +220,9 @@ abstract class BuilderConditions extends Builder implements BuilderConditionInte
     */
     public function setParameters(array $parameters): static
     {
-         $this->parameters = array_merge($this->parameters, $parameters);
+         foreach ($parameters as $name => $value) {
+             $this->setParameter($name, $value);
+         }
 
          return $this;
     }

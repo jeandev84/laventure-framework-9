@@ -121,10 +121,7 @@ class Query implements QueryInterface
     */
     public function bindParam($name, $value, int $type = self::NULL): static
     {
-        $bind = $this->bindingType($type);
-
-        $this->statement->bindParam($name, $value, $bind);
-
+        $this->statement->bindParam($name, $value, $this->binded($type));
         $this->logger->addBindParams(compact('name', 'value', 'type'));
 
         return $this;
@@ -140,10 +137,7 @@ class Query implements QueryInterface
      */
     public function bindValue($name, $value, int $type = self::NULL): static
     {
-        $bind = $this->bindingType($type);
-
-        $this->statement->bindValue($name, $value, $bind);
-
+        $this->statement->bindValue($name, $value, $this->binded($type));
         $this->logger->addBindValues(compact('name', 'value', 'type'));
 
         return $this;
@@ -160,6 +154,8 @@ class Query implements QueryInterface
     public function setParameters(array $parameters): static
     {
         $this->parameters = $parameters;
+
+        $this->logger->addQueryParameters($parameters);
 
         return $this;
     }
@@ -283,12 +279,11 @@ class Query implements QueryInterface
 
 
 
-
     /**
      * @param int $type
      * @return mixed
     */
-    private function bindingType(int $type): mixed
+    private function binded(int $type): mixed
     {
         if (! array_key_exists($type, $this->bindTypes)) {
             throw new \RuntimeException("unavailable type [$type]");
