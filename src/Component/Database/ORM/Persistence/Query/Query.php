@@ -151,6 +151,37 @@ class Query
 
 
 
+
+
+
+    /**
+     * @return SelectBuilder
+    */
+    private function select(): SelectBuilder
+    {
+        $qb = new SelectBuilder($this->em->getConnection());
+        return   $qb->addSelect(join(', ', $this->builder['selects']))
+                    ->addFrom($this->builder['from'])
+                    ->addJoins($this->builder['joins'], JoinType::JOIN)
+                    ->addJoins($this->builder['leftJoin'], JoinType::LEFT_JOIN)
+                    ->addJoins($this->builder['rightJoin'], JoinType::RIGHT_JOIN)
+                    ->addJoins($this->builder['innerJoin'], JoinType::INNER_JOIN)
+                    ->addJoins($this->builder['fullJoin'], JoinType::FULL_JOIN)
+                    ->addGroupBy($this->builder['groupBy'])
+                    ->addHaving($this->builder['having'])
+                    ->addOrderBy($this->builder['orderBy'])
+                    ->addConditions(['AND' => $this->andWheres()])
+                    ->addCondition(['OR'   => $this->orWheres()])
+                    ->limit($this->builder['limit'])
+                    ->offset($this->builder['offset'])
+                    ->setParameters($this->getParameters());
+    }
+
+
+
+
+
+
     /**
      * @return InsertBuilder
     */
@@ -166,6 +197,8 @@ class Query
 
 
 
+
+
     /**
      * @return UpdateBuilder
     */
@@ -173,34 +206,12 @@ class Query
     {
         [$table, $alias] = $this->builder['updates'];
         $qb = new UpdateBuilder($this->getConnection());
-        return $qb->update($this->builder['set'])->table($table, $alias);
+        return $qb->update($this->builder['set'])
+                  ->table($table, $alias)
+                  ->addConditions(['AND' => $this->andWheres()])
+                  ->addCondition(['OR'   => $this->orWheres()]);
     }
 
-
-
-
-    /**
-     * @return SelectBuilder
-    */
-    private function select(): SelectBuilder
-    {
-        $qb = new SelectBuilder($this->em->getConnection());
-        return $qb->addSelect(join(', ', $this->builder['selects']))
-                  ->addFrom($this->builder['from'])
-                  ->addJoins($this->builder['joins'], JoinType::JOIN)
-                  ->addJoins($this->builder['leftJoin'], JoinType::LEFT_JOIN)
-                  ->addJoins($this->builder['rightJoin'], JoinType::RIGHT_JOIN)
-                  ->addJoins($this->builder['innerJoin'], JoinType::INNER_JOIN)
-                  ->addJoins($this->builder['fullJoin'], JoinType::FULL_JOIN)
-                  ->addGroupBy($this->builder['groupBy'])
-                  ->addHaving($this->builder['having'])
-                  ->addOrderBy($this->builder['orderBy'])
-                  ->addConditions($this->andWheres(), 'AND')
-                  ->addConditions($this->orWheres(), 'OR')
-                  ->limit($this->builder['limit'])
-                  ->offset($this->builder['offset'])
-                  ->setParameters($this->getParameters());
-    }
 
 
 

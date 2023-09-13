@@ -100,7 +100,7 @@ interface BuilderConditionInterface extends BuilderInterface
        *
        * @return $this
       */
-      public function addConditions(array $conditions, string $type = null): static;
+      public function addConditions(array $conditions): static;
 
 
 

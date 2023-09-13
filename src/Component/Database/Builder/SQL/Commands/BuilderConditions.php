@@ -86,26 +86,42 @@ abstract class BuilderConditions extends Builder implements BuilderConditionInte
     }
 
 
+    /**
+     * @param array $conditions
+     *
+     * @param string|null $type
+     *
+     * @return $this
+    */
+    public function addCondition(array $conditions, string $type = null): static
+    {
+        foreach ($conditions as $condition) {
+            if (array_key_exists($type, $this->handlers)) {
+                $func = $this->handlers[$type];
+                call_user_func_array([$this, $func], [$condition]);
+            } else {
+                $this->andWhere($condition);
+            }
+        }
+
+         return $this;
+    }
+
+
+
 
 
 
     /**
      * @inheritdoc
     */
-    public function addConditions(array $conditions, string $type = null): static
+    public function addConditions(array $conditions): static
     {
-         if (array_key_exists($type, $this->handlers)) {
-             $func = $this->handlers[$type];
-             foreach ($conditions as $condition) {
-                 call_user_func_array([$this, $func], [$condition]);
-             }
-         } else {
-             foreach ($conditions as $condition) {
-                 $this->andWhere($condition);
-             }
-         }
+        foreach ($conditions as $type => $criteria) {
+             $this->addCondition($criteria, $type);
+        }
 
-         return $this;
+        return $this;
     }
 
 
