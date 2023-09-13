@@ -18,7 +18,10 @@ class Query implements QueryHydrateInterface
      *
      * @param ObjectPersistenceInterface $persistence
    */
-    public function __construct(protected QueryResultInterface $result, protected ObjectPersistenceInterface $persistence)
+    public function __construct(
+        protected QueryResultInterface $result,
+        protected ObjectPersistenceInterface $persistence
+    )
     {
     }
 

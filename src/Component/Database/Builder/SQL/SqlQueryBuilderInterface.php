@@ -21,11 +21,11 @@ interface SqlQueryBuilderInterface
 {
 
     /**
-     * @param string|array $selects
+     * @param string $selects
      *
      * @return SelectBuilder
     */
-    public function select(string|array $selects = '*'): SelectBuilder;
+    public function select(string $selects = '*'): SelectBuilder;
 
 
 

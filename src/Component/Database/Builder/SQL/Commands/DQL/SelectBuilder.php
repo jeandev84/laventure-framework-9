@@ -9,6 +9,7 @@ use Laventure\Component\Database\Builder\SQL\Commands\DQL\Persistence\ObjectPers
 use Laventure\Component\Database\Builder\SQL\Commands\DQL\Contract\SelectBuilderInterface;
 use Laventure\Component\Database\Builder\SQL\Commands\DQL\Contract\QueryHydrateInterface;
 use Laventure\Component\Database\Connection\ConnectionInterface;
+use Laventure\Component\Database\Connection\Query\QueryInterface;
 
 
 /**
@@ -85,9 +86,9 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderInterface
 
 
     /**
-     * @var string
+     * @var string|null
     */
-    protected string $mappedClass;
+    protected ?string $mappedClass = null;
 
 
 
@@ -97,7 +98,6 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderInterface
      * @var ObjectPersistenceInterface
     */
     protected ObjectPersistenceInterface $persistence;
-
 
 
 
@@ -121,12 +121,8 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderInterface
     /**
      * @inheritDoc
     */
-    public function addSelect(string|array $selects): static
+    public function addSelect(string $selects): static
     {
-         if (is_array($selects)) {
-             $selects = join(', ', $selects);
-         }
-
          $this->selects[] = $selects;
 
          return $this;
@@ -415,11 +411,26 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderInterface
     {
          $statement = $this->getStatement();
 
-         if ($this->mappedClass) {
-             $statement->map($this->mappedClass);
-         }
+         return new Query($statement->fetch(), $this->persistence);
+    }
 
-         return new Query($statement->fetch());
+
+
+
+
+    /**
+     * @return QueryInterface
+    */
+    public function getStatement(): QueryInterface
+    {
+        $statement = parent::getStatement();
+        $statement->setParameters($this->parameters);
+
+        if ($this->mappedClass) {
+            $statement->map($this->mappedClass);
+        }
+
+        return $statement;
     }
 
 
@@ -454,7 +465,6 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderInterface
                     ->limited()
                     ->buildQuery();
     }
-
 
 
 

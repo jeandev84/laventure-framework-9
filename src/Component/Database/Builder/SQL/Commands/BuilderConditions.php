@@ -18,7 +18,7 @@ abstract class BuilderConditions extends Builder implements BuilderConditionInte
       /**
        * @var array|string[]
       */
-      protected array $handlers = [
+      protected array $func = [
           'AND' => 'andWhere',
           'OR'  => 'orWhere'
       ];
@@ -86,6 +86,10 @@ abstract class BuilderConditions extends Builder implements BuilderConditionInte
     }
 
 
+
+
+
+
     /**
      * @param array $conditions
      *
@@ -96,8 +100,8 @@ abstract class BuilderConditions extends Builder implements BuilderConditionInte
     public function addCondition(array $conditions, string $type = null): static
     {
         foreach ($conditions as $condition) {
-            if (array_key_exists($type, $this->handlers)) {
-                $func = $this->handlers[$type];
+            if (array_key_exists($type, $this->func)) {
+                $func = $this->func[$type];
                 call_user_func_array([$this, $func], [$condition]);
             } else {
                 $this->andWhere($condition);
@@ -285,9 +289,9 @@ abstract class BuilderConditions extends Builder implements BuilderConditionInte
      *
      * @param $value
      *
-     * @return void
+     * @return $this
     */
-    private function criteriaPdo(string $column, $value)
+    private function criteriaPdo(string $column, $value): static
     {
         if (is_array($value)) {
             $this->where($this->expr()->in($column, "(:$column)"));
@@ -296,5 +300,7 @@ abstract class BuilderConditions extends Builder implements BuilderConditionInte
             $this->where("$column = :$column");
             $this->setParameter($column, $value);
         }
+
+        return $this;
     }
 }

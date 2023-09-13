@@ -56,11 +56,8 @@ abstract class Builder
 
 
 
-
-
-
        /**
-        * @inheritDoc
+        * @return ConnectionInterface
        */
        public function getConnection(): ConnectionInterface
        {
@@ -81,23 +78,6 @@ abstract class Builder
            return '';
        }
 
-
-
-
-
-       /**
-        * @return $this
-       */
-       public function executeQueries(): static
-       {
-           if ($this->queries) {
-               foreach ($this->queries as $query) {
-                   $this->connection->executeQuery($query);
-               }
-           }
-
-           return $this;
-       }
 
 
 

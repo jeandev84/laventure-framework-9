@@ -48,7 +48,7 @@ class SqlQueryBuilder implements SqlQueryBuilderInterface
     /**
      * @inheritDoc
     */
-    public function select(string|array $selects = '*'): SelectBuilder
+    public function select(string $selects = '*'): SelectBuilder
     {
          $builder = new SelectBuilder($this->connection);
          $builder->addSelect($selects);

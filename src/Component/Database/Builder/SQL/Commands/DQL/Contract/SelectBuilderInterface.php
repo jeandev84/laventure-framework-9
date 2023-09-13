@@ -18,11 +18,11 @@ interface SelectBuilderInterface extends BuilderConditionInterface
 {
 
     /**
-     * @param string|array $selects
+     * @param string $selects
      *
      * @return $this
     */
-    public function addSelect(string|array $selects): static;
+    public function addSelect(string $selects): static;
 
 
 
