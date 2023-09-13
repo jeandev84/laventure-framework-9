@@ -26,7 +26,6 @@ use Laventure\Component\Database\ORM\Persistence\EntityManager;
 class QueryBuilder implements \ArrayAccess
 {
 
-
      /**
       * @var EntityManager
      */
@@ -225,7 +224,7 @@ class QueryBuilder implements \ArrayAccess
       *
       * @return $this
      */
-     public function select(array|string $selects = ''): static
+     public function select(array|string $selects = '*'): static
      {
            return $this->addSelect($selects);
      }
@@ -619,8 +618,6 @@ class QueryBuilder implements \ArrayAccess
     */
     public function getQuery(): Query
     {
-         $this->em->addNamedQueries($this->getBuilders());
-
          return $this->createQuery();
     }
 
@@ -792,23 +789,5 @@ class QueryBuilder implements \ArrayAccess
          $data = get_object_vars($this);
          unset($data['em']);
          return $data;
-    }
-
-
-
-
-
-
-    /**
-     * @return BuilderInterface[]
-    */
-    private function getBuilders(): array
-    {
-         return [
-               'select'  => new SelectBuilder($this->getConnection()),
-               'insert'  => new InsertBuilder($this->getConnection()),
-               'update'  => new UpdateBuilder($this->getConnection()),
-               'delete'  => new DeleteBuilder($this->getConnection())
-         ];
     }
 }

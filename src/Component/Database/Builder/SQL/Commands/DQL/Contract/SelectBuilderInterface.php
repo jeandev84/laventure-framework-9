@@ -2,9 +2,7 @@
 namespace Laventure\Component\Database\Builder\SQL\Commands\DQL\Contract;
 
 
-use Laventure\Component\Database\Connection\Query\QueryResultInterface;
-use Laventure\Component\Database\Builder\SQL\Commands\DQL\Persistence\ObjectPersistenceInterface;
-
+use Laventure\Component\Database\Builder\SQL\Commands\BuilderConditionInterface;
 
 /**
  * @SelectBuilderInterface
@@ -15,7 +13,7 @@ use Laventure\Component\Database\Builder\SQL\Commands\DQL\Persistence\ObjectPers
  *
  * @package Laventure\Component\Database\Builder\SQL\Commands\DQL\Contract
 */
-interface SelectBuilderInterface
+interface SelectBuilderInterface extends BuilderConditionInterface
 {
 
     /**
@@ -236,18 +234,6 @@ interface SelectBuilderInterface
 
 
 
-    /**
-     * Persistence manager
-     *
-     * @param ObjectPersistenceInterface $persistence
-     *
-     * @return $this
-    */
-    public function persistence(ObjectPersistenceInterface $persistence): static;
-
-
-
-
 
     /**
      * @return QueryHydrateInterface
@@ -264,14 +250,4 @@ interface SelectBuilderInterface
      * @return PaginatedQueryInterface
     */
     public function getPaginatedQuery(): PaginatedQueryInterface;
-
-
-
-
-
-
-    /**
-     * @return ObjectPersistenceInterface
-    */
-    public function getPersistence(): ObjectPersistenceInterface;
 }

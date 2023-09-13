@@ -90,4 +90,14 @@ interface BuilderInterface
      * @return $this
     */
     public function executeQueries(): static;
+
+
+
+
+
+
+    /**
+     * @return string
+    */
+    public function __toString(): string;
 }

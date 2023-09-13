@@ -1,6 +1,10 @@
 <?php
 namespace Laventure\Component\Database\ORM\Persistence\Query;
 
+use Laventure\Component\Database\Builder\SQL\Commands\BuilderInterface;
+use Laventure\Component\Database\Builder\SQL\Commands\DML\DeleteBuilder;
+use Laventure\Component\Database\Builder\SQL\Commands\DML\InsertBuilder;
+use Laventure\Component\Database\Builder\SQL\Commands\DML\UpdateBuilder;
 use Laventure\Component\Database\Builder\SQL\Commands\DQL\JoinType;
 use Laventure\Component\Database\Builder\SQL\Commands\DQL\SelectBuilder;
 use Laventure\Component\Database\ORM\Persistence\EntityManager;
@@ -18,12 +22,30 @@ use Laventure\Component\Database\ORM\Persistence\EntityManager;
 class Query
 {
 
+
+    const HYDRATE_ALL     = 'HYDRATE_ALL';
+    const HYDRATE_ONE     = 'HYDRATE_ONE';
+    const HYDRATE_ARRAY   = 'HYDRATE_ARRAY';
+    const HYDRATE_COLUMNS = 'HYDRATE_COLUMNS';
+
+
+
+
+    /**
+     * @var array
+    */
+    protected array $queries = [];
+
+
+
+
+
     /**
      * @param EntityManager $em
      *
-     * @param QueryBuilder $sql
+     * @param QueryBuilder $builder
     */
-    public function __construct(protected EntityManager $em, protected QueryBuilder $sql)
+    public function __construct(protected EntityManager $em, protected QueryBuilder $builder)
     {
     }
 
@@ -37,6 +59,7 @@ class Query
     {
          return null;
     }
+
 
 
 
@@ -73,10 +96,43 @@ class Query
 
 
 
-    public function execute(): mixed
+
+    /**
+     * @param string|null $type
+     *
+     * @return mixed
+    */
+    public function execute(string $type = null): mixed
     {
-          return null;
+           switch ($type):
+               case self::HYDRATE_ALL:
+                    $objects = $this->selectQuery()
+                                    ->getQuery()
+                                    ->getResult();
+
+               case self::HYDRATE_ONE:
+               case self::HYDRATE_ARRAY:
+               case self::HYDRATE_COLUMNS:
+           endswitch;
     }
+
+
+
+
+    /**
+     * @param string $sql
+     *
+     * @param array $params
+     *
+     * @return $this
+    */
+    public function addSql(string $sql, array $params = []): static
+    {
+         $this->queries[] = [$sql => $params];
+
+         return $this;
+    }
+
 
 
 
@@ -87,11 +143,21 @@ class Query
     */
     public function getSQL(): string
     {
-         $sql   = [];
-         $sql[] = $this->selectQuery()->getSQL();
-         return join(';', $sql);
+         return join(';', $this->getQueries());
     }
 
+
+
+
+
+    /**
+     * @return array
+    */
+    private function getQueries(): array
+    {
+        $this->queries[] = $this->selectQuery()->getSQL();
+        return $this->queries;
+    }
 
 
 
@@ -102,36 +168,21 @@ class Query
     */
     private function selectQuery(): SelectBuilder
     {
-        /** @var SelectBuilder $qb */
-        $qb = $this->em->getNamedQuery('select');
-        return $qb->addSelect(join(', ', $this->sql['selects']))
-                  ->addFrom($this->sql['from'])
-                  ->addJoins($this->sql['joins'], JoinType::JOIN)
-                  ->addJoins($this->sql['leftJoin'], JoinType::LEFT_JOIN)
-                  ->addJoins($this->sql['rightJoin'], JoinType::RIGHT_JOIN)
-                  ->addJoins($this->sql['innerJoin'], JoinType::INNER_JOIN)
-                  ->addJoins($this->sql['fullJoin'], JoinType::FULL_JOIN)
-                  ->addGroupBy($this->sql['groupBy'])
-                  ->addHaving($this->sql['having'])
-                  ->addOrderBy($this->sql['orderBy'])
-                  ->addConditions('AND', $this->sql['wheres']['AND'])
-                  ->addConditions('OR', $this->sql['wheres']['OR'])
-                  ->limit($this->sql['limit'])
-                  ->offset($this->sql['offset']);
+        $qb = new SelectBuilder($this->em->getConnection());
+        return $qb->addSelect(join(', ', $this->builder['selects']))
+                  ->addFrom($this->builder['from'])
+                  ->addJoins($this->builder['joins'], JoinType::JOIN)
+                  ->addJoins($this->builder['leftJoin'], JoinType::LEFT_JOIN)
+                  ->addJoins($this->builder['rightJoin'], JoinType::RIGHT_JOIN)
+                  ->addJoins($this->builder['innerJoin'], JoinType::INNER_JOIN)
+                  ->addJoins($this->builder['fullJoin'], JoinType::FULL_JOIN)
+                  ->addGroupBy($this->builder['groupBy'])
+                  ->addHaving($this->builder['having'])
+                  ->addOrderBy($this->builder['orderBy'])
+                  ->addConditions('AND', $this->builder['wheres']['AND'])
+                  ->addConditions('OR', $this->builder['wheres']['OR'])
+                  ->limit($this->builder['limit'])
+                  ->offset($this->builder['offset']);
     }
 
-
-
-
-
-
-    /**
-     * @param string $name
-     *
-     * @return bool
-    */
-    public function empty(string $name): bool
-    {
-        return ! empty($this->sql->toArray()[$name]);
-    }
 }

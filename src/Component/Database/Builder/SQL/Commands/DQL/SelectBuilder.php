@@ -4,11 +4,9 @@ namespace Laventure\Component\Database\Builder\SQL\Commands\DQL;
 
 use Laventure\Component\Database\Builder\SQL\Commands\BuilderConditions;
 use Laventure\Component\Database\Builder\SQL\Commands\DQL\Contract\PaginatedQueryInterface;
-use Laventure\Component\Database\Builder\SQL\Commands\DQL\Persistence\ObjectPersistence;
 use Laventure\Component\Database\Builder\SQL\Commands\DQL\Persistence\ObjectPersistenceInterface;
 use Laventure\Component\Database\Builder\SQL\Commands\DQL\Contract\SelectBuilderInterface;
 use Laventure\Component\Database\Builder\SQL\Commands\DQL\Contract\QueryHydrateInterface;
-use Laventure\Component\Database\Connection\ConnectionInterface;
 
 
 
@@ -89,31 +87,6 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderInterface
      * @var string
     */
     protected string $mappedClass;
-
-
-
-
-    /**
-     * @var ObjectPersistenceInterface
-    */
-    protected ObjectPersistenceInterface $persistence;
-
-
-
-    /**
-     * @param ConnectionInterface $connection
-     *
-     * @param string
-    */
-    public function __construct(ConnectionInterface $connection, string $selects = '')
-    {
-         parent::__construct($connection);
-         $this->addSelect($selects);
-         $this->persistence = new ObjectPersistence();
-    }
-
-
-
 
 
 
@@ -432,7 +405,7 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderInterface
              $statement->map($this->mappedClass);
          }
 
-         return new Query($statement->fetch(), $this->persistence);
+         return new Query($statement->fetch());
     }
 
 
@@ -447,18 +420,6 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderInterface
     public function getPaginatedQuery(): PaginatedQueryInterface
     {
          return new PaginatedQuery($this);
-    }
-
-
-
-
-
-    /**
-     * @inheritdoc
-    */
-    public function getPersistence(): ObjectPersistenceInterface
-    {
-        return $this->persistence;
     }
 
 
