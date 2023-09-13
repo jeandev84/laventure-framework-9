@@ -7,6 +7,7 @@ use Laventure\Component\Database\Builder\SQL\Commands\DML\InsertBuilder;
 use Laventure\Component\Database\Builder\SQL\Commands\DML\UpdateBuilder;
 use Laventure\Component\Database\Builder\SQL\Commands\DQL\JoinType;
 use Laventure\Component\Database\Builder\SQL\Commands\DQL\SelectBuilder;
+use Laventure\Component\Database\Connection\ConnectionInterface;
 use Laventure\Component\Database\ORM\Persistence\EntityManager;
 
 
@@ -27,6 +28,13 @@ class Query
     const HYDRATE_ONE     = 'HYDRATE_ONE';
     const HYDRATE_ARRAY   = 'HYDRATE_ARRAY';
     const HYDRATE_COLUMNS = 'HYDRATE_COLUMNS';
+
+
+
+    /**
+     * @var array
+    */
+    protected array $executed = [];
 
 
 
@@ -57,7 +65,7 @@ class Query
     */
     public function getResult(): mixed
     {
-         return null;
+         return $this->execute(self::HYDRATE_ALL);
     }
 
 
@@ -69,7 +77,7 @@ class Query
     */
     public function getOneOrNullResult(): mixed
     {
-         return null;
+         return $this->execute(self::HYDRATE_ONE);
     }
 
 
@@ -80,7 +88,7 @@ class Query
     */
     public function getArrayResult(): array
     {
-         return [];
+         return $this->execute(self::HYDRATE_ARRAY);
     }
 
 
@@ -91,8 +99,9 @@ class Query
     */
     public function getArrayColumns(): array
     {
-         return [];
+         return $this->execute(self::HYDRATE_COLUMNS);
     }
+
 
 
 
@@ -106,33 +115,23 @@ class Query
     {
            switch ($type):
                case self::HYDRATE_ALL:
-                    $objects = $this->selectQuery()
-                                    ->getQuery()
-                                    ->getResult();
-
+                    $objects = $this->all();
+                    foreach ($objects as $object) {
+                        $this->em->persist($object);
+                    }
+                    return $objects;
                case self::HYDRATE_ONE:
+                   $object = $this->one();
+                   $this->em->persist($object);
+                   return $object;
                case self::HYDRATE_ARRAY:
+                   return $this->assoc();
                case self::HYDRATE_COLUMNS:
+                   return $this->columns();
+               default:
+                   throw new \RuntimeException('Could not resolve this execution');
            endswitch;
     }
-
-
-
-
-    /**
-     * @param string $sql
-     *
-     * @param array $params
-     *
-     * @return $this
-    */
-    public function addSql(string $sql, array $params = []): static
-    {
-         $this->queries[] = [$sql => $params];
-
-         return $this;
-    }
-
 
 
 
@@ -150,7 +149,10 @@ class Query
 
 
 
+    private function executeQuery(): int|bool
+    {
 
+    }
 
 
 
@@ -158,7 +160,7 @@ class Query
     /**
      * @return SelectBuilder
     */
-    private function selectQuery(): SelectBuilder
+    private function select(): SelectBuilder
     {
         $qb = new SelectBuilder($this->em->getConnection());
         return $qb->addSelect(join(', ', $this->builder['selects']))
@@ -175,9 +177,61 @@ class Query
                   ->addConditions($this->orWheres(), 'OR')
                   ->limit($this->builder['limit'])
                   ->offset($this->builder['offset'])
-                  ->setParameters($this->builder['parameters']);
+                  ->setParameters($this->getParameters());
     }
 
+
+
+
+
+    private function insert(): InsertBuilder
+    {
+
+    }
+
+
+
+    /**
+     * @return InsertBuilder[]
+    */
+    private function getInsertQuery(): array
+    {
+        $insertions = [];
+
+        if (! empty($this->builder['inserts'])) {
+            foreach ($this->builder['inserts'] as $table => $attributes) {
+                $qb = new InsertBuilder($this->em->getConnection());
+                $qb->attributes($attributes)
+                   ->table($table);
+                $insertions[] = $qb;
+            }
+        }
+
+        return $insertions;
+    }
+
+
+
+
+    /**
+     * @return UpdateBuilder[]
+    */
+    private function getUpdateQueries(): array
+    {
+         $updates = [];
+
+    }
+
+
+    public function executeInsertQuery(): int
+    {
+          if (! empty($this->builder['inserts'])) {
+               foreach ($this->builder['inserts'] as $table => $attributes) {
+                    $qb = new InsertBuilder($this->em->getConnection());
+
+               }
+          }
+    }
 
 
 
@@ -208,10 +262,102 @@ class Query
     /**
      * @return array
     */
-    private function getQueries(): array
+    private function getParameters(): array
     {
-        $this->queries[] = $this->selectQuery()->getSQL();
-        return $this->queries;
+        return $this->builder['parameters'];
     }
 
+
+
+
+
+    /**
+     * @return array
+    */
+    private function getQueries(): array
+    {
+        $queries = [];
+        if ($this->builder['selects']) {
+            $queries[] = $this->select()->getSQL();
+        } elseif ($inserts = $this->getInsertQuery()) {
+            foreach ($inserts as $insert) {
+                $queries[] = $insert->getSQL();
+            }
+        } elseif ($updates = []) {
+            $queries[] = '';
+        }
+
+        return $queries;
+    }
+
+
+
+
+
+
+
+
+    /**
+     * @return array
+    */
+    private function all(): array
+    {
+        return $this->select()
+                    ->getQuery()
+                    ->fetchAll();
+    }
+
+
+
+
+    /**
+     * @return mixed
+    */
+    private function one(): mixed
+    {
+        return $this->select()
+                    ->getQuery()
+                    ->fetchOne();
+    }
+
+
+
+
+
+
+    /**
+     * @return array
+    */
+    private function assoc(): array
+    {
+        return $this->select()
+                    ->getQuery()
+                    ->fetchAssoc();
+    }
+
+
+
+
+
+    /**
+     * @return array
+    */
+    private function columns(): array
+    {
+        return $this->select()
+                    ->getQuery()
+                    ->fetchColumns();
+    }
+
+
+
+
+
+    /**
+     * @return ConnectionInterface
+    */
+    private function getConnection(): ConnectionInterface
+    {
+         return $this->em->getConnection();
+    }
 }

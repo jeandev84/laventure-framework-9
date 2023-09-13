@@ -27,7 +27,7 @@ class Query implements QueryHydrateInterface
     /**
      * @inheritDoc
     */
-    public function getResult(): mixed
+    public function fetchAll(): mixed
     {
         return $this->result->all();
     }
@@ -40,7 +40,7 @@ class Query implements QueryHydrateInterface
     /**
      * @inheritDoc
     */
-    public function getOneOrNullResult(): mixed
+    public function fetchOne(): mixed
     {
         return $this->result->all();
     }
@@ -53,7 +53,7 @@ class Query implements QueryHydrateInterface
     /**
      * @inheritDoc
     */
-    public function getArrayResult(): array
+    public function fetchAssoc(): array
     {
          return $this->result->assoc();
     }
@@ -65,7 +65,7 @@ class Query implements QueryHydrateInterface
     /**
      * @inheritDoc
     */
-    public function getArrayColumns(): array
+    public function fetchColumns(): array
     {
         return $this->result->columns();
     }

@@ -106,7 +106,7 @@ class EntityRepository implements EntityRepositoryInterface
                         ->getPersistence($this->getClassName())
                         ->select()
                         ->getQuery()
-                        ->getResult();
+                        ->fetchAll();
     }
 
 

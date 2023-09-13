@@ -28,7 +28,7 @@ class PaginatedQuery implements PaginatedQueryInterface
        */
        public function getTotalRecords(): array
        {
-            return $this->select->getQuery()->getResult();
+            return $this->select->getQuery()->fetchAll();
        }
 
 

@@ -156,7 +156,8 @@ class QueryBuilder implements \ArrayAccess
      /**
       * @var array
      */
-     protected array $insert = [];
+     protected array $inserts = [];
+
 
 
 
@@ -164,7 +165,7 @@ class QueryBuilder implements \ArrayAccess
      /**
       * @var array
      */
-     protected array $update = [];
+     protected array $updates = [];
 
 
 
@@ -181,7 +182,7 @@ class QueryBuilder implements \ArrayAccess
      /**
       * @var array|string[]
      */
-     protected array $delete = [];
+     protected array $deletes = [];
 
 
 
@@ -217,6 +218,9 @@ class QueryBuilder implements \ArrayAccess
      {
            $this->em  = $em;
      }
+
+
+
 
 
      /**
@@ -442,7 +446,7 @@ class QueryBuilder implements \ArrayAccess
     */
     public function update(string $table, string $alias = ''): static
     {
-        $this->update[$table] = $alias;
+        $this->updates[$table] = $alias;
 
         return $this;
     }
@@ -478,7 +482,7 @@ class QueryBuilder implements \ArrayAccess
     */
     public function insert(string $table, array $attributes): static
     {
-          $this->insert[$table] = $attributes;
+          $this->inserts[$table] = $attributes;
 
           return $this;
     }
@@ -496,7 +500,7 @@ class QueryBuilder implements \ArrayAccess
     */
     public function delete(string $table, string $alias = ''): static
     {
-          $this->delete[$table] = $alias;
+          $this->deletes[$table] = $alias;
 
           return $this;
     }
