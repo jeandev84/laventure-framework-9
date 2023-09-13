@@ -94,6 +94,7 @@ class Query
 
 
 
+
     /**
      * @return array
     */
@@ -115,20 +116,22 @@ class Query
     {
            switch ($type):
                case self::HYDRATE_ALL:
-                    $objects = $this->all();
-                    foreach ($objects as $object) {
-                        $this->em->persist($object);
-                    }
-                    return $objects;
+                   if($objects = $this->fetchAll()) {
+                       $this->persistence($objects);
+                   }
+                   return $objects;
                case self::HYDRATE_ONE:
-                   $object = $this->one();
-                   $this->em->persist($object);
+                   $object = $this->fetchOne();
+                   $this->persistence([$object]);
                    return $object;
                case self::HYDRATE_ARRAY:
-                   return $this->assoc();
+                   return $this->fetchAssoc();
                case self::HYDRATE_COLUMNS:
-                   return $this->columns();
+                   return $this->fetchColumns();
                default:
+                   if ($this->builder['inserts']) {
+
+                   }
                    throw new \RuntimeException('Could not resolve this execution');
            endswitch;
     }
@@ -142,17 +145,19 @@ class Query
     */
     public function getSQL(): string
     {
-         return join(';', $this->getQueries());
+         return '';
     }
 
 
 
 
-
-    private function executeQuery(): int|bool
+    private function insert(): InsertBuilder
     {
-
+         [$table, $attributes] = $this->builder['inserts'];
+         $qb = new InsertBuilder($this->em->getConnection());
+         return $qb->attributes($attributes)->table($table);
     }
+
 
 
 
@@ -181,57 +186,6 @@ class Query
     }
 
 
-
-
-
-    private function insert(): InsertBuilder
-    {
-
-    }
-
-
-
-    /**
-     * @return InsertBuilder[]
-    */
-    private function getInsertQuery(): array
-    {
-        $insertions = [];
-
-        if (! empty($this->builder['inserts'])) {
-            foreach ($this->builder['inserts'] as $table => $attributes) {
-                $qb = new InsertBuilder($this->em->getConnection());
-                $qb->attributes($attributes)
-                   ->table($table);
-                $insertions[] = $qb;
-            }
-        }
-
-        return $insertions;
-    }
-
-
-
-
-    /**
-     * @return UpdateBuilder[]
-    */
-    private function getUpdateQueries(): array
-    {
-         $updates = [];
-
-    }
-
-
-    public function executeInsertQuery(): int
-    {
-          if (! empty($this->builder['inserts'])) {
-               foreach ($this->builder['inserts'] as $table => $attributes) {
-                    $qb = new InsertBuilder($this->em->getConnection());
-
-               }
-          }
-    }
 
 
 
@@ -271,28 +225,6 @@ class Query
 
 
 
-    /**
-     * @return array
-    */
-    private function getQueries(): array
-    {
-        $queries = [];
-        if ($this->builder['selects']) {
-            $queries[] = $this->select()->getSQL();
-        } elseif ($inserts = $this->getInsertQuery()) {
-            foreach ($inserts as $insert) {
-                $queries[] = $insert->getSQL();
-            }
-        } elseif ($updates = []) {
-            $queries[] = '';
-        }
-
-        return $queries;
-    }
-
-
-
-
 
 
 
@@ -300,7 +232,7 @@ class Query
     /**
      * @return array
     */
-    private function all(): array
+    private function fetchAll(): array
     {
         return $this->select()
                     ->getQuery()
@@ -313,7 +245,7 @@ class Query
     /**
      * @return mixed
     */
-    private function one(): mixed
+    private function fetchOne(): mixed
     {
         return $this->select()
                     ->getQuery()
@@ -328,7 +260,7 @@ class Query
     /**
      * @return array
     */
-    private function assoc(): array
+    private function fetchAssoc(): array
     {
         return $this->select()
                     ->getQuery()
@@ -342,7 +274,7 @@ class Query
     /**
      * @return array
     */
-    private function columns(): array
+    private function fetchColumns(): array
     {
         return $this->select()
                     ->getQuery()
@@ -359,5 +291,25 @@ class Query
     private function getConnection(): ConnectionInterface
     {
          return $this->em->getConnection();
+    }
+
+
+
+
+
+
+    /**
+     * @param array $objects
+     *
+     * @return void
+    */
+    private function persistence(array $objects): void
+    {
+         foreach ($objects as $object) {
+              if (! is_object($object)) {
+                   continue;
+              }
+              $this->em->persist($object);
+         }
     }
 }
