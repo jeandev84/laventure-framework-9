@@ -21,7 +21,7 @@ use Laventure\Component\Database\ORM\Persistence\EntityManager;
  *
  * @package Laventure\Component\Database\ORM\Persistence\Query
 */
-class QueryBuilder
+class QueryBuilder extends SqlQueryBuilder
 {
 
      /**
@@ -33,23 +33,21 @@ class QueryBuilder
 
 
      /**
-      * @var SqlQueryBuilder
-     */
-     protected SqlQueryBuilder $builder;
-
-
-
-     /**
       * @param EntityManager $em
      */
      public function __construct(EntityManager $em)
      {
-         $this->em      = $em;
-         $this->builder = new SqlQueryBuilder($em->getConnection());
+         parent::__construct($em->getConnection());
+         $this->em = $em;
      }
 
 
+
+
+
      /**
+      * Build select query
+      *
       * @param string $selects
       *
       * @param bool $distinct
@@ -58,55 +56,8 @@ class QueryBuilder
      */
      public function select(string $selects = '*', bool $distinct = false): SelectBuilder
      {
-           $selects = $distinct ? "DISTINCT $selects" : $selects;
-           $builder = $this->builder->select($selects);
+           $builder = parent::select($distinct ? "DISTINCT $selects" : $selects);
            $builder->persistence($this->em);
            return $builder;
      }
-
-
-
-
-
-
-    /**
-     * @param string $table
-     *
-     * @param array $attributes
-     *
-     * @return InsertBuilder
-    */
-    public function insert(string $table, array $attributes): InsertBuilder
-    {
-         return $this->builder->insert($table, $attributes);
-    }
-
-
-
-
-    /**
-     * @param string $table
-     *
-     * @param array $attributes
-     *
-     * @return UpdateBuilder
-    */
-    public function update(string $table, array $attributes): UpdateBuilder
-    {
-         return $this->builder->update($table, $attributes);
-    }
-
-
-
-
-
-    /**
-     * @param string $table
-     *
-     * @return DeleteBuilder
-    */
-    public function delete(string $table): DeleteBuilder
-    {
-         return $this->builder->delete($table);
-    }
 }

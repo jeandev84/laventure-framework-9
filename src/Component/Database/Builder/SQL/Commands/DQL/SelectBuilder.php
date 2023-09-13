@@ -10,6 +10,7 @@ use Laventure\Component\Database\Builder\SQL\Commands\DQL\Contract\SelectBuilder
 use Laventure\Component\Database\Builder\SQL\Commands\DQL\Contract\QueryHydrateInterface;
 use Laventure\Component\Database\Connection\ConnectionInterface;
 use Laventure\Component\Database\Connection\Query\QueryInterface;
+use Laventure\Component\Database\Connection\Query\QueryResultInterface;
 
 
 /**
@@ -17,6 +18,7 @@ use Laventure\Component\Database\Connection\Query\QueryInterface;
 */
 class SelectBuilder extends BuilderConditions implements SelectBuilderInterface
 {
+
 
     /**
      * @var array
@@ -95,6 +97,15 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderInterface
 
 
     /**
+     * @var int|null
+     */
+    protected ?int $fetchMode = Hydrate::ALL;
+
+
+
+
+
+    /**
      * @var ObjectPersistenceInterface
     */
     protected ObjectPersistenceInterface $persistence;
@@ -150,7 +161,7 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderInterface
     */
     public function orderBy(string $column, string $direction = 'asc'): static
     {
-         return $this->addOrderBy(["$column $direction"]);
+         return $this->addOrderBy([$column => $direction]);
     }
 
 
@@ -358,8 +369,8 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderInterface
     */
     public function addOrderBy(array $orders): static
     {
-         foreach ($orders as $ordered) {
-             $this->orderBy[] = $ordered;
+         foreach ($orders as $column => $direction) {
+             $this->orderBy[] = "$column $direction";
          }
 
          return $this;
@@ -398,6 +409,32 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderInterface
          return $this;
     }
 
+
+
+
+    /**
+     * @param int $fetch
+     *
+     * @return $this
+    */
+    public function fetchMode(int $fetch): static
+    {
+         $this->fetchMode = $fetch;
+
+         return $this;
+    }
+
+
+
+
+
+    /**
+     * @return QueryResultInterface
+    */
+    public function fetch(): QueryResultInterface
+    {
+          return $this->getStatement()->fetch();
+    }
 
 
 
@@ -492,7 +529,72 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderInterface
     */
     public function execute(): mixed
     {
-        return $this->getQuery()->getResult();
+        if (! array_key_exists($this->fetchMode, Hydrate::$handlers)) {
+             return false;
+        }
+
+        $func = Hydrate::$handlers[$this->fetchMode];
+
+        return call_user_func_array([$this->getQuery(), $func], []);
+    }
+
+
+
+
+    /**
+     * @return int
+    */
+    public function count(): int
+    {
+        return $this->getQuery()->count();
+    }
+
+
+
+
+
+    /**
+     * @return mixed
+    */
+    public function one(): mixed
+    {
+         return $this->getQuery()->getOneOrNullResult();
+    }
+
+
+
+
+
+    /**
+     * @return array
+    */
+    public function all(): array
+    {
+          return $this->getQuery()->getResult();
+    }
+
+
+
+
+
+    /**
+     * @return array
+    */
+    public function assoc(): array
+    {
+         return $this->getQuery()->getArrayResult();
+    }
+
+
+
+
+
+    /**
+     * @return array
+    */
+    public function columns(): array
+    {
+         return $this->getQuery()->getArrayColumns();
     }
 
 

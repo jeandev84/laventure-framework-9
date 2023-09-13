@@ -44,7 +44,7 @@ class PaginatedQuery implements PaginatedQueryInterface
              $offset = $limit * abs($page - 1);
              $result = $this->select->setFirstResult($offset)
                                     ->setMaxResults($limit)
-                                    ->fetch();
+                                    ->fetchMode();
 
              $items  = $result->all();
 

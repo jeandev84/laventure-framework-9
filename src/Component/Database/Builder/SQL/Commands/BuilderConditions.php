@@ -89,15 +89,13 @@ abstract class BuilderConditions extends Builder implements BuilderConditionInte
 
 
 
-
     /**
+     * @param string $type
      * @param array $conditions
-     *
-     * @param string|null $type
      *
      * @return $this
     */
-    public function addCondition(array $conditions, string $type = null): static
+    public function addCondition(string $type, array $conditions): static
     {
         foreach ($conditions as $condition) {
             if (array_key_exists($type, $this->func)) {
@@ -122,7 +120,7 @@ abstract class BuilderConditions extends Builder implements BuilderConditionInte
     public function addConditions(array $conditions): static
     {
         foreach ($conditions as $type => $criteria) {
-             $this->addCondition($criteria, $type);
+             $this->addCondition($type, $criteria);
         }
 
         return $this;
@@ -140,11 +138,7 @@ abstract class BuilderConditions extends Builder implements BuilderConditionInte
      */
     public function andWheres(array $conditions): static
     {
-        foreach ($conditions as $condition) {
-            $this->andWhere($condition);
-        }
-
-        return $this;
+        return $this->addConditions(['AND' => $conditions]);
     }
 
 
@@ -159,11 +153,7 @@ abstract class BuilderConditions extends Builder implements BuilderConditionInte
     */
     public function orWheres(array $conditions): static
     {
-        foreach ($conditions as $condition) {
-            $this->orWhere($condition);
-        }
-
-        return $this;
+        return $this->addConditions(['OR' => $conditions]);
     }
 
 
