@@ -10,14 +10,14 @@ class JoinType
     const FULL_JOIN  = 'FULL_JOIN';
 
 
-    public static function types(): array
-    {
-         return [
-             self::JOIN       => 'join',
-             self::LEFT_JOIN  => 'rightJoin',
-             self::RIGHT_JOIN => 'rightJoin',
-             self::INNER_JOIN => 'innerJoin',
-             self::FULL_JOIN  => 'fullJoin'
-         ];
-    }
+    /**
+     * @var array|string[]
+    */
+    public static $handlers = [
+        self::JOIN       => 'join',
+        self::LEFT_JOIN  => 'rightJoin',
+        self::RIGHT_JOIN => 'rightJoin',
+        self::INNER_JOIN => 'innerJoin',
+        self::FULL_JOIN  => 'fullJoin'
+    ];
 }

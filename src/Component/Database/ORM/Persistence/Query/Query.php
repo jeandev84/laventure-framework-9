@@ -150,14 +150,6 @@ class Query
 
 
 
-    /**
-     * @return array
-    */
-    private function getQueries(): array
-    {
-        $this->queries[] = $this->selectQuery()->getSQL();
-        return $this->queries;
-    }
 
 
 
@@ -179,10 +171,47 @@ class Query
                   ->addGroupBy($this->builder['groupBy'])
                   ->addHaving($this->builder['having'])
                   ->addOrderBy($this->builder['orderBy'])
-                  ->addConditions('AND', $this->builder['wheres']['AND'])
-                  ->addConditions('OR', $this->builder['wheres']['OR'])
+                  ->addConditions($this->andWheres(), 'AND')
+                  ->addConditions($this->orWheres(), 'OR')
                   ->limit($this->builder['limit'])
-                  ->offset($this->builder['offset']);
+                  ->offset($this->builder['offset'])
+                  ->setParameters($this->builder['parameters']);
+    }
+
+
+
+
+
+    /**
+     * @return array
+    */
+    private function andWheres(): array
+    {
+        return $this->builder['wheres']['AND'];
+    }
+
+
+
+
+
+    /**
+     * @return array
+    */
+    private function orWheres(): array
+    {
+        return $this->builder['wheres']['OR'];
+    }
+
+
+
+
+    /**
+     * @return array
+    */
+    private function getQueries(): array
+    {
+        $this->queries[] = $this->selectQuery()->getSQL();
+        return $this->queries;
     }
 
 }

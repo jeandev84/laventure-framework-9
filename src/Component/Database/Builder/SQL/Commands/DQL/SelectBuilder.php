@@ -275,16 +275,15 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderInterface
     */
     public function addJoins(array $joins, string $type = ''): static
     {
-        foreach (JoinType::types() as $index => $func) {
-             if ($type === $index) {
-                 foreach ($joins as $table => $condition) {
-                     call_user_func_array([$this, $func], [$table, $condition]);
-                 }
-             } else {
-                 foreach ($joins as $join) {
-                     $this->addJoin($join);
-                 }
+        if (array_key_exists($type, JoinType::$handlers)) {
+             $func = JoinType::$handlers[$type];
+             foreach ($joins as $table => $condition) {
+                 call_user_func_array([$this, $func], [$table, $condition]);
              }
+        } else {
+            foreach ($joins as $join) {
+                $this->addJoin($join);
+            }
         }
 
         return $this;

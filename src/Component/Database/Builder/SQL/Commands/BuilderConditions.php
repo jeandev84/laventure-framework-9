@@ -18,7 +18,7 @@ abstract class BuilderConditions extends Builder implements BuilderConditionInte
       /**
        * @var array|string[]
       */
-      protected array $types = [
+      protected array $handlers = [
           'AND' => 'andWhere',
           'OR'  => 'orWhere'
       ];
@@ -92,13 +92,16 @@ abstract class BuilderConditions extends Builder implements BuilderConditionInte
     /**
      * @inheritdoc
     */
-    public function addConditions(string $type, array $conditions): static
+    public function addConditions(array $conditions, string $type = null): static
     {
-         foreach ($this->types as $index => $func) {
-             if ($type === $index) {
-                 foreach ($conditions as $condition) {
-                      call_user_func_array([$this, $func], [$condition]);
-                 }
+         if (array_key_exists($type, $this->handlers)) {
+             $func = $this->handlers[$type];
+             foreach ($conditions as $condition) {
+                 call_user_func_array([$this, $func], [$condition]);
+             }
+         } else {
+             foreach ($conditions as $condition) {
+                 $this->andWhere($condition);
              }
          }
 
