@@ -2,7 +2,6 @@
 namespace Laventure\Component\Database\ORM\Persistence;
 
 
-use Laventure\Component\Database\Builder\SQL\Commands\DQL\Select;
 use Laventure\Component\Database\Builder\SQL\Commands\DQL\SelectBuilder;
 use Laventure\Component\Database\ORM\Persistence\Mapping\ClassMetadata;
 use Laventure\Component\Database\ORM\Persistence\Query\QueryBuilder;
@@ -10,7 +9,7 @@ use Laventure\Component\Database\ORM\Persistence\Query\QueryBuilder;
 
 
 /**
- * @Persistence
+ * @Persistent
  *
  * @author Jean-Claude <jeanyao@ymail.com>
  *
@@ -18,7 +17,7 @@ use Laventure\Component\Database\ORM\Persistence\Query\QueryBuilder;
  *
  * @package Laventure\Component\Database\ORM\Persistence
 */
-class Persistence
+class Persistent
 {
 
 
@@ -39,14 +38,6 @@ class Persistence
 
 
 
-    /**
-     * @var array
-    */
-    protected array $cache = [];
-
-
-
-
 
     /**
      * @param EntityManager $em
@@ -60,11 +51,14 @@ class Persistence
     }
 
 
+
+
+
     /**
      * @param string|null $selects
      *
      * @return SelectBuilder
-     */
+    */
     public function select(string $selects = null): SelectBuilder
     {
          return $this->createQueryBuilder()
@@ -82,20 +76,27 @@ class Persistence
     /**
      * @param int $id
      *
-     * @return mixed
+     * @return object|null|mixed
     */
     public function find(int $id): mixed
     {
-        if(isset($this->cache[$id])) {
-             return $this->cache[$id];
-        }
+        return $this->select()
+                    ->criteria([$this->identifier() => $id])
+                    ->getQuery()
+                    ->getOneOrNullResult();
+    }
 
-        $object = $this->select()
-                       ->criteria([$this->identifier() => $id])
-                       ->getQuery()
-                       ->getOneOrNullResult();
 
-        return $this->cache[$id] = $object;
+
+
+    /**
+     * @return array|object[]
+    */
+    public function findAll(): array
+    {
+         return $this->select()
+                    ->getQuery()
+                    ->getResult();
     }
 
 
@@ -126,6 +127,8 @@ class Persistence
                      ->criteria($this->criteria())
                      ->execute();
     }
+
+
 
 
 

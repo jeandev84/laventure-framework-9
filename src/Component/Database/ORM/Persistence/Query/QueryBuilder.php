@@ -10,6 +10,7 @@ use Laventure\Component\Database\Builder\SQL\SqlQueryBuilder;
 use Laventure\Component\Database\Builder\SQL\SqlQueryBuilderInterface;
 use Laventure\Component\Database\Connection\ConnectionInterface;
 use Laventure\Component\Database\ORM\Persistence\EntityManager;
+use Laventure\Component\Database\ORM\Persistence\Mapping\ClassMetadata;
 
 
 /**
@@ -42,6 +43,10 @@ class QueryBuilder extends SqlQueryBuilder
      }
 
 
+
+
+
+
      /**
       * Build select query
       *
@@ -55,5 +60,29 @@ class QueryBuilder extends SqlQueryBuilder
            $builder = parent::select($distinct ? "DISTINCT $selects" : $selects);
            $builder->persistence($this->em);
            return $builder;
+     }
+
+
+
+
+
+
+     /**
+      * @param string $context
+      *
+      * @param string $alias
+      *
+      * @return SelectBuilder
+     */
+     public function from(string $context, string $alias = ''): SelectBuilder
+     {
+         if (class_exists($context)) {
+             $metadata = new ClassMetadata($context);
+             return $this->select()
+                         ->from($metadata->getTableName(), $alias)
+                         ->map($context);
+         }
+
+         return $this->select()->from($context, $alias);
      }
 }

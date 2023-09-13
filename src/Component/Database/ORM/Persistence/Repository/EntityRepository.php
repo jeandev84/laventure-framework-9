@@ -3,6 +3,7 @@ namespace Laventure\Component\Database\ORM\Persistence\Repository;
 
 
 use Laventure\Component\Database\Builder\SQL\Commands\DQL\Select;
+use Laventure\Component\Database\Builder\SQL\Commands\DQL\SelectBuilder;
 use Laventure\Component\Database\ORM\Persistence\EntityManager;
 use Laventure\Component\Database\ORM\Persistence\Mapping\ClassMetadata;
 use Laventure\Component\Database\ORM\Persistence\Query\QueryBuilder;
@@ -49,14 +50,12 @@ class EntityRepository implements EntityRepositoryInterface
     /**
      * @param string $alias
      *
-     * @return Select
+     * @return SelectBuilder
     */
-    public function createQueryBuilder(string $alias): Select
+    public function createQueryBuilder(string $alias): SelectBuilder
     {
          return $this->em->createQueryBuilder()
-                         ->select()
-                         ->map($this->getClassName())
-                         ->from($this->getTableName(), $alias);
+                         ->from($this->getClassName(), $alias);
     }
 
 
@@ -87,7 +86,7 @@ class EntityRepository implements EntityRepositoryInterface
 
         return $persistence->select()
                            ->criteria($criteria)
-                           ->ordersBy($oderBy)
+                           ->addOrderBy($oderBy)
                            ->getQuery()
                            ->getOneOrNullResult();
     }
@@ -104,9 +103,7 @@ class EntityRepository implements EntityRepositoryInterface
     {
         return $this->em->getUnitOfWork()
                         ->getPersistence($this->getClassName())
-                        ->select()
-                        ->getQuery()
-                        ->getResult();
+                        ->findAll();
     }
 
 
@@ -122,9 +119,9 @@ class EntityRepository implements EntityRepositoryInterface
                           ->getPersistence($this->getClassName())
                           ->select()
                           ->criteria($criteria)
-                          ->ordersBy($orderBy)
-                          ->limit($limit)
-                          ->offset($offset)
+                          ->addOrderBy($orderBy)
+                          ->setMaxResults($limit)
+                          ->setFirstResult($offset)
                           ->getQuery()
                           ->getResult();
 
@@ -142,32 +139,6 @@ class EntityRepository implements EntityRepositoryInterface
     {
         return $this->metadata->getClassname();
     }
-
-
-
-
-
-
-    /**
-     * @return ClassMetadata
-    */
-    protected function getClassMetadata(): ClassMetadata
-    {
-        return $this->metadata;
-    }
-
-
-
-
-
-    /**
-     * @return string
-    */
-    protected function getTableName(): string
-    {
-        return $this->metadata->getTableName();
-    }
-
 
 
 
