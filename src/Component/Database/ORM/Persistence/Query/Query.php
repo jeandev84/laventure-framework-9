@@ -151,13 +151,30 @@ class Query
 
 
 
+    /**
+     * @return InsertBuilder
+    */
     private function insert(): InsertBuilder
     {
          [$table, $attributes] = $this->builder['inserts'];
-         $qb = new InsertBuilder($this->em->getConnection());
+         $qb = new InsertBuilder($this->getConnection());
          return $qb->attributes($attributes)->table($table);
     }
 
+
+
+
+
+
+    /**
+     * @return UpdateBuilder
+    */
+    private function update(): UpdateBuilder
+    {
+        [$table, $alias] = $this->builder['updates'];
+        $qb = new UpdateBuilder($this->getConnection());
+        return $qb->update($this->builder['set'])->table($table, $alias);
+    }
 
 
 
