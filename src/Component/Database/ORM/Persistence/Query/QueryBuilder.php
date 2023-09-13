@@ -42,19 +42,15 @@ class QueryBuilder extends SqlQueryBuilder
      }
 
 
-
-
-
      /**
       * Build select query
       *
-      * @param string $selects
-      *
+      * @param string|null $selects
       * @param bool $distinct
       *
       * @return SelectBuilder
      */
-     public function select(string $selects = '*', bool $distinct = false): SelectBuilder
+     public function select(string $selects = null, bool $distinct = false): SelectBuilder
      {
            $builder = parent::select($distinct ? "DISTINCT $selects" : $selects);
            $builder->persistence($this->em);

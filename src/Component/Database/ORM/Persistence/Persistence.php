@@ -60,15 +60,11 @@ class Persistence
     }
 
 
-
-
-
-
     /**
      * @param string|null $selects
      *
      * @return SelectBuilder
-    */
+     */
     public function select(string $selects = null): SelectBuilder
     {
          return $this->createQueryBuilder()

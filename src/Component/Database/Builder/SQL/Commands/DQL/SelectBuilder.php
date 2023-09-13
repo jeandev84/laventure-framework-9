@@ -484,6 +484,7 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderInterface
     {
         return $this->selected()
                     ->joined()
+                    ->conditions()
                     ->grouped()
                     ->ordered()
                     ->limited()
@@ -639,10 +640,10 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderInterface
              return $this;
         }
 
-        $this->addSQLPart(join(' ', $this->joins));
-
-        return $this->addSQLConditions();
+        return $this->addSQLPart(join(' ', $this->joins));
     }
+
+
 
 
 

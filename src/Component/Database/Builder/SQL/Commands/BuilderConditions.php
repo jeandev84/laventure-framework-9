@@ -161,15 +161,13 @@ abstract class BuilderConditions extends Builder implements BuilderConditionInte
 
 
     /**
-     * @param array $criteria
-     *
-     * @return $this
+     * @inheritdoc
     */
     public function criteria(array $criteria): static
     {
         foreach ($criteria as $column => $value) {
             if ($this->hasPdoConnection()) {
-                $this->criteriaPdo($column, $value);
+               $this->criteriaPdo($column, $value);
             } else {
                 $this->where("$column = '$value'");
             }
@@ -178,6 +176,27 @@ abstract class BuilderConditions extends Builder implements BuilderConditionInte
         return $this;
     }
 
+
+
+
+
+    /**
+     * @param string $column
+     *
+     * @param $value
+     *
+     * @return void
+    */
+    private function criteriaPdo(string $column, $value): void
+    {
+        if (is_array($value)) {
+            $this->where($this->expr()->in($column, "(:$column)"));
+            $this->setParameter($column, $value);
+        } else {
+            $this->where("$column = :$column");
+            $this->setParameter($column, $value);
+        }
+    }
 
 
 
@@ -270,31 +289,8 @@ abstract class BuilderConditions extends Builder implements BuilderConditionInte
     /**
      * @return $this
     */
-    protected function addSQLConditions(): static
+    protected function conditions(): static
     {
         return $this->addSQLPart($this->getSQLConditions());
-    }
-
-
-
-
-    /**
-     * @param string $column
-     *
-     * @param $value
-     *
-     * @return $this
-    */
-    private function criteriaPdo(string $column, $value): static
-    {
-        if (is_array($value)) {
-            $this->where($this->expr()->in($column, "(:$column)"));
-            $this->setParameter($column, $value);
-        } else {
-            $this->where("$column = :$column");
-            $this->setParameter($column, $value);
-        }
-
-        return $this;
     }
 }
