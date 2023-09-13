@@ -2,6 +2,8 @@
 namespace Laventure\Component\Database\Builder\SQL\Commands;
 
 
+use Laventure\Component\Database\Builder\SQL\Commands\Expr\Expr;
+
 /**
  * @BuilderConditionInterface
  *
@@ -85,6 +87,22 @@ interface BuilderConditionInterface extends BuilderInterface
        * @return $this
       */
       public function setParameters(array $parameters): static;
+
+
+
+
+
+
+      /**
+       * @param array $conditions
+       *
+       * @param string $type
+       *
+       * @return $this
+      */
+      public function addConditions(string $type, array $conditions): static;
+
+
 
 
 

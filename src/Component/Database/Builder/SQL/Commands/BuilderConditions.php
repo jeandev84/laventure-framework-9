@@ -10,6 +10,21 @@ use Laventure\Component\Database\Builder\SQL\Commands\Expr\Expr;
 abstract class BuilderConditions extends Builder implements BuilderConditionInterface
 {
 
+      const AND = 'AND';
+      const OR  = 'OR';
+
+
+
+      /**
+       * @var array|string[]
+      */
+      protected array $types = [
+          'AND' => 'andWhere',
+          'OR'  => 'orWhere'
+      ];
+
+
+
 
       /**
        * @var array
@@ -73,6 +88,28 @@ abstract class BuilderConditions extends Builder implements BuilderConditionInte
 
 
 
+
+    /**
+     * @inheritdoc
+    */
+    public function addConditions(string $type, array $conditions): static
+    {
+         foreach ($this->types as $index => $func) {
+             if ($type === $index) {
+                 foreach ($conditions as $condition) {
+                      call_user_func_array([$this, $func], [$condition]);
+                 }
+             }
+         }
+
+         return $this;
+    }
+
+
+
+
+
+
     /**
      * @param array $conditions
      *
@@ -132,10 +169,8 @@ abstract class BuilderConditions extends Builder implements BuilderConditionInte
 
 
 
-
-
     /**
-     * @inheritdoc
+     * @return Expr
     */
     public function expr(): Expr
     {
@@ -218,7 +253,7 @@ abstract class BuilderConditions extends Builder implements BuilderConditionInte
     /**
      * @return $this
     */
-    protected function addConditions(): static
+    protected function addSQLConditions(): static
     {
         return $this->addSQLPart($this->getSQLConditions());
     }

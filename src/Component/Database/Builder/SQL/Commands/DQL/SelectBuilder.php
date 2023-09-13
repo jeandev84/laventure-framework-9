@@ -103,12 +103,12 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderInterface
     /**
      * @param ConnectionInterface $connection
      *
-     * @param string|null $selects
+     * @param string
     */
-    public function __construct(ConnectionInterface $connection, string $selects = null)
+    public function __construct(ConnectionInterface $connection, string $selects = '')
     {
          parent::__construct($connection);
-         $this->addSelect($selects ?: "*");
+         $this->addSelect($selects);
          $this->persistence = new ObjectPersistence();
     }
 
@@ -138,11 +138,7 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderInterface
     */
     public function from(string $table, string $alias = ''): static
     {
-        $this->from[$table] = $this->resolveFrom($table, $alias);
-        $this->table = $table;
-        $this->alias = $alias;
-
-        return $this;
+        return $this->addFrom([$table => $alias]);
     }
 
 
@@ -168,7 +164,7 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderInterface
      */
     public function join(string $table, string $condition): static
     {
-         return $this->joins("JOIN", $table, $condition);
+         return $this->addJoinByType("JOIN", $table, $condition);
     }
 
 
@@ -181,7 +177,7 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderInterface
     */
     public function innerJoin(string $table, string $condition): static
     {
-        return $this->joins("INNER JOIN", $table, $condition);
+        return $this->addJoinByType("INNER JOIN", $table, $condition);
     }
 
 
@@ -193,7 +189,7 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderInterface
     */
     public function leftJoin(string $table, string $condition): static
     {
-        return $this->joins("LEFT JOIN", $table, $condition);
+        return $this->addJoinByType("LEFT JOIN", $table, $condition);
     }
 
 
@@ -205,7 +201,7 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderInterface
     */
     public function rightJoin(string $table, string $condition): static
     {
-        return $this->joins("RIGHT JOIN", $table, $condition);
+        return $this->addJoinByType("RIGHT JOIN", $table, $condition);
     }
 
 
@@ -218,7 +214,7 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderInterface
     */
     public function fullJoin(string $table, string $condition): static
     {
-         return $this->joins("FULL JOIN", $table, $condition);
+         return $this->addJoinByType("FULL JOIN", $table, $condition);
     }
 
 
@@ -244,9 +240,26 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderInterface
     */
     public function having(string $condition): static
     {
-         $this->having[] = $condition;
+         return $this->addHaving([$condition]);
+    }
 
-         return $this;
+
+
+
+
+
+    /**
+     * @param array $conditions
+     *
+     * @return $this
+    */
+    public function addHaving(array $conditions): static
+    {
+        foreach ($conditions as $condition) {
+            $this->having[] = $condition;
+        }
+
+        return $this;
     }
 
 
@@ -287,11 +300,36 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderInterface
     /**
      * @inheritDoc
     */
-    public function addJoin(array $joins): static
+    public function addJoins(array $joins, string $type = ''): static
     {
-        foreach ($joins as $join) {
-            $this->joins[] = $join;
+        foreach (JoinType::types() as $index => $func) {
+             if ($type === $index) {
+                 foreach ($joins as $table => $condition) {
+                     call_user_func_array([$this, $func], [$table, $condition]);
+                 }
+             } else {
+                 foreach ($joins as $join) {
+                     $this->addJoin($join);
+                 }
+             }
         }
+
+        return $this;
+    }
+
+
+
+
+
+
+    /**
+     * @param string $join
+     *
+     * @return $this
+    */
+    public function addJoin(string $join): static
+    {
+        $this->joins[] = $join;
 
         return $this;
     }
@@ -329,6 +367,24 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderInterface
          return $this;
     }
 
+
+
+
+
+
+    /**
+     * @param array $tables
+     *
+     * @return $this
+    */
+    public function addFrom(array $tables): static
+    {
+        foreach ($tables as $table => $alias) {
+            $this->from[$table] = $alias ? "$table $alias" : $table;
+        }
+
+        return $this;
+    }
 
 
 
@@ -436,7 +492,7 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderInterface
     private function selected(): static
     {
         $selects = join(', ', $this->selects);
-        $command = sprintf('SELECT %s FROM %s', $selects, $this->fromTables());
+        $command = sprintf('SELECT %s FROM %s', $selects, $this->getTable());
         return $this->addSQLPart($command);
     }
 
@@ -456,7 +512,7 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderInterface
 
         $this->addSQLPart(join(' ', $this->joins));
 
-        return $this->addConditions();
+        return $this->addSQLConditions();
     }
 
 
@@ -524,22 +580,6 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderInterface
 
 
 
-    /**
-     * @param string $table
-     *
-     * @param string $alias
-     *
-     * @return string
-    */
-    protected function resolveFrom(string $table, string $alias = ''): string
-    {
-         return $alias ? "$table $alias" : $table;
-    }
-
-
-
-
-
 
     /**
      * @param string $type
@@ -550,9 +590,9 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderInterface
      *
      * @return $this
     */
-    protected function joins(string $type, string $table, string $condition): static
+    protected function addJoinByType(string $type, string $table, string $condition): static
     {
-        return $this->addJoin(["$type $table ON $condition"]);
+        return $this->addJoin("$type $table ON $condition");
     }
 
 
@@ -574,10 +614,12 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderInterface
 
 
 
+
+
     /**
-     * @return string
+     * @inheritdoc
     */
-    private function fromTables(): string
+    public function getTable(): string
     {
         return join(', ', array_values($this->from));
     }

@@ -35,7 +35,7 @@ interface SelectBuilderInterface
      *
      * @return $this
     */
-    public function addJoin(array $joins): static;
+    public function addJoins(array $joins): static;
 
 
 

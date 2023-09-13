@@ -3,6 +3,7 @@ namespace Laventure\Component\Database\ORM\Persistence;
 
 use Closure;
 use Exception;
+use Laventure\Component\Database\Builder\SQL\Commands\BuilderInterface;
 use Laventure\Component\Database\Builder\SQL\Commands\DQL\Persistence\ObjectPersistenceInterface;
 use Laventure\Component\Database\Connection\ConnectionInterface;
 use Laventure\Component\Database\Connection\Query\QueryInterface;
@@ -253,14 +254,16 @@ class EntityManager implements EntityManagerInterface
 
 
 
+
+
     /**
      * @param string $name
      *
-     * @param $query
+     * @param BuilderInterface $query
      *
      * @return $this
     */
-    public function addNamedQuery(string $name, $query): static
+    public function addNamedQuery(string $name, BuilderInterface $query): static
     {
          $this->namedQueries[$name] = $query;
 
@@ -272,12 +275,53 @@ class EntityManager implements EntityManagerInterface
 
 
     /**
-     * @return array
+     * @param array $queries
+     *
+     * @return $this
+    */
+    public function addNamedQueries(array $queries): static
+    {
+         foreach ($queries as $name => $query) {
+             $this->addNamedQuery($name, $query);
+         }
+
+         return $this;
+    }
+
+
+
+
+
+    /**
+     * @param string $name
+     *
+     * @return BuilderInterface
+    */
+    public function getNamedQuery(string $name): BuilderInterface
+    {
+         if (! $this->hasNamedQuery($name)) {
+              throw new \RuntimeException("Could not found named query $name.");
+         }
+
+         return $this->namedQueries[$name];
+    }
+
+
+
+
+
+
+
+    /**
+     * @return BuilderInterface[]
     */
     public function getNamedQueries(): array
     {
         return $this->namedQueries;
     }
+
+
+
 
 
 

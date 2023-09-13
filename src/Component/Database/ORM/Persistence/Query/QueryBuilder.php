@@ -2,12 +2,15 @@
 namespace Laventure\Component\Database\ORM\Persistence\Query;
 
 use Laventure\Component\Database\Builder\SQL\Commands\BuilderConditionInterface;
+use Laventure\Component\Database\Builder\SQL\Commands\BuilderInterface;
 use Laventure\Component\Database\Builder\SQL\Commands\DML\DeleteBuilder;
 use Laventure\Component\Database\Builder\SQL\Commands\DML\InsertBuilder;
 use Laventure\Component\Database\Builder\SQL\Commands\DML\UpdateBuilder;
+use Laventure\Component\Database\Builder\SQL\Commands\DQL\JoinType;
 use Laventure\Component\Database\Builder\SQL\Commands\DQL\SelectBuilder;
 use Laventure\Component\Database\Builder\SQL\Commands\Expr\Expr;
 use Laventure\Component\Database\Builder\SQL\SqlQueryBuilder;
+use Laventure\Component\Database\Connection\ConnectionInterface;
 use Laventure\Component\Database\ORM\Persistence\EntityManager;
 
 
@@ -20,15 +23,8 @@ use Laventure\Component\Database\ORM\Persistence\EntityManager;
  *
  * @package Laventure\Component\Database\ORM\Persistence\Query
 */
-class QueryBuilder
+class QueryBuilder implements \ArrayAccess
 {
-
-     const SELECT = 'select';
-     const INSERT = 'insert';
-     const UPDATE = 'update';
-     const DELETE = 'insert';
-
-
 
 
      /**
@@ -47,6 +43,8 @@ class QueryBuilder
 
 
 
+
+
      /**
       * @var array
      */
@@ -59,13 +57,48 @@ class QueryBuilder
      /**
       * @var array
      */
-     protected array $joins = [
-         'join'      => [],
-         'leftJoin'  => [],
-         'rightJoin' => [],
-         'innerJoin' => [],
-         'fullJoin'  => [],
-     ];
+     protected array $joins = [];
+
+
+
+
+
+     /**
+      * @var array
+     */
+     protected array $leftJoin = [];
+
+
+
+
+
+
+     /**
+      * @var array
+     */
+     protected array $rightJoin = [];
+
+
+
+
+
+
+     /**
+      * @var array
+     */
+     protected array $innerJoin = [];
+
+
+
+
+
+
+
+     /**
+      * @var array
+     */
+     protected array $fullJoin = [];
+
 
 
 
@@ -95,6 +128,8 @@ class QueryBuilder
       * @var array
      */
      protected array $orderBy = [];
+
+
 
 
 
@@ -185,16 +220,12 @@ class QueryBuilder
      }
 
 
-
-
-
-
      /**
-      * @param string|null $selects
+      * @param array|string $selects
       *
       * @return $this
      */
-     public function select(string $selects = null): static
+     public function select(array|string $selects = ''): static
      {
            return $this->addSelect($selects);
      }
@@ -214,10 +245,11 @@ class QueryBuilder
      */
      public function from(string $table, string $alias = ''): static
      {
-          $this->selects['from'][$table] = $alias;
+          $this->from[$table] = $alias;
 
           return $this;
      }
+
 
 
 
@@ -232,7 +264,9 @@ class QueryBuilder
       */
      public function join(string $table, string $condition): static
      {
-           return $this->joins('join', $table, $condition);
+           $this->joins[] = [$table => $condition];
+
+           return $this;
      }
 
 
@@ -250,7 +284,9 @@ class QueryBuilder
     */
     public function innerJoin(string $table, string $condition): static
     {
-        return $this->joins('innerJoin', $table, $condition);
+        $this->innerJoin[] = [$table => $condition];
+
+        return $this;
     }
 
 
@@ -267,7 +303,9 @@ class QueryBuilder
      */
     public function leftJoin(string $table, string $condition): static
     {
-        return $this->joins('leftJoin', $table, $condition);
+        $this->leftJoin[] = [$table => $condition];
+
+        return $this;
     }
 
 
@@ -284,7 +322,9 @@ class QueryBuilder
      */
     public function rightJoin(string $table, string $condition): static
     {
-        return $this->joins('rightJoin', $table, $condition);
+         $this->rightJoin[] = [$table => $condition];
+
+         return $this;
     }
 
 
@@ -302,7 +342,9 @@ class QueryBuilder
      */
     public function fullJoin(string $table, string $condition): static
     {
-        return $this->joins('fullJoin', $table, $condition);
+        $this->fullJoin[] = [$table => $condition];
+
+        return $this;
     }
 
 
@@ -354,6 +396,8 @@ class QueryBuilder
 
          return $this;
     }
+
+
 
 
 
@@ -542,15 +586,45 @@ class QueryBuilder
 
 
 
+
+    /**
+     * @return string
+    */
+    public function getSQl(): string
+    {
+         return $this->getQuery()->getSQL();
+    }
+
+
+
+
+
+
+
+    /**
+     * @return Query
+    */
+    public function createQuery(): Query
+    {
+        return new Query($this->em, $this);
+    }
+
+
+
+
+
+
     /**
      * @return Query
     */
     public function getQuery(): Query
     {
-         $this->em->addNamedQuery(self::SELECT, '');
+         $this->em->addNamedQueries($this->getBuilders());
 
-         return new Query($this->em);
+         return $this->createQuery();
     }
+
+
 
 
 
@@ -575,10 +649,12 @@ class QueryBuilder
     */
     public function addSelect(array|string $select): static
     {
-          $this->selects['selects'][] = $select;
+          $this->selects[] = $select;
 
           return $this;
     }
+
+
 
 
 
@@ -628,7 +704,7 @@ class QueryBuilder
     public function addOrderBy(array $orders): static
     {
         foreach ($orders as $column => $direction) {
-             $this->orderBy[$column] = "$column $direction";
+             $this->orderBy[] = [$column => $direction];
         }
 
         return $this;
@@ -639,18 +715,100 @@ class QueryBuilder
 
 
     /**
-     * @param string $type
-     *
-     * @param string $table
-     *
-     * @param string $condition
-     *
-     * @return $this
+     * @return ConnectionInterface
     */
-    private function joins(string $type, string $table, string $condition): static
+    public function getConnection(): ConnectionInterface
     {
-        $this->joins['join'][] = [$table => $condition];
+         return $this->em->getConnection();
+    }
 
-        return $this;
+
+
+
+
+
+    /**
+     * @inheritDoc
+    */
+    public function offsetExists(mixed $offset): bool
+    {
+         return property_exists($this, $offset);
+    }
+
+
+
+
+
+
+    /**
+     * @inheritDoc
+    */
+    public function offsetGet(mixed $offset): mixed
+    {
+         if (! $this->offsetExists($offset)) {
+              return null;
+         }
+
+         return $this->{$offset};
+    }
+
+
+
+
+
+
+    /**
+     * @inheritDoc
+    */
+    public function offsetSet(mixed $offset, mixed $value): void
+    {
+         if ($this->offsetExists($offset)) {
+             $this->{$offset} = $value;
+         }
+    }
+
+
+
+
+    /**
+     * @inheritDoc
+     */
+    public function offsetUnset(mixed $offset): void
+    {
+         if ($this->offsetExists($offset)) {
+             unset($this->{$offset});
+         }
+    }
+
+
+
+
+
+    /**
+     * @return array
+    */
+    public function toArray(): array
+    {
+         $data = get_object_vars($this);
+         unset($data['em']);
+         return $data;
+    }
+
+
+
+
+
+
+    /**
+     * @return BuilderInterface[]
+    */
+    private function getBuilders(): array
+    {
+         return [
+               'select'  => new SelectBuilder($this->getConnection()),
+               'insert'  => new InsertBuilder($this->getConnection()),
+               'update'  => new UpdateBuilder($this->getConnection()),
+               'delete'  => new DeleteBuilder($this->getConnection())
+         ];
     }
 }
