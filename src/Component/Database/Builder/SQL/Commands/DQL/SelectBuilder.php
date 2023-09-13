@@ -433,7 +433,14 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderInterface
     */
     public function fetch(): QueryResultInterface
     {
-          return $this->getStatement()->fetch();
+        $statement = $this->getStatement()
+                          ->setParameters($this->getParameters());
+
+        if ($this->mappedClass) {
+            $statement->map($this->mappedClass);
+        }
+
+        return $statement->fetch();
     }
 
 
@@ -449,24 +456,6 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderInterface
          return new Query($this->fetch(), $this->persistence);
     }
 
-
-
-
-
-    /**
-     * @return QueryInterface
-    */
-    public function getStatement(): QueryInterface
-    {
-        $statement = parent::getStatement();
-        $statement->setParameters($this->getParameters());
-
-        if ($this->mappedClass) {
-            $statement->map($this->mappedClass);
-        }
-
-        return $statement;
-    }
 
 
 
