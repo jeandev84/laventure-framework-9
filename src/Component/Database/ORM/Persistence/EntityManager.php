@@ -23,7 +23,7 @@ use Laventure\Component\Database\ORM\Persistence\Repository\EntityRepositoryFact
 /**
  * @inheritdoc
 */
-class EntityManager implements EntityManagerInterface
+class EntityManager implements EntityManagerInterface, ObjectPersistenceInterface
 {
 
     /**
@@ -505,11 +505,11 @@ class EntityManager implements EntityManagerInterface
     /**
      * @inheritDoc
     */
-    public function saveResult(array $objects): array
+    public function persistence(array $objects): array
     {
         foreach ($objects as $object) {
             if (! is_object($object)) { continue; }
-            $this->saveOne($object);
+            $this->persist($object);
         }
 
         return $objects;
@@ -532,7 +532,20 @@ class EntityManager implements EntityManagerInterface
     }
 
 
-    
+
+
+
+
+
+    /**
+     * @return object[]
+     *
+     * @inheritDoc
+    */
+    public function getSaved(): array
+    {
+         return $this->managed;
+    }
     
     
     

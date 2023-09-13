@@ -17,7 +17,7 @@ interface QueryHydrateInterface
      /**
       * @return mixed
      */
-     public function fetchAll(): mixed;
+     public function getResult(): mixed;
 
 
 
@@ -26,7 +26,7 @@ interface QueryHydrateInterface
      /**
       * @return mixed
      */
-     public function fetchOne(): mixed;
+     public function getOneOrNullResult(): mixed;
 
 
 
@@ -36,7 +36,7 @@ interface QueryHydrateInterface
      /**
       * @return array
      */
-     public function fetchAssoc(): array;
+     public function getArrayResult(): array;
 
 
 
@@ -46,7 +46,7 @@ interface QueryHydrateInterface
      /**
       * @return array
      */
-     public function fetchColumns(): array;
+     public function getArrayColumns(): array;
 
 
 

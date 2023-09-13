@@ -87,9 +87,11 @@ interface BuilderInterface
 
 
     /**
-     * @return $this
+     * @return mixed
     */
-    public function executeQueries(): static;
+    public function execute(): mixed;
+
+
 
 
 

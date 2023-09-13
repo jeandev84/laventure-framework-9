@@ -13,41 +13,10 @@ namespace Laventure\Component\Database\Builder\SQL\Commands\DQL\Persistence;
  */
 interface ObjectPersistenceInterface
 {
-
-        /**
-         * Save objects collection result and returns them
-         *
-         * @param object[] $objects
-         *
-         * @return object[]
-        */
-        public function saveResult(array $objects): mixed;
-
-
-
-
-
-
-
-       /**
-        * Save and returns saved object
-        *
-        * @param mixed $object
-        *
-        *
-        * @return object|null
-       */
-       public function saveOne(mixed $object): mixed;
-
-
-
-
-
-
-
-
-       /**
-        * @return array
-       */
-       public function getSaved(): array;
+     /**
+      * @param object[] $objects
+      *
+      * @return mixed
+     */
+     public function persistence(array $objects): mixed;
 }

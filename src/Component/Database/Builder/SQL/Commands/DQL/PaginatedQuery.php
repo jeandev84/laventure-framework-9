@@ -28,7 +28,7 @@ class PaginatedQuery implements PaginatedQueryInterface
        */
        public function getTotalRecords(): array
        {
-            return $this->select->getQuery()->fetchAll();
+            return $this->select->getQuery()->getResult();
        }
 
 
@@ -42,8 +42,8 @@ class PaginatedQuery implements PaginatedQueryInterface
        public function paginate(int $page, int $limit = 5): PaginatedQueryDto
        {
              $offset = $limit * abs($page - 1);
-             $result = $this->select->offset($offset)
-                                    ->limit($limit)
+             $result = $this->select->setFirstResult($offset)
+                                    ->setMaxResults($limit)
                                     ->fetch();
 
              $items  = $result->all();

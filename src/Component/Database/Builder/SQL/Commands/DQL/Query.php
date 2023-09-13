@@ -2,6 +2,7 @@
 namespace Laventure\Component\Database\Builder\SQL\Commands\DQL;
 
 use Laventure\Component\Database\Builder\SQL\Commands\DQL\Contract\QueryHydrateInterface;
+use Laventure\Component\Database\Builder\SQL\Commands\DQL\Persistence\ObjectPersistenceInterface;
 use Laventure\Component\Database\Connection\Query\QueryResultInterface;
 
 
@@ -12,11 +13,12 @@ class Query implements QueryHydrateInterface
 {
 
 
-
     /**
      * @param QueryResultInterface $result
-    */
-    public function __construct(protected QueryResultInterface $result)
+     *
+     * @param ObjectPersistenceInterface $persistence
+   */
+    public function __construct(protected QueryResultInterface $result, protected ObjectPersistenceInterface $persistence)
     {
     }
 
@@ -27,9 +29,13 @@ class Query implements QueryHydrateInterface
     /**
      * @inheritDoc
     */
-    public function fetchAll(): mixed
+    public function getResult(): mixed
     {
-        return $this->result->all();
+        $objects =  $this->result->all();
+
+        $this->persistence->persistence($objects);
+
+        return $objects;
     }
 
 
@@ -40,9 +46,13 @@ class Query implements QueryHydrateInterface
     /**
      * @inheritDoc
     */
-    public function fetchOne(): mixed
+    public function getOneOrNullResult(): mixed
     {
-        return $this->result->all();
+         $object = $this->result->one();
+
+         $this->persistence->persistence([$object]);
+
+         return $object;
     }
 
 
@@ -53,7 +63,7 @@ class Query implements QueryHydrateInterface
     /**
      * @inheritDoc
     */
-    public function fetchAssoc(): array
+    public function getArrayResult(): array
     {
          return $this->result->assoc();
     }
@@ -65,7 +75,7 @@ class Query implements QueryHydrateInterface
     /**
      * @inheritDoc
     */
-    public function fetchColumns(): array
+    public function getArrayColumns(): array
     {
         return $this->result->columns();
     }
@@ -83,6 +93,9 @@ class Query implements QueryHydrateInterface
     {
         return $this->result->column($index);
     }
+
+
+
 
 
 

@@ -4,10 +4,11 @@ namespace Laventure\Component\Database\Builder\SQL\Commands\DQL;
 
 use Laventure\Component\Database\Builder\SQL\Commands\BuilderConditions;
 use Laventure\Component\Database\Builder\SQL\Commands\DQL\Contract\PaginatedQueryInterface;
+use Laventure\Component\Database\Builder\SQL\Commands\DQL\Persistence\ObjectPersistence;
 use Laventure\Component\Database\Builder\SQL\Commands\DQL\Persistence\ObjectPersistenceInterface;
 use Laventure\Component\Database\Builder\SQL\Commands\DQL\Contract\SelectBuilderInterface;
 use Laventure\Component\Database\Builder\SQL\Commands\DQL\Contract\QueryHydrateInterface;
-
+use Laventure\Component\Database\Connection\ConnectionInterface;
 
 
 /**
@@ -93,11 +94,40 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderInterface
 
 
     /**
+     * @var ObjectPersistenceInterface
+    */
+    protected ObjectPersistenceInterface $persistence;
+
+
+
+
+
+    /**
+     * @param ConnectionInterface $connection
+    */
+    public function __construct(ConnectionInterface $connection)
+    {
+         parent::__construct($connection);
+         $this->persistence = new ObjectPersistence();
+    }
+
+
+
+
+
+
+
+
+    /**
      * @inheritDoc
     */
-    public function addSelect(string|array $select): static
+    public function addSelect(string|array $selects): static
     {
-         $this->selects[] = $this->resolveSelects($select);
+         if (is_array($selects)) {
+             $selects = join(', ', $selects);
+         }
+
+         $this->selects[] = $selects;
 
          return $this;
     }
@@ -243,7 +273,7 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderInterface
     /**
      * @inheritDoc
     */
-    public function limit(int $limit): static
+    public function setMaxResults(int $limit): static
     {
           $this->limit = $limit;
 
@@ -259,7 +289,7 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderInterface
      *
      * @return $this
     */
-    public function offset(int $offset): static
+    public function setFirstResult(int $offset): static
     {
          $this->offset = $offset;
 
@@ -381,21 +411,6 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderInterface
     /**
      * @inheritDoc
     */
-    public function persistence(ObjectPersistenceInterface $persistence): static
-    {
-         $this->persistence = $persistence;
-
-         return $this;
-    }
-
-
-
-
-
-
-    /**
-     * @inheritDoc
-    */
     public function getQuery(): QueryHydrateInterface
     {
          $statement = $this->getStatement();
@@ -441,6 +456,61 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderInterface
     }
 
 
+
+
+
+
+
+
+
+
+
+    /**
+     * @inheritdoc
+    */
+    public function getTable(): string
+    {
+        return join(', ', array_values($this->from));
+    }
+
+
+
+
+
+    /**
+     * @inheritDoc
+    */
+    public function execute(): mixed
+    {
+        return $this->getQuery()->getResult();
+    }
+
+
+
+
+
+
+    /**
+     * @inheritDoc
+    */
+    public function persistence(ObjectPersistenceInterface $persistence): static
+    {
+        $this->persistence = $persistence;
+
+        return $this;
+    }
+
+
+
+
+
+    /**
+     * @inheritDoc
+     */
+    public function getPersistence(): ObjectPersistenceInterface
+    {
+        return $this->persistence;
+    }
 
 
 
@@ -553,34 +623,5 @@ class SelectBuilder extends BuilderConditions implements SelectBuilderInterface
     protected function addJoinByType(string $type, string $table, string $condition): static
     {
         return $this->addJoin("$type $table ON $condition");
-    }
-
-
-
-
-
-
-    /**
-     * @param string|array $selects
-     *
-     * @return string
-    */
-    private function resolveSelects(string|array $selects): string
-    {
-          return is_array($selects) ? join(', ', $selects) : $selects;
-    }
-
-
-
-
-
-
-
-    /**
-     * @inheritdoc
-    */
-    public function getTable(): string
-    {
-        return join(', ', array_values($this->from));
     }
 }

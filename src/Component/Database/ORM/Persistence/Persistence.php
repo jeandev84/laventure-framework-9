@@ -97,7 +97,7 @@ class Persistence
         $object = $this->select()
                        ->criteria([$this->identifier() => $id])
                        ->getQuery()
-                       ->fetchOne();
+                       ->getOneOrNullResult();
 
         return $this->cache[$id] = $object;
     }

@@ -42,17 +42,6 @@ interface InsertBuilderInterface extends BuilderInterface
 
 
 
-       /**
-        * Returns last inserted ID
-        *
-        * @return int
-       */
-       public function execute(): int;
-
-
-
-
-
 
        /**
         * Returns count of insertion
@@ -72,4 +61,16 @@ interface InsertBuilderInterface extends BuilderInterface
        * @return array
       */
       public function getAttributes(): array;
+
+
+
+
+
+
+    /**
+     * Must returns last inserted ID
+     *
+     * @return int
+    */
+    public function execute(): int;
 }

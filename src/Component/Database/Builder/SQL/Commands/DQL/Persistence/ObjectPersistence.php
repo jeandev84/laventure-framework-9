@@ -8,46 +8,28 @@ namespace Laventure\Component\Database\Builder\SQL\Commands\DQL\Persistence;
 class ObjectPersistence implements ObjectPersistenceInterface
 {
 
-    /**
-     * @var array
-    */
-    protected array $items = [];
-
-
 
     /**
-     * @inheritDoc
+     * @var object[]
     */
-    public function saveResult(array $objects): array
-    {
-          foreach ($objects as $object) {
-               $this->saveOne($object);
-          }
+    protected array $managed = [];
 
-          return $objects;
-    }
 
-    
-    
-    
-    
+
+
+
     /**
      * @inheritDoc
     */
-    public function saveOne(mixed $object): mixed
+    public function persistence(array $objects): mixed
     {
-         if (is_object($object)) {
-             $this->items[] = $object;
+         foreach ($objects as  $object) {
+             if (! is_object($object)) {
+                  continue;
+             }
+             $this->managed[] = $object;
          }
 
-         return $object;
-    }
-
-    /**
-     * @inheritDoc
-    */
-    public function getSaved(): array
-    {
-         return $this->items;
+         return $objects;
     }
 }

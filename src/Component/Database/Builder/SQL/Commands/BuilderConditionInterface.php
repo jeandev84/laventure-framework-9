@@ -96,8 +96,6 @@ interface BuilderConditionInterface extends BuilderInterface
       /**
        * @param array $conditions
        *
-       * @param string|null $type
-       *
        * @return $this
       */
       public function addConditions(array $conditions): static;

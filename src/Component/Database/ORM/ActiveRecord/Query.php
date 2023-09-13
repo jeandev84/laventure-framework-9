@@ -356,7 +356,7 @@ class Query
     */
     public function limit(int $limit): static
     {
-        $this->selects->limit($limit);
+        $this->selects->setMaxResults($limit);
 
         return $this;
     }
@@ -374,7 +374,7 @@ class Query
     */
     public function offset(int $offset): static
     {
-        $this->selects->offset($offset);
+        $this->selects->setFirstResult($offset);
 
         return $this;
     }
@@ -556,7 +556,7 @@ class Query
     public function one(): mixed
     {
          return $this->selected()
-                     ->limit(1)
+                     ->setMaxResults(1)
                      ->fetch()
                      ->one();
     }

@@ -7,6 +7,7 @@ use Laventure\Component\Database\Builder\SQL\Commands\DML\InsertBuilder;
 use Laventure\Component\Database\Builder\SQL\Commands\DML\UpdateBuilder;
 use Laventure\Component\Database\Builder\SQL\Commands\DQL\JoinType;
 use Laventure\Component\Database\Builder\SQL\Commands\DQL\SelectBuilder;
+use Laventure\Component\Database\Builder\SQL\Commands\NullBuilder;
 use Laventure\Component\Database\Connection\ConnectionInterface;
 use Laventure\Component\Database\ORM\Persistence\EntityManager;
 
@@ -108,13 +109,13 @@ class Query
 
 
     /**
-     * @param string|null $type
+     * @param string|null $hydrate
      *
      * @return mixed
     */
-    public function execute(string $type = null): mixed
+    public function execute(string $hydrate = null): mixed
     {
-           switch ($type):
+           switch ($hydrate):
                case self::HYDRATE_ALL:
                    if($objects = $this->fetchAll()) {
                        $this->persistence($objects);
@@ -129,10 +130,7 @@ class Query
                case self::HYDRATE_COLUMNS:
                    return $this->fetchColumns();
                default:
-                   if ($this->builder['inserts']) {
-
-                   }
-                   throw new \RuntimeException('Could not resolve this execution');
+                 return $this->executeQuery();
            endswitch;
     }
 
@@ -145,6 +143,12 @@ class Query
     */
     public function getSQL(): string
     {
+         foreach ($this->getQueries() as $key =>  $sql) {
+              if (! empty($this->builder[$key])) {
+                   return $sql;
+              }
+         }
+
          return '';
     }
 
@@ -159,7 +163,7 @@ class Query
     */
     private function select(): SelectBuilder
     {
-        $qb = new SelectBuilder($this->em->getConnection());
+        $qb = new SelectBuilder($this->getConnection());
         return   $qb->addSelect(join(', ', $this->builder['selects']))
                     ->addFrom($this->builder['from'])
                     ->addJoins($this->builder['joins'], JoinType::JOIN)
@@ -170,10 +174,9 @@ class Query
                     ->addGroupBy($this->builder['groupBy'])
                     ->addHaving($this->builder['having'])
                     ->addOrderBy($this->builder['orderBy'])
-                    ->addConditions(['AND' => $this->andWheres()])
-                    ->addCondition(['OR'   => $this->orWheres()])
-                    ->limit($this->builder['limit'])
-                    ->offset($this->builder['offset'])
+                    ->addConditions(['AND' => $this->andWheres(), 'OR' => $this->orWheres()])
+                    ->setMaxResults($this->builder['limit'])
+                    ->setFirstResult($this->builder['offset'])
                     ->setParameters($this->getParameters());
     }
 
@@ -183,10 +186,14 @@ class Query
 
 
     /**
-     * @return InsertBuilder
+     * @return BuilderInterface
     */
-    private function insert(): InsertBuilder
+    private function insert(): BuilderInterface
     {
+         if (empty($this->builder['inserts'])) {
+              return new NullBuilder();
+         }
+
          [$table, $attributes] = $this->builder['inserts'];
          $qb = new InsertBuilder($this->getConnection());
          return $qb->attributes($attributes)->table($table);
@@ -202,18 +209,58 @@ class Query
     /**
      * @return UpdateBuilder
     */
-    private function update(): UpdateBuilder
+    private function update(): 
     {
+        if (empty($this->builder['updates'])) {
+             return new NullBuilder();
+        }
         [$table, $alias] = $this->builder['updates'];
         $qb = new UpdateBuilder($this->getConnection());
         return $qb->update($this->builder['set'])
                   ->table($table, $alias)
-                  ->addConditions(['AND' => $this->andWheres()])
-                  ->addCondition(['OR'   => $this->orWheres()]);
+                  ->addConditions(['AND' => $this->andWheres(), 'OR' => $this->orWheres()]);
     }
 
 
 
+
+
+    /**
+     * @return DeleteBuilder
+    */
+    private function delete(): DeleteBuilder
+    {
+        [$table, $alias] = $this->builder['updates'];
+        $qb = new DeleteBuilder($this->getConnection());
+        return $qb->delete()
+                  ->table($table, $alias)
+                  ->addConditions(['AND' => $this->andWheres(), 'OR' => $this->orWheres()]);
+    }
+
+
+
+
+
+    /**
+     * @return mixed
+    */
+    private function executeQuery(): mixed
+    {
+        /** @var BuilderInterface[] $queries */
+        $queries = [
+            'inserts' => $this->insert(),
+            'updates' => $this->update(),
+            'deletes' => $this->delete(),
+        ];
+
+        foreach ($queries as $index => $builder) {
+            if (! empty($this->builder[$index])) {
+                 return $builder->execute();
+            }
+        }
+
+        return false;
+    }
 
 
 
@@ -257,6 +304,8 @@ class Query
 
 
 
+
+
     /**
      * @return array
     */
@@ -264,7 +313,7 @@ class Query
     {
         return $this->select()
                     ->getQuery()
-                    ->fetchAll();
+                    ->getResult();
     }
 
 
@@ -277,7 +326,7 @@ class Query
     {
         return $this->select()
                     ->getQuery()
-                    ->fetchOne();
+                    ->getOneOrNullResult();
     }
 
 
@@ -292,7 +341,7 @@ class Query
     {
         return $this->select()
                     ->getQuery()
-                    ->fetchAssoc();
+                    ->getArrayResult();
     }
 
 
@@ -306,7 +355,7 @@ class Query
     {
         return $this->select()
                     ->getQuery()
-                    ->fetchColumns();
+                    ->getArrayColumns();
     }
 
 
@@ -340,4 +389,18 @@ class Query
               $this->em->persist($object);
          }
     }
+
+
+
+
+    private function getQueries(): array
+    {
+        return [
+            'selects' => $this->select()->getSQL(),
+            'inserts' => $this->insert()->getSQL(),
+            'updates' => $this->update()->getSQL(),
+            'deletes' => $this->delete()->getSQL(),
+        ];
+    }
+
 }

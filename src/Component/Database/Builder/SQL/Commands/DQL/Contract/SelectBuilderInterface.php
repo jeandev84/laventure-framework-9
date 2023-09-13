@@ -3,6 +3,7 @@ namespace Laventure\Component\Database\Builder\SQL\Commands\DQL\Contract;
 
 
 use Laventure\Component\Database\Builder\SQL\Commands\BuilderConditionInterface;
+use Laventure\Component\Database\Builder\SQL\Commands\DQL\Persistence\ObjectPersistenceInterface;
 
 /**
  * @SelectBuilderInterface
@@ -17,11 +18,11 @@ interface SelectBuilderInterface extends BuilderConditionInterface
 {
 
     /**
-     * @param string|array $select
+     * @param string|array $selects
      *
      * @return $this
     */
-    public function addSelect(string|array $select): static;
+    public function addSelect(string|array $selects): static;
 
 
 
@@ -197,6 +198,16 @@ interface SelectBuilderInterface extends BuilderConditionInterface
 
 
 
+    /**
+     * @param int $offset
+     *
+     * @return $this
+    */
+    public function setFirstResult(int $offset): static;
+
+
+
+
 
 
     /**
@@ -204,18 +215,9 @@ interface SelectBuilderInterface extends BuilderConditionInterface
      *
      * @return $this
     */
-    public function limit(int $limit): static;
+    public function setMaxResults(int $limit): static;
 
 
-
-
-
-    /**
-     * @param int $offset
-     *
-     * @return $this
-    */
-    public function offset(int $offset): static;
 
 
 
@@ -250,4 +252,31 @@ interface SelectBuilderInterface extends BuilderConditionInterface
      * @return PaginatedQueryInterface
     */
     public function getPaginatedQuery(): PaginatedQueryInterface;
+
+
+
+
+
+
+
+
+    /**
+     * @param ObjectPersistenceInterface $persistence
+     *
+     * @return $this
+    */
+    public function persistence(ObjectPersistenceInterface $persistence): static;
+
+
+
+
+
+
+
+
+
+    /**
+     * @return ObjectPersistenceInterface
+    */
+    public function getPersistence(): ObjectPersistenceInterface;
 }
