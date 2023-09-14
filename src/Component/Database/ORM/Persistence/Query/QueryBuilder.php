@@ -77,7 +77,7 @@ class QueryBuilder extends SqlQueryBuilder
      public function from(string $context, string $alias = ''): SelectBuilder
      {
          if (class_exists($context)) {
-             $metadata = new ClassMetadata($context);
+             $metadata = $this->em->getClassMetadata($context);
              return $this->select()
                          ->from($metadata->getTableName(), $alias)
                          ->map($context);

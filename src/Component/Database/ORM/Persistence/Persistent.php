@@ -89,6 +89,9 @@ class Persistent
 
 
 
+
+
+
     /**
      * @return array|object[]
     */
@@ -112,6 +115,7 @@ class Persistent
                      ->insert($this->getTableName(), $this->getAttributes())
                      ->execute();
     }
+
 
 
 

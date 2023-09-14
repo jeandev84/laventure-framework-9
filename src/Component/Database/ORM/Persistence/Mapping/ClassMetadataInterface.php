@@ -146,18 +146,6 @@ interface ClassMetadataInterface
 
 
 
-    /**
-     * Returns mapped object
-     *
-     * @return object
-    */
-    public function getObject(): object;
-
-
-
-
-
-
 
     /**
      * Get columns value
