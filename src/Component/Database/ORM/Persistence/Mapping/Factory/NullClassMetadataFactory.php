@@ -1,5 +1,5 @@
 <?php
-namespace Laventure\Component\Database\ORM\Persistence\Mapping;
+namespace Laventure\Component\Database\ORM\Persistence\Mapping\Factory;
 
 /**
  * @inheritdoc

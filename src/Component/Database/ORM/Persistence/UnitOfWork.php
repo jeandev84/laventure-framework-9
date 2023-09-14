@@ -19,9 +19,9 @@ class UnitOfWork implements UnitOfWorkInterface
 
 
     /**
-     * @var Persistent
+     * @var Persistence
     */
-    protected Persistent $persistence;
+    protected Persistence $persistence;
 
 
 
@@ -88,11 +88,11 @@ class UnitOfWork implements UnitOfWorkInterface
     /**
      * @param string|object $context
      *
-     * @return Persistent
+     * @return Persistence
     */
-    public function getPersistence(string|object $context): Persistent
+    public function getPersistence(string|object $context): Persistence
     {
-         return new Persistent($this->em, $context);
+         return new Persistence($this->em, $context);
     }
 
 

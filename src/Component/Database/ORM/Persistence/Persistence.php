@@ -9,7 +9,7 @@ use Laventure\Component\Database\ORM\Persistence\Query\QueryBuilder;
 
 
 /**
- * @Persistent
+ * @Persistence
  *
  * @author Jean-Claude <jeanyao@ymail.com>
  *
@@ -17,7 +17,7 @@ use Laventure\Component\Database\ORM\Persistence\Query\QueryBuilder;
  *
  * @package Laventure\Component\Database\ORM\Persistence
 */
-class Persistent
+class Persistence
 {
 
 

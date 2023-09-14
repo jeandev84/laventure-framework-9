@@ -1,5 +1,8 @@
 <?php
-namespace Laventure\Component\Database\ORM\Persistence\Mapping;
+namespace Laventure\Component\Database\ORM\Persistence\Mapping\Factory;
+
+use Laventure\Component\Database\ORM\Persistence\Mapping\ClassMetadata;
+
 
 /**
  * @ClassMetadataFactory
@@ -8,7 +11,7 @@ namespace Laventure\Component\Database\ORM\Persistence\Mapping;
  *
  * @license https://github.com/jeandev84/laventure-framework/blob/master/LICENSE
  *
- * @package Laventure\Component\Database\ORM\Persistence\Mapping
+ * @package Laventure\Component\Database\ORM\Persistence\Mapping\Factory
 */
 class ClassMetadataFactory implements ClassMetadataFactoryInterface
 {
