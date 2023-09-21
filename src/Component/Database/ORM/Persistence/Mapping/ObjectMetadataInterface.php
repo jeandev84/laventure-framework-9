@@ -3,7 +3,7 @@ namespace Laventure\Component\Database\ORM\Persistence\Mapping;
 
 
 use Laventure\Component\Database\ORM\Collection\Collection;
-use Laventure\Component\Database\ORM\Persistence\PersistCollection;
+use Laventure\Component\Database\ORM\Persistence\PersistenceCollection;
 use ReflectionObject;
 
 /**
@@ -15,34 +15,14 @@ use ReflectionObject;
  *
  * @package Laventure\Component\Database\ORM\Persistence\Mapping
 */
-interface ObjectMetadataInterface
+interface ObjectMetadataInterface extends ClassMetadataInterface
 {
-
-     /**
-      * @return ClassMetadataInterface
-     */
-     public function getClassMetadata(): ClassMetadataInterface;
-
-
-
-
 
 
      /**
       * @return ReflectionObject
      */
-     public function getReflection(): ReflectionObject;
-
-
-
-
-
-    /**
-     * Get columns value
-     *
-     * @return array
-    */
-    public function getIdentifierValues(): array;
+     public function getInfoObject(): ReflectionObject;
 
 
 
@@ -68,7 +48,7 @@ interface ObjectMetadataInterface
      * @param string $field
      *
      * @return bool
-     */
+    */
     public function hasField(string $field): bool;
 
 
@@ -83,7 +63,7 @@ interface ObjectMetadataInterface
      * @param string $field
      *
      * @return bool
-     */
+    */
     public function hasAssociation(string $field): bool;
 
 
@@ -99,8 +79,8 @@ interface ObjectMetadataInterface
      * @param string $field
      *
      * @return bool
-     */
-    public function isSingleAssociation(string $field): bool;
+    */
+    public function belongsTo(string $field): bool;
 
 
 
@@ -115,22 +95,8 @@ interface ObjectMetadataInterface
      *
      * @return bool
      */
-    public function isCollectionAssociation(string $field): bool;
+    public function hasMany(string $field): bool;
 
-
-
-
-
-
-
-    /**
-     * Determine if the given field name is class identifier
-     *
-     * @param string $field
-     *
-     * @return bool
-    */
-    public function isIdentifier(string $field): bool;
 
 
 
@@ -158,11 +124,30 @@ interface ObjectMetadataInterface
      *
      * @return bool
     */
-    public function identified(): bool;
+    public function hasIdentifier(): bool;
+
+
+    
+    
+    
+    
+    
+    /**
+     * Returns identifiers
+     * 
+     * @return array
+    */
+    public function getIdentifiers(): array;
+    
+    
 
 
 
 
+    /**
+     * @return PersistenceCollection[]
+    */
+    public function getCollectionAssociations(): array;
 
 
 
@@ -170,11 +155,9 @@ interface ObjectMetadataInterface
 
 
     /**
-     * @return Collection
+     * @return object[]
     */
-    public function getCollection(): Collection;
-
-
+    public function getSingleAssociations(): array;
 
 
 
@@ -187,4 +170,16 @@ interface ObjectMetadataInterface
      * @return object
     */
     public function getSubject(): object;
+
+
+
+
+
+
+    /**
+     * Returns object properties
+     *
+     * @return array
+    */
+    public function getProperties(): array;
 }

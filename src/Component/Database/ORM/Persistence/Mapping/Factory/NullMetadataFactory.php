@@ -1,36 +1,34 @@
 <?php
 namespace Laventure\Component\Database\ORM\Persistence\Mapping\Factory;
 
-use Laventure\Component\Database\ORM\Persistence\Mapping\ClassMetadata;
 use Laventure\Component\Database\ORM\Persistence\Mapping\ClassMetadataInterface;
-use Laventure\Component\Database\ORM\Persistence\Mapping\ObjectMetadata;
+use Laventure\Component\Database\ORM\Persistence\Mapping\NullClassMetadata;
+use Laventure\Component\Database\ORM\Persistence\Mapping\NullObjectMetadata;
 use Laventure\Component\Database\ORM\Persistence\Mapping\ObjectMetadataInterface;
 
 
 /**
  * @inheritdoc
 */
-class MetadataFactory implements MetadataFactoryInterface
+class NullMetadataFactory implements MetadataFactoryInterface
 {
 
     /**
-     * @inheritdoc
+     * @inheritDoc
     */
     public function createFromClass(string $classname): ClassMetadataInterface
     {
-         return new ClassMetadata($classname);
+         return new NullClassMetadata();
     }
 
 
 
 
-
-
     /**
-     * @inheritdoc
+     * @inheritDoc
     */
     public function createFromObject(object $object): ObjectMetadataInterface
     {
-         return new ObjectMetadata($object);
+        return new NullObjectMetadata();
     }
 }

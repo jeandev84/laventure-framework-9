@@ -4,11 +4,9 @@ namespace Laventure\Component\Database\ORM\Persistence;
 
 use Laventure\Component\Database\Connection\ConnectionInterface;
 use Laventure\Component\Database\Connection\NullConnection;
-use Laventure\Component\Database\ORM\Persistence\Manager\EventManager;
 use Laventure\Component\Database\ORM\Persistence\Manager\EventManagerInterface;
 use Laventure\Component\Database\ORM\Persistence\Manager\NullEventManager;
-use Laventure\Component\Database\ORM\Persistence\Mapping\ClassMetadataFactoryInterface;
-use Laventure\Component\Database\ORM\Persistence\Mapping\NullClassMetadataFactory;
+use Laventure\Component\Database\ORM\Persistence\Mapping\Factory\MetadataFactoryInterface;
 use Laventure\Component\Database\ORM\Persistence\Repository\EntityRepositoryFactory;
 use Laventure\Component\Database\ORM\Persistence\Repository\NullRepositoryFactory;
 
@@ -33,9 +31,9 @@ class Configurator
 
 
         /**
-         * @var ClassMetadataFactoryInterface
+         * @var MetadataFactoryInterface
         */
-        protected ClassMetadataFactoryInterface $metadataFactory;
+        protected MetadataFactoryInterface $metadataFactory;
 
 
 
@@ -102,11 +100,11 @@ class Configurator
 
 
         /**
-         * @param ClassMetadataFactoryInterface $metadataFactory
+         * @param MetadataFactoryInterface $metadataFactory
          *
          * @return $this
         */
-        public function setMetadataFactory(ClassMetadataFactoryInterface $metadataFactory): static
+        public function setMetadataFactory(MetadataFactoryInterface $metadataFactory): static
         {
              $this->metadataFactory = $metadataFactory;
 
@@ -161,9 +159,9 @@ class Configurator
 
 
         /**
-         * @return ClassMetadataFactoryInterface
+         * @return MetadataFactoryInterface
         */
-        public function getMetadataFactory(): ClassMetadataFactoryInterface
+        public function getMetadataFactory(): MetadataFactoryInterface
         {
              return $this->metadataFactory;
         }

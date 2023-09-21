@@ -139,7 +139,7 @@ class DataMapper extends Mapper
     */
     public function mapRows(object $object): ClassMetadata
     {
-         return $this->metadata($object)->map();
+         # return $this->metadata($object)->map();
     }
 
 

@@ -8,12 +8,11 @@ use Laventure\Component\Database\Builder\SQL\Commands\DQL\Persistence\ObjectPers
 use Laventure\Component\Database\Connection\ConnectionInterface;
 use Laventure\Component\Database\Connection\Query\QueryInterface;
 use Laventure\Component\Database\ORM\Persistence\Manager\EntityManagerInterface;
-use Laventure\Component\Database\ORM\Persistence\Manager\EventManager;
 use Laventure\Component\Database\ORM\Persistence\Manager\EventManagerInterface;
 use Laventure\Component\Database\ORM\Persistence\Manager\Events\PreFlushEvent;
 use Laventure\Component\Database\ORM\Persistence\Mapping\ClassMetadata;
-use Laventure\Component\Database\ORM\Persistence\Mapping\ClassMetadataFactory;
-use Laventure\Component\Database\ORM\Persistence\Mapping\ClassMetadataFactoryInterface;
+use Laventure\Component\Database\ORM\Persistence\Mapping\ClassMetadataInterface;
+use Laventure\Component\Database\ORM\Persistence\Mapping\Factory\MetadataFactoryInterface;
 use Laventure\Component\Database\ORM\Persistence\Query\QueryBuilder;
 use Laventure\Component\Database\ORM\Persistence\Repository\EntityRepository;
 use Laventure\Component\Database\ORM\Persistence\Repository\EntityRepositoryFactory;
@@ -23,7 +22,7 @@ use Laventure\Component\Database\ORM\Persistence\Repository\EntityRepositoryFact
 /**
  * @inheritdoc
 */
-class EntityManager implements EntityManagerInterface, ObjectPersistenceInterface
+class EntityManager implements EntityManagerInterface
 {
 
     /**
@@ -60,9 +59,9 @@ class EntityManager implements EntityManagerInterface, ObjectPersistenceInterfac
 
 
     /**
-     * @var ClassMetadataFactoryInterface
+     * @var MetadataFactoryInterface
     */
-    protected ClassMetadataFactoryInterface $metadataFactory;
+    protected MetadataFactoryInterface $metadataFactory;
 
 
 
@@ -132,20 +131,22 @@ class EntityManager implements EntityManagerInterface, ObjectPersistenceInterfac
         $this->metadataFactory   = $config->getMetadataFactory();
         $this->repositoryFactory = $config->getRepositoryFactory();
         $this->unitOfWork        = new UnitOfWork($this);
+        $this->enabled           = true;
     }
-
 
 
 
 
     /**
-     * @return mixed|void
+     * @param Configurator $config
+     *
+     * @return static
     */
-    public function open()
+    public static function create(Configurator $config): static
     {
-         # new static($this->connection, $this->definition, $this->eventManager);
-         $this->enabled = true;
+         return new static($config);
     }
+
 
 
 
@@ -156,7 +157,7 @@ class EntityManager implements EntityManagerInterface, ObjectPersistenceInterfac
     */
     public function isOpen(): bool
     {
-        return ! $this->enabled;
+        return $this->enabled;
     }
 
 
@@ -259,11 +260,11 @@ class EntityManager implements EntityManagerInterface, ObjectPersistenceInterfac
     /**
      * @param string $name
      *
-     * @param BuilderInterface $query
+     * @param QueryInterface $query
      *
      * @return $this
     */
-    public function addNamedQuery(string $name, BuilderInterface $query): static
+    public function addNamedQuery(string $name, QueryInterface $query): static
     {
          $this->namedQueries[$name] = $query;
 
@@ -275,7 +276,7 @@ class EntityManager implements EntityManagerInterface, ObjectPersistenceInterfac
 
 
     /**
-     * @param array $queries
+     * @param QueryInterface[] $queries
      *
      * @return $this
     */
@@ -295,9 +296,9 @@ class EntityManager implements EntityManagerInterface, ObjectPersistenceInterfac
     /**
      * @param string $name
      *
-     * @return BuilderInterface
+     * @return QueryInterface
     */
-    public function getNamedQuery(string $name): BuilderInterface
+    public function getNamedQuery(string $name): QueryInterface
     {
          if (! $this->hasNamedQuery($name)) {
               throw new \RuntimeException("Could not found named query $name.");
@@ -519,43 +520,12 @@ class EntityManager implements EntityManagerInterface, ObjectPersistenceInterfac
     
     
     
-    
-    
-    /**
-     * @inheritdoc
-    */
-    public function saveOne(mixed $object): object
-    {
-        $this->persist($object);
-        $this->managed[get_class($object)] = $object;
-        return $object;
-    }
-
-
-
-
-
-
-
-    /**
-     * @return object[]
-     *
-     * @inheritDoc
-    */
-    public function getSaved(): array
-    {
-         return $this->managed;
-    }
-    
-    
-    
-    
     /**
      * @inheritDoc
      */
-    public function getClassMetadata($classname): ClassMetadata
+    public function getClassMetadata($classname): ClassMetadataInterface
     {
-        return $this->metadataFactory->createClassMetadata($classname);
+        return $this->metadataFactory->createFromClass($classname);
     }
 
 

@@ -16,7 +16,7 @@ class ClassMetadata implements ClassMetadataInterface
     /**
      * @var ReflectionClass
     */
-    protected ReflectionClass $reflection;
+    protected ReflectionClass $reflectionClass;
 
 
 
@@ -44,11 +44,14 @@ class ClassMetadata implements ClassMetadataInterface
     public function __construct(string $classname)
     {
         try {
-            $this->reflection = new ReflectionClass($classname);
+            $this->reflectionClass = new ReflectionClass($classname);
         } catch (\Exception $e) {
              throw new MetadataException($e->getMessage(), $e->getCode());
         }
     }
+
+
+
 
 
 
@@ -65,6 +68,10 @@ class ClassMetadata implements ClassMetadataInterface
 
          return $this;
     }
+
+
+
+
 
 
 
@@ -91,7 +98,7 @@ class ClassMetadata implements ClassMetadataInterface
     */
     public function getClassname(): string
     {
-        return $this->reflection->getName();
+        return $this->reflectionClass->getName();
     }
 
 
@@ -105,12 +112,14 @@ class ClassMetadata implements ClassMetadataInterface
     public function getTableName(): string
     {
          if (! $this->table) {
-             $shortName   =  $this->reflection->getShortName();
+             $shortName   =  $this->reflectionClass->getShortName();
              $this->table = mb_strtolower("{$shortName}s");
          }
 
          return $this->table;
     }
+
+
 
 
 
@@ -134,9 +143,9 @@ class ClassMetadata implements ClassMetadataInterface
     /**
      * @inheritDoc
     */
-    public function getReflection(): ReflectionClass
+    public function getInfoClass(): ReflectionClass
     {
-         return $this->reflection;
+         return $this->reflectionClass;
     }
 
 
@@ -152,7 +161,7 @@ class ClassMetadata implements ClassMetadataInterface
     {
          return array_map(function (\ReflectionMethod $method) {
                return $method->getName();
-         }, $this->reflection->getMethods());
+         }, $this->reflectionClass->getMethods());
     }
 
 
@@ -168,5 +177,20 @@ class ClassMetadata implements ClassMetadataInterface
     public function hasMethod(string $name): bool
     {
         return in_array($name, $this->getMethods());
+    }
+
+
+
+
+
+
+
+
+    /**
+     * @inheritDoc
+    */
+    public function isIdentifier(string $field): bool
+    {
+        return $this->identifier === $field;
     }
 }

@@ -5,6 +5,7 @@ use Closure;
 use Laventure\Component\Database\Connection\ConnectionInterface;
 use Laventure\Component\Database\Connection\Query\QueryInterface;
 use Laventure\Component\Database\ORM\Persistence\Mapping\ClassMetadata;
+use Laventure\Component\Database\ORM\Persistence\Mapping\ClassMetadataInterface;
 use Laventure\Component\Database\ORM\Persistence\Query\QueryBuilder;
 use Laventure\Component\Database\ORM\Persistence\Repository\EntityRepository;
 use Laventure\Component\Database\ORM\Persistence\UnitOfWork;
@@ -15,12 +16,6 @@ use Laventure\Component\Database\ORM\Persistence\UnitOfWork;
 */
 interface EntityManagerInterface extends ObjectManager
 {
-
-
-    /**
-     * @return mixed
-    */
-    public function open();
 
 
 
@@ -83,56 +78,13 @@ interface EntityManagerInterface extends ObjectManager
 
 
     /**
-     * Find object
-     *
-     * @param string $classname
-     *
-     * @param $id
-     *
-     * @return mixed
-    */
-    public function find(string $classname, $id): mixed;
-
-
-
-
-
-
-
-    /**
-     * @param $classname
-     *
-     * @return ClassMetadata
-    */
-    public function getClassMetadata($classname): ClassMetadata;
-
-
-
-
-
-
-
-
-    /**
-     * @param string $classname
-     *
-     * @return EntityRepository
-    */
-    public function getRepository(string $classname): EntityRepository;
-
-
-
-
-
-
-
-
-    /**
      * Create query builder
      *
      * @return QueryBuilder
     */
     public function createQueryBuilder(): QueryBuilder;
+
+
 
 
 

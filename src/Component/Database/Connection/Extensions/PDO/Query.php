@@ -77,10 +77,10 @@ class Query implements QueryInterface
      * @var array
     */
     protected array $bindTypes = [
-        self::NULL => \PDO::PARAM_NULL,
-        self::INT  => \PDO::PARAM_INT,
-        self::STR  => PDO::PARAM_STR,
-        self::BOOL => \PDO::PARAM_BOOL,
+        self::PARAM_NULL => \PDO::PARAM_NULL,
+        self::PARAM_INT  => \PDO::PARAM_INT,
+        self::PARAM_STR  => PDO::PARAM_STR,
+        self::PARAM_BOOL => \PDO::PARAM_BOOL,
     ];
 
 
@@ -119,7 +119,7 @@ class Query implements QueryInterface
     /**
      * @inheritDoc
     */
-    public function bindParam($name, $value, int $type = self::NULL): static
+    public function bindParam($name, $value, int $type = self::PARAM_NULL): static
     {
         $this->statement->bindParam($name, $value, $this->binded($type));
         $this->logger->addBindParams(compact('name', 'value', 'type'));
@@ -135,7 +135,7 @@ class Query implements QueryInterface
     /**
      * @inheritDoc
      */
-    public function bindValue($name, $value, int $type = self::NULL): static
+    public function bindValue($name, $value, int $type = self::PARAM_NULL): static
     {
         $this->statement->bindValue($name, $value, $this->binded($type));
         $this->logger->addBindValues(compact('name', 'value', 'type'));

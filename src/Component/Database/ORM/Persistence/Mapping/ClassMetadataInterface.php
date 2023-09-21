@@ -1,7 +1,6 @@
 <?php
 namespace Laventure\Component\Database\ORM\Persistence\Mapping;
 
-use Laventure\Component\Database\ORM\Persistence\PersistCollection;
 use ReflectionClass;
 
 /**
@@ -49,12 +48,30 @@ interface ClassMetadataInterface
 
 
 
+
+
+
+    /**
+     * Determine if the given field name is class identifier
+     *
+     * @param string $field
+     *
+     * @return bool
+    */
+    public function isIdentifier(string $field): bool;
+
+
+
+
+
+
+
     /**
      * Returns reflection class
      *
      * @return ReflectionClass
     */
-    public function getReflection(): ReflectionClass;
+    public function getInfoClass(): ReflectionClass;
 
 
 
@@ -66,6 +83,8 @@ interface ClassMetadataInterface
      * @return array
     */
     public function getMethods(): array;
+
+
 
 
 

@@ -4,7 +4,6 @@ namespace Laventure\Component\Database\ORM\Persistence\Mapping;
 use Laventure\Component\Database\ORM\Collection\Collection;
 use Laventure\Component\Database\ORM\Convertor\CamelConvertor;
 use Laventure\Component\Database\ORM\Persistence\Mapping\Exception\MetadataException;
-use Laventure\Component\Database\ORM\Persistence\PersistCollection;
 use Laventure\Component\Database\ORM\Persistence\PersistenceCollection;
 use ReflectionObject;
 
@@ -13,7 +12,7 @@ use ReflectionObject;
 /**
  * @inheritdoc
 */
-class ObjectMetadata implements ObjectMetadataInterface
+class ObjectMetadata extends ClassMetadata implements ObjectMetadataInterface
 {
 
 
@@ -29,10 +28,12 @@ class ObjectMetadata implements ObjectMetadataInterface
 
 
 
+
+
      /**
-      * @var ClassMetadataInterface
+      * @var ClassMetadata
      */
-     protected ClassMetadataInterface $metadata;
+     protected ClassMetadata $metadata;
 
 
 
@@ -48,7 +49,22 @@ class ObjectMetadata implements ObjectMetadataInterface
      /**
       * @var array
      */
+     protected array $identifiers = [];
+
+
+
+     /**
+      * @var array
+     */
      protected array $attributes = [];
+
+
+
+
+     /**
+      * @var object[]
+     */
+     protected array $associations = [];
 
 
 
@@ -57,7 +73,7 @@ class ObjectMetadata implements ObjectMetadataInterface
      /**
       * @var PersistenceCollection[]
      */
-     protected array $collections = [];
+     protected array $hasMany = [];
 
 
 
@@ -67,7 +83,16 @@ class ObjectMetadata implements ObjectMetadataInterface
      /**
       * @var object[]
      */
-     protected array $identifiers = [];
+     protected array $belongsTo = [];
+
+
+
+
+
+     /**
+      * @var array
+     */
+     protected array $properties = [];
 
 
 
@@ -79,8 +104,8 @@ class ObjectMetadata implements ObjectMetadataInterface
      public function __construct(object $object)
      {
          try {
+             parent::__construct(get_class($object));
              $this->reflection = $this->map($object);
-             $this->metadata   = new ClassMetadata($this->reflection->getName());
              $this->object     = $object;
          } catch (\Exception $e) {
              throw new MetadataException($e->getMessage(), $e->getCode());
@@ -93,20 +118,28 @@ class ObjectMetadata implements ObjectMetadataInterface
 
 
 
+    /**
+     * @inheritDoc
+    */
+    public function getInfoObject(): ReflectionObject
+    {
+        return $this->reflection;
+    }
 
 
+
+     
 
     /**
      * @inheritDoc
     */
     public function getFieldNames(): array
     {
-
+        return array_keys($this->properties);
     }
 
 
-
-
+    
 
 
 
@@ -117,8 +150,9 @@ class ObjectMetadata implements ObjectMetadataInterface
      */
     public function getField(string $name): mixed
     {
-        return $this->reflection->getAttributes($name);
+        return $this->properties[$name] ?? null;
     }
+
 
 
 
@@ -127,11 +161,12 @@ class ObjectMetadata implements ObjectMetadataInterface
 
     /**
      * @inheritDoc
-     */
+    */
     public function hasField(string $field): bool
     {
-
+         return isset($this->properties[$field]);
     }
+
 
 
 
@@ -143,7 +178,7 @@ class ObjectMetadata implements ObjectMetadataInterface
     */
     public function hasAssociation(string $field): bool
     {
-
+         return isset($this->associations[$field]);
     }
 
 
@@ -154,46 +189,11 @@ class ObjectMetadata implements ObjectMetadataInterface
     /**
      * @inheritDoc
     */
-    public function isSingleAssociation(string $field): bool
+    public function belongsTo(string $field): bool
     {
-
+        return isset($this->belongsTo[$field]);
     }
 
-
-
-
-
-    /**
-     * @inheritDoc
-    */
-    public function isCollectionAssociation(string $field): bool
-    {
-
-    }
-
-
-
-
-
-    /**
-     * @inheritDoc
-    */
-    public function getClassMetadata(): ClassMetadataInterface
-    {
-         return $this->metadata;
-    }
-
-
-
-
-
-    /**
-     * @inheritDoc
-    */
-    public function getReflection(): ReflectionObject
-    {
-        return $this->reflection;
-    }
 
 
 
@@ -203,21 +203,12 @@ class ObjectMetadata implements ObjectMetadataInterface
     /**
      * @inheritDoc
     */
-    public function getIdentifierValues(): array
+    public function hasMany(string $field): bool
     {
-
+        return isset($this->hasMany[$field]);
     }
 
 
-
-
-    /**
-     * @inheritDoc
-    */
-    public function isIdentifier(string $field): bool
-    {
-
-    }
 
 
 
@@ -233,12 +224,41 @@ class ObjectMetadata implements ObjectMetadataInterface
 
 
 
+
+
+
+    /**
+     * @return mixed
+    */
+    public function getId(): mixed
+    {
+        return $this->identifiers[$this->getIdentifier()] ?? null;
+    }
+
+
+
+
+
+
     /**
      * @inheritDoc
     */
-    public function identified(): bool
+    public function hasIdentifier(): bool
     {
+         return ! empty($this->identifiers[$this->identifier]);
+    }
 
+
+    
+
+
+
+    /**
+     * @inheritDoc
+    */
+    public function getCollectionAssociations(): array
+    {
+        return $this->hasMany;
     }
 
 
@@ -246,13 +266,12 @@ class ObjectMetadata implements ObjectMetadataInterface
 
 
     /**
-     * @inheritDoc
+     * @return object[]
     */
-    public function getCollection(): Collection
+    public function getSingleAssociations(): array
     {
-
+         return $this->belongsTo;
     }
-
 
 
 
@@ -270,6 +289,32 @@ class ObjectMetadata implements ObjectMetadataInterface
 
 
 
+
+    /**
+     * @inheritdoc 
+    */
+    public function getIdentifiers(): array
+    {
+        return $this->identifiers;
+    }
+
+
+
+
+
+    /**
+     * @inheritdoc
+    */
+    public function getProperties(): array
+    {
+        return $this->properties;
+    }
+
+
+
+
+
+
     /**
      * @param object $object
      *
@@ -280,8 +325,31 @@ class ObjectMetadata implements ObjectMetadataInterface
         $reflection = new ReflectionObject($object);
 
         foreach ($reflection->getProperties() as $property) {
-            $name  = $property->getName();
-            $this->attributes[$name] = $property->getValue($object);
+
+            $name    = $property->getName();
+            $field   = $this->camelCaseToUnderscore($name);
+            $value   = $property->getValue($object);
+
+            if ($this->isIdentifier($name)) {
+                $this->identifiers[$field] = $value;
+            } elseif (is_object($value)) {
+                 if ($value instanceof \DateTimeInterface) {
+                      $this->attributes[$field] = $value->format('Y-m-d H:i:s');
+                 } elseif ($value instanceof Collection) {
+                      $collection           = new PersistenceCollection($value);
+                      $this->hasMany[$name] = $collection;
+                      $this->associations[$name] = $collection;
+                      $this->identifiers[$field.'_id'] = $collection;
+                 } else {
+                     $this->belongsTo[$name]    = $value;
+                     $this->associations[$name] = $value;
+                     $this->identifiers[$field.'_id'] = $value;
+                 }
+            } else {
+                 $this->attributes[$field] = $value;
+            }
+
+            $this->properties[$name] = $value;
         }
 
         return $reflection;

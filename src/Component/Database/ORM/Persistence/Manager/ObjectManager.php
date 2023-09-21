@@ -2,6 +2,9 @@
 namespace Laventure\Component\Database\ORM\Persistence\Manager;
 
 
+use Laventure\Component\Database\Builder\SQL\Commands\DQL\Persistence\ObjectPersistenceInterface;
+
+
 /**
  * @ObjectManager
  *
@@ -11,8 +14,53 @@ namespace Laventure\Component\Database\ORM\Persistence\Manager;
  *
  * @package Laventure\Component\Database\ORM\Persistence\Manager
 */
-interface ObjectManager
+interface ObjectManager extends  ObjectPersistenceInterface
 {
+
+
+
+    /**
+     * Find object
+     *
+     * @param string $classname
+     *
+     * @param $id
+     *
+     * @return mixed
+    */
+    public function find(string $classname, $id): mixed;
+
+
+
+
+
+
+    /**
+     * @param $classname
+     *
+     * @return mixed
+    */
+    public function getClassMetadata($classname): mixed;
+
+
+
+
+
+
+
+
+    /**
+     * @param string $classname
+     *
+     * @return mixed
+    */
+    public function getRepository(string $classname): mixed;
+
+
+
+
+
+
 
 
     /**
@@ -111,6 +159,8 @@ interface ObjectManager
 
 
 
+
+
     /**
      * Tells manager to initialize an object
      *
@@ -119,6 +169,8 @@ interface ObjectManager
      * @return void
     */
     public function initialize(object $object): void;
+
+
 
 
 
